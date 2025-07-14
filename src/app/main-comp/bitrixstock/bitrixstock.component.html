@@ -1,0 +1,19 @@
+<div class="row" style="height: calc(100% - 5px);">
+    <div class="col-sm-12">
+      <form [formGroup]="bitrixstockForm">
+        <div class="col-sm-12" >
+            <div class="col-sm-12 child inline-block-child">
+                <div class="col-sm-8 child inline-block-child">
+                    <button type="button" class="btn btn-primary" (click)="onExport()">Export</button>
+                </div>
+            </div>
+            <ag-grid-angular #agGrid style="width: 100%; height: 350px;"
+                class="ag-theme-alpine"
+                [rowData]="stockData"
+                [columnDefs]="colDefs"
+                nFirstDataRendered="onFirstDataRendered"
+            />
+      </div>
+      </form>
+    </div>
+</div>

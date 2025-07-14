@@ -1,0 +1,55 @@
+<div class="row" style="height: calc(100% - 5px);">
+    <div class="col-sm-12">
+      <form [formGroup]="createDealForm" (ngSubmit)="onSubmit()">
+        <div class="col-sm-12">
+            <!-- <div class="form-group" class="col-sm-2 child inline-block-child">
+            <label>Inovice Number</label>
+            <input type="text" class="form-control" placeholder="Enter Invoice Number" formControlName="invoiceNumber" required />
+            </div> -->
+            <div class="col-sm-10" style="display: flex;">
+                <div class="form-group" class="col-sm-4" style="margin: 15px;">
+                    <label>Pipeline*</label>
+                
+                        <select matNativeControl formControlName="pipelineOptions" required style="width: 100px; height: 30px; margin: 10px;">
+                            <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }}</option>
+                        </select>
+                    
+                </div>
+                <div class="form-group" class="col-sm-4" style="margin: 15px;">
+                    <label>Customer*</label>
+                
+                        <select matNativeControl formControlName="customersOptions" required style="width: 100px; height: 30px; margin: 10px;">
+                            <option *ngFor="let item of bitrixCustomers" [value]="item.id">{{ item.name }}</option>
+                        </select>
+                    
+                </div>
+                <div class="form-group" class="col-sm-3" style="margin: 15px;">
+                    <label>Stores*</label>
+                
+                        <select matNativeControl formControlName="storesOptions" required style="width: 100px; height: 30px; margin: 10px;">
+                            <option *ngFor="let item of bitrixStores" [value]="item.id">{{ item.name }}</option>
+                        </select>
+                    
+                </div>
+            </div>
+            <div class="col-sm-12" style="display: flex;float: right;">
+                <button type="submit" [disabled]="isLoading" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-primary" (click)="onAddProductRoe()">Add Product</button>
+                <button type="button" class="btn btn-primary" (click)="onDeleteProductRowClick()">Remove Product</button>
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <ag-grid-angular #agGrid style="width: 100%; height: 385px;"
+                (cellValueChanged)="onCellValueChanged($event)"
+                class="ag-theme-alpine"
+                [columnDefs]="colDefs"
+                [rowData]="rowData"
+                [gridOptions]="gridOptions"
+                [rowSelection]="rowSelection"
+            />
+            <!-- [rowData]="productRowData"
+                [columnDefs]="colDefs" -->
+      </div>
+      </form>
+    </div>
+</div>

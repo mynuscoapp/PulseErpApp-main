@@ -1,0 +1,24 @@
+<div class="row" style="height: calc(100% - 5px);">
+    <div class="col-sm-12">
+      <form [formGroup]="invoiceDownloadForm" (ngSubmit)="onSubmit()">
+        <div class="col-sm-12 child inline-block-child">
+            <div class="form-group" class="col-sm-2 child inline-block-child">
+            <label>Inovice Number</label>
+            <input type="text" class="form-control" placeholder="Enter Invoice Number" formControlName="invoiceNumber" required />
+            </div>
+            <div class="col-sm-8 child inline-block-child">
+                <button type="submit" [disabled]="isLoading" class="btn btn-primary">Submit</button>
+                <button type="button" [disabled]="isLoading" class="btn btn-primary" (click)="onExport()">Export</button>
+            </div>
+        </div>
+        <div class="col-sm-12" >
+            <ag-grid-angular #agGrid style="width: 100%; height: 350px;"
+                class="ag-theme-alpine"
+                [rowData]="productRowData"
+                [columnDefs]="colDefs"
+                nFirstDataRendered="onFirstDataRendered"
+            />
+      </div>
+      </form>
+    </div>
+</div>

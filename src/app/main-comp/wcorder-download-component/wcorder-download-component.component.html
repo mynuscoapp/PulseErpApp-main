@@ -1,0 +1,84 @@
+<div class="row">
+    <div class="col-sm-12">
+        <form [formGroup]="wCOrderDownloadForm" (ngSubmit)="onSubmit()" class="row row-cols-sm-auto">
+            <div class="col-sm-10 inline-block-child">
+                <div class="form-group" class="col-sm-6 child inline-block-child">
+
+                    <div class="col-6  child inline-block-child">
+                        <div class="dp-hidden position-absolute">
+                            <div class="input-group">
+                                <input name="datepicker" class="form-control" ngbDatepicker #datepicker="ngbDatepicker"
+                                    [autoClose]="'outside'" (dateSelect)="onDateSelection($event)" [displayMonths]="2"
+                                    [dayTemplate]="t" outsideDays="hidden" [startDate]="fromDate!" tabindex="-1" />
+                                <ng-template #t let-date let-focused="focused">
+                                    <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+                                        [class.faded]="isHovered(date) || isInside(date)"
+                                        (mouseenter)="hoveredDate = date" (mouseleave)="hoveredDate = null">
+                                        {{ date.day }}
+                                    </span>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <input #dpFromDate class="form-control" placeholder="yyyy-mm-dd" formControlName="FromDate"
+                                name="dpFromDate" [value]="formatter.format(fromDate)"
+                                (input)="fromDate = validateInput(fromDate, dpFromDate.value)"
+                                (dateChange)="startDateEvent($event)" />
+                            <button class="btn btn-outline-secondary bi bi-calendar3" (click)="datepicker.toggle()"
+                                type="button"></button>
+                        </div>
+                    </div>
+                    <div class="col-6  child inline-block-child">
+                        <div class="input-group">
+                            <input #dpToDate class="form-control" placeholder="yyyy-mm-dd" formControlName="ToDate"
+                                name="dpToDate" [value]="formatter.format(toDate)"
+                                (input)="toDate = validateInput(toDate, dpToDate.value)"
+                                (dateChange)="endDateEvent($event)" />
+                            <button class="btn btn-outline-secondary bi bi-calendar3" (click)="datepicker.toggle()"
+                                type="button"></button>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="form-group" class="col-sm-2 child inline-block-child" style="margin: 5px;">
+                    <label>Status</label>
+                    <select matNativeControl formControlName="selectedOption" required>
+                        <option value="completed" selected>Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="processing">Processing</option>
+                    </select>
+                </div>
+                <div class="form-group" class="col-sm-3 child inline-block-child">
+                    <button type="submit" class="btn btn-primary" [disabled]="isLoading">Submit</button>
+                    <button type="button" class="btn btn-primary" (click)="onExport()"
+                        [disabled]="isLoading">Export</button>
+                </div>
+            </div>
+            <div style="width: 100%; height: calc(100% - 75px);">
+                <ag-grid-angular #agGrid style="width: 100%; height: 350px;" [rowData]="rowDisplayData"
+                    [columnDefs]="colDefs" />
+            </div>
+            <div class="card-body" *ngIf="page.count > 1">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+
+                        <li class="page-item">
+                            <a class="page-link" (click)='onPrevNextClick(-1)' href="javascript:">Previous</a>
+                        </li>
+
+                        <li class="page-item" *ngFor="let item of [].constructor( page.count ); let i = index">
+                            <a class="page-link" (click)='onPageNumberClick(i + 1)' href="javascript:">{{i + 1}}</a>
+                        </li>
+
+
+                        <li class="page-item">
+                            <a class="page-link" (click)='onPrevNextClick(1)' href="javascript:">Next</a>
+                        </li>
+
+                    </ul>
+                </nav>
+            </div>
+        </form>
+    </div>
+</div>
