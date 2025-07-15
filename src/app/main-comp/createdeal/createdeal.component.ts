@@ -13,6 +13,7 @@ import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
 import { BitrixStores } from '../../demo/models/BitrixStores';
 import { BitrixStoreProduct } from 'src/app/demo/models/BitrixStoreProduct';
+import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
 
 @Component({
   selector: 'app-createdeal',
@@ -71,7 +72,28 @@ export class CreatedealComponent {
     ;
 
     onSubmit() {
+      let dealHeader = new DealHeaderModel;
+      dealHeader.TITLE = 'New Deal from Angular App';
+      dealHeader.TYPE_ID = '';
+      dealHeader.CURRENCY_ID = 'INR';
+      dealHeader.COMPANY_ID = 1;
+      dealHeader.OPPORTUNITY = 1500;
+      dealHeader.STAGE_ID = 'NEW';
+      dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
 
+      let id = this.bitrixstockservice.createDealHeader(dealHeader).subscribe(
+        response => {
+          console.log('POST request successful:', response);
+          id = response.result;
+          // Process the response data here
+        },
+        error => {
+          console.error('Error receiving POST response:', error);
+          // Handle the error
+        }
+      );
+      alert(id);
+      console.log(id);
     }
     ngOnInit() {
       this.rowData.push(new BitrixProducts);
