@@ -1,5 +1,5 @@
 export class BitrixProducts{
-    productId!: number;
+    id!: number;
     productName!: string;
     PREVIEW_PICTURE!: string;
     quantity!: number;

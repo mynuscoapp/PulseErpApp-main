@@ -8,4 +8,6 @@ export class DealHeaderModel{
     CONTACT_ID: number;
     COMPANY_ID: number;
     COMMENTS: string;
+    CATEGORY_ID: number;
+    OWNER_TYPE: string;
 }

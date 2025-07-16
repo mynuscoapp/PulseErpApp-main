@@ -9,6 +9,7 @@ import { BitrixProducts } from 'src/app/demo/models/bitrixproducts';
 import { BitrixStoreProduct } from 'src/app/demo/models/BitrixStoreProduct';
 import { BitrixStores } from 'src/app/demo/models/BitrixStores';
 import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
+import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { environment } from 'src/environments/environment';
 import { json } from 'stream/consumers';
 
@@ -31,7 +32,9 @@ export class BitrixStockService {
     private bitrixCustomersUrl = `${environment.bitrixStockUrl}/customerlist`;
     private bitrixStoresUrl = `${environment.bitrixStockUrl}/storelist`;
 
-    private createDealHeaderUrl = `${environment.apiUrl}/crm.deal.add.json`;
+    private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
+    private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
+    
     
     loadBitrixStock() {
         let rowdata: any;
@@ -97,4 +100,18 @@ export class BitrixStockService {
             })
           );
     }
+
+    createDealProductRows(dealProductRows: DealProductsRows) {
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json'
+      });
+      const data = JSON.stringify(dealProductRows);
+      return this.http.post<any>(`${this.createDealProductRowUrl}`,
+        dealProductRows).pipe(
+          catchError(error => {
+            console.error('Error during POST request:', error);
+            throw error; // Re-throw the error or handle it as needed
+          })
+        );
+  }
 }
