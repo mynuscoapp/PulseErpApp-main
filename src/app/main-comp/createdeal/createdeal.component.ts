@@ -81,10 +81,10 @@ export class CreatedealComponent {
       dealHeader.STAGE_ID = 'NEW';
       dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
 
-      let id = this.bitrixstockservice.createDealHeader(dealHeader).subscribe(
+      this.bitrixstockservice.createDealHeader(dealHeader).subscribe(
         response => {
           console.log('POST request successful:', response);
-          id = response.result;
+          const deal_id = response.result;
           // Process the response data here
         },
         error => {
@@ -92,8 +92,7 @@ export class CreatedealComponent {
           // Handle the error
         }
       );
-      alert(id);
-      console.log(id);
+      
     }
     ngOnInit() {
       this.rowData.push(new BitrixProducts);
