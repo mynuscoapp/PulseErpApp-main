@@ -75,45 +75,47 @@ export class CreatedealComponent {
     ;
 
     onSubmit() {
-      let dealHeader = new DealHeaderModel;
-      dealHeader.TITLE = 'New Deal from Angular App';
-      dealHeader.TYPE_ID = this.createDealForm.get("pipelineOptions").value;
-      dealHeader.CURRENCY_ID = 'INR';
-      dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
-      //dealHeader.CATEGORY_ID = 
-      dealHeader.OPPORTUNITY = 1500;
-      dealHeader.OWNER_TYPE = 'D';
-      //dealHeader.STAGE_ID = 'NEW';
-      dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
-
-      this.bitrixstockservice.createDealHeader(dealHeader).subscribe(
-        response => {
-          console.log('POST request successful:', response);
-          const deal_id = response.result;
-          console.log(deal_id);
-          // Process the response data here
-          let dealProducts = new DealProductsRows;
-          dealProducts.id = 20133;
-          let dealProductList = this.GetProductRowsList();
-          dealProducts.rows = dealProductList;
-          console.log(dealProducts);
-          this.bitrixstockservice.createDealProductRows(dealProducts).subscribe(
-            response => {
-              console.log('POST request successful:', response);
-              alert('Deal Created Successfully');
-            },
-            error => {
-              console.error('Error receiving POST response:', error);
-            }
-          )
-        },
-        error => {
-          console.error('Error receiving POST response:', error);
-          // Handle the error
-        }
-      );
-      
+      this.GenrateDeal();
     }
+
+  private GenrateDeal() {
+    let dealHeader = new DealHeaderModel;
+    dealHeader.TITLE = 'New Deal from Angular App';
+    dealHeader.TYPE_ID = this.createDealForm.get("pipelineOptions").value;
+    dealHeader.CURRENCY_ID = 'INR';
+    dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
+    //dealHeader.CATEGORY_ID = 
+    dealHeader.OPPORTUNITY = 1500;
+    dealHeader.OWNER_TYPE = 'D';
+    //dealHeader.STAGE_ID = 'NEW';
+    dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
+
+    this.bitrixstockservice.createDealHeader(dealHeader).subscribe(
+      response => {
+        console.log('POST request successful:', response);
+        const deal_id = response.result;
+        console.log(deal_id);
+        // Process the response data here
+        let dealProducts = new DealProductsRows;
+        dealProducts.id = deal_id;
+        let dealProductList = this.GetProductRowsList();
+        dealProducts.rows = dealProductList;
+        console.log(dealProducts);
+        this.bitrixstockservice.createDealProductRows(dealProducts).subscribe(
+          response => {
+            console.log('POST request successful:', response);
+            alert('Deal Created Successfully');
+          },
+          error => {
+            console.error('Error receiving POST response:', error);
+          }
+        );
+      },
+      error => {
+        console.error('Error receiving POST response:', error);
+      }
+    );
+  }
 
     GetProductRowsList() {
       let rowsList: DealProductList[] = [];
