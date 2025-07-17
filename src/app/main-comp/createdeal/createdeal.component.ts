@@ -269,11 +269,11 @@ export class CreatedealComponent {
       const totalElement = document.getElementById('subtotal') as HTMLInputElement; 
       const gstElement = document.getElementById('gst') as HTMLInputElement;
       const finalElement = document.getElementById('finaltotal') as HTMLInputElement;
-      
+        
       var subtotal=0, calgst = 0, fintot = 0 
       subtotal = stotal;
       calgst = subtotal * 0.18;
-
+   
       totalElement.value = subtotal.toString();
       gstElement.value = calgst.toString();
 
