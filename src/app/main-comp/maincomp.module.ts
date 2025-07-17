@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 
+
 @NgModule({
   declarations: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

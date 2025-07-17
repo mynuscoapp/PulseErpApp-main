@@ -13,7 +13,6 @@ import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
 import { BitrixStores } from '../../demo/models/BitrixStores';
 import { BitrixStoreProduct } from 'src/app/demo/models/BitrixStoreProduct';
-import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
 
 @Component({
   selector: 'app-createdeal',
@@ -21,6 +20,7 @@ import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
   templateUrl: './createdeal.component.html',
   styleUrl: './createdeal.component.scss'
 })
+
 
 
 
@@ -34,6 +34,7 @@ export class CreatedealComponent {
   rowSelection: RowSelectionOptions | "single" | "multiple" = {
     mode: "multiRow",
   };
+
   colDefs: ColDef[] ;
   gridOptions: GridOptions;
   bitrixPipelineList: BitrixPipeline[];
@@ -41,6 +42,7 @@ export class CreatedealComponent {
   bitrixStores: BitrixStores[];
   bitrixStoreProducts: BitrixStoreProduct[];
   storeId: number;
+  ftotal = 0;
   
   
    constructor(private formBuilder: FormBuilder,  private bitrixstockservice: BitrixStockService) {
@@ -72,27 +74,7 @@ export class CreatedealComponent {
     ;
 
     onSubmit() {
-      let dealHeader = new DealHeaderModel;
-      dealHeader.TITLE = 'New Deal from Angular App';
-      dealHeader.TYPE_ID = '';
-      dealHeader.CURRENCY_ID = 'INR';
-      dealHeader.COMPANY_ID = 1;
-      dealHeader.OPPORTUNITY = 1500;
-      dealHeader.STAGE_ID = 'NEW';
-      dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
 
-      this.bitrixstockservice.createDealHeader(dealHeader).subscribe(
-        response => {
-          console.log('POST request successful:', response);
-          const deal_id = response.result;
-          // Process the response data here
-        },
-        error => {
-          console.error('Error receiving POST response:', error);
-          // Handle the error
-        }
-      );
-      
     }
     ngOnInit() {
       this.rowData.push(new BitrixProducts);
@@ -170,6 +152,7 @@ export class CreatedealComponent {
     onCellValueChanged(event: any) {
       // Access the changed row data and column details
       console.log('Cell value changed:', event.data, event.colDef.field, event.newValue);
+      //alert('fieldname ' + event.colDef.field); 
       this.storeId = this.createDealForm.get('storesOptions')?.value;
       // Perform actions based on the new value
       if (event.colDef.field === 'productName') {
@@ -185,6 +168,60 @@ export class CreatedealComponent {
           this.agGrid.api.setGridOption('rowData', this.rowData);
           console.log(this.rowData[rowId].PREVIEW_PICTURE);
 
+      } 
+      else if ( event.colDef.field === 'quantity') {
+        //alert('Qaumtity changed');
+        const rowId = event.rowIndex;
+        this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
+        this.agGrid.api.setGridOption('rowData', this.rowData);
+        //this.onTotalCal(this.rowData[rowId].total)
+
+        
+        //---------------Calling function to calculate Subtotal value and display it ---------------
+        var totalcost = 0 , i =0;
+        for( i=0; i<this.rowData.length; i++){
+          totalcost = totalcost + this.rowData[i].total;
+        }
+        this.onTotalCal(totalcost)
+
+      } 
+      else if( event.colDef.field === 'discount'){
+        const rowId = event.rowIndex;
+        var calDisc = this.rowData[rowId].total - (this.rowData[rowId].total * (this.rowData[rowId].discount / 100))
+        this.rowData[rowId].total = calDisc
+        this.agGrid.api.setGridOption('rowData', this.rowData);
+
+        //---------------Calling function to calculate Subtotal value and display it ---------------
+        var totalcost = 0,i =0;
+        for( i=0; i<this.rowData.length; i++){
+          totalcost = totalcost + this.rowData[i].total;
+        }
+        this.onTotalCal(totalcost)
       }
-  }
+
+    }
+
+    //---------------Called function to calculate Subtotal value and display it ---------------
+
+    onTotalCal(stotal){
+    
+      //const inputElement = document.getElementById('subtotal') as HTMLInputElement;
+      const totalElement = document.getElementById('subtotal') as HTMLInputElement; 
+      const gstElement = document.getElementById('gst') as HTMLInputElement;
+      const finalElement = document.getElementById('finaltotal') as HTMLInputElement;
+      
+      var subtotal=0, calgst = 0, fintot = 0 
+      subtotal = stotal;
+      calgst = subtotal * 0.18;
+
+      totalElement.value = subtotal.toString();
+      gstElement.value = calgst.toString();
+
+      fintot = parseInt(totalElement.value) + parseInt(gstElement.value);
+      finalElement.value= fintot.toString();
+      
+      this.agGrid.api.setGridOption('rowData', this.rowData);
+    }
+
+  
 }
