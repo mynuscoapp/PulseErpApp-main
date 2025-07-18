@@ -83,7 +83,7 @@ export const NavigationItems: NavigationItem[] = [
     children: [
       {
         id: 'createdeal',
-        title: 'Create Deal',
+        title: 'Create Order', //Changed from Create Deal to Create Order on 17-7-2025
         type: 'item',
         url: '/createdeal',
         icon: 'feather icon-home',

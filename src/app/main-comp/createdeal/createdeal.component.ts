@@ -7,7 +7,7 @@ import { BitrixProducts } from 'src/app/demo/models/bitrixproducts';
 import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
 import { environment } from 'src/environments/environment';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, GridOptions, ModuleRegistry, RowSelectionOptions } from 'ag-grid-enterprise';
+import { AutoWidthCalculator, ColDef, GridOptions, ModuleRegistry, RowSelectionOptions } from 'ag-grid-enterprise';
 import 'ag-grid-enterprise';
 import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
@@ -47,6 +47,7 @@ export class CreatedealComponent {
   bitrixStoreProducts: BitrixStoreProduct[];
   storeId: number;
   ftotal = 0;
+  finalTotal: number;
   
   
    constructor(private formBuilder: FormBuilder,  private bitrixstockservice: BitrixStockService) {
@@ -69,7 +70,6 @@ export class CreatedealComponent {
         onGridReady: function (params) {
           // Following line to make the currently visible columns fit the screen  
           params.api.sizeColumnsToFit();
-
           // Following line dymanic set height to row on content
           params.api.resetRowHeights();
       },
@@ -181,11 +181,11 @@ export class CreatedealComponent {
           valueListMaxHeight: 220,
         }},
         { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />` },
-        { headerName: 'Quantity', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true },
-        { headerName: 'RRP', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true },
-        { headerName: 'Discount %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true },
-        { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true },
-        { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true },
+        { headerName: 'Quantity', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:150 },
+        { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100 },
+        { headerName: 'Discount %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:140 },
+        { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100 },
+        { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:130 },
         { headerName: 'Total', field: 'total', sortable: true, resizable: true, filter: true },
         ];
         
@@ -232,7 +232,9 @@ export class CreatedealComponent {
       else if ( event.colDef.field === 'quantity') {
         //alert('Qaumtity changed');
         const rowId = event.rowIndex;
-        this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
+        // CHECK IF QUANTITY IS LESSSER THAN AVAILABLE STOCK ----
+        if(this.rowData[rowId].quantity<= this.rowData[rowId].stock){
+          this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
         this.agGrid.api.setGridOption('rowData', this.rowData);
         //this.onTotalCal(this.rowData[rowId].total)
 
@@ -243,7 +245,12 @@ export class CreatedealComponent {
           totalcost = totalcost + this.rowData[i].total;
         }
         this.onTotalCal(totalcost)
-
+        }
+        else{
+          alert("Entered quantity is larger than stock availability");
+          this.rowData[rowId].quantity = 0;
+        }
+        
       } 
       else if( event.colDef.field === 'discount'){
         const rowId = event.rowIndex;
@@ -279,7 +286,7 @@ export class CreatedealComponent {
 
       fintot = parseInt(totalElement.value) + parseInt(gstElement.value);
       finalElement.value= fintot.toString();
-      
+      this.finalTotal = fintot;
       this.agGrid.api.setGridOption('rowData', this.rowData);
     }
 
