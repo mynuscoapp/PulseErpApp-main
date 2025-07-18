@@ -44,9 +44,6 @@
                         </select>
                     
                 </div>
-                <div class="'form-group" class="">
-
-                </div>
             </div>
             <div class="col-sm-12" style="display: flex;float: right;margin: 15px; margin-left: 10px;">
                 <br>
@@ -54,24 +51,18 @@
                 <button type="submit" [disabled]="isLoading" class="btn btn-primary">Create/Submit</button>
                 <button type="button" class="btn btn-primary" (click)="onAddProductRoe()">Add Product</button>
                 <button type="button" class="btn btn-primary" (click)="onDeleteProductRowClick()">Remove Product</button>
-
-               <!-- <label for="subtotal" style="font-size: 20px;">Subtotal :</label> -->
-                <label for="subtotal" style="display: flex; float: right;font-size: 18px;">Subtotal :</label>
+                <label for="subtotal" style="font-size: 20px;">Subtotal :</label>
                 <input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>
 
                 <label for="gst" style="font-size: 20px;">GST :</label>
                 <input type="text" id="gst" name="stotal" size="10" disabled><br><br>
                 
                 <label for="finaltotal" style="font-size: 20px;">Total :</label>
-               <!--TRYING FOR COMPONENT LABEL--> 
-               
-                <!--<label for="finaltotal" style="font-size: 20px;">{{finalTotal}}</label>-->
                 <input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>
-
-    
+   
             </div>
         </div>
-        <div class="col-sm-12"  style="">
+        <div class="col-sm-12" >
             <ag-grid-angular #agGrid style="width: 100%; height: 385px; "
                 (cellValueChanged)="onCellValueChanged($event)"
                 class="ag-theme-alpine"
