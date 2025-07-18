@@ -57,6 +57,7 @@ export class CreatedealComponent {
         pipelineOptions: ['', [Validators.required]],
         customersOptions: ['', [Validators.required]],
         storesOptions: ['', [Validators.required]],
+        dealName: ['', [Validators.required]],
         // FromDate: ['', [Validators.required]],
         // ToDate: ['', [Validators.required]],
         // selectedOption: ['', [Validators.required]]
@@ -83,12 +84,12 @@ export class CreatedealComponent {
 
   private GenrateDeal() {
     let dealHeader = new DealHeaderModel;
-    dealHeader.TITLE = 'New Deal from Angular App';
+    dealHeader.TITLE = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = this.createDealForm.get("pipelineOptions").value;
     dealHeader.CURRENCY_ID = 'INR';
     dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
     //dealHeader.CATEGORY_ID = 
-    dealHeader.OPPORTUNITY = 1500;
+    dealHeader.OPPORTUNITY = this.finalTotal;
     dealHeader.OWNER_TYPE = 'D';
     //dealHeader.STAGE_ID = 'NEW';
     dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
