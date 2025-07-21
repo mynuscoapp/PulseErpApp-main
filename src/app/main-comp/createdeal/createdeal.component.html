@@ -11,7 +11,7 @@
             </div>
             <p></p>
             
-            <div class="col-sm-12" style="margin: 15px; display: flex;  border-radius: 1rem;  border: 1px solid #28a745;background-color: #d2edee;">                            
+            <div class="col-sm-12" style="display: flex;  border-radius: 1rem;  border: 1px solid #28a745;background-color: #d2edee;">                            
 
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                 <!-- <label>Pipeline*</label> -->
@@ -41,31 +41,29 @@
                         </select> 
                 </div>
             </div>
-            <div class="col-sm-12" style="display: flex;float: right;margin: 15px; margin-left: 10px;">
-                <br>
-
+        </div>
+            <div class="col-sm-12">
+                <div class="col-sm-18" style="margin: 10px;">               
                 
-                <button type="button" class="btn btn-primary" (click)="onAddProductRoe()">Add Product</button>
-                <button type="button" class="btn btn-primary" (click)="onDeleteProductRowClick()">Remove Product</button>
-                <label for="subtotal" style="font-size: 20px;">Subtotal :</label>
-                <label for="subtotal" style="font-size: 20px;">{{finalTotal}}</label>
+                <button type="button" class="btn btn-primary col-sm-1.5" (click)="onAddProductRoe()">Add Product</button>
+                <button type="button" class="btn btn-primary  col-sm-1.5" (click)="onDeleteProductRowClick()">Remove Product</button>
+                <label for="subtotal" style="font-size: 20px;" class="col-sm-2">Subtotal :</label>
+                <label for="subtotal" style="font-size: 20px;" class="col-sm-1">{{finalTotal}}</label>
                 <!--<input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>-->
 
-                <label for="gst" style="font-size: 20px;">GST :</label>
-                <label for="gst" style="font-size: 20px;">{{calGST}}</label>
+                <label for="gst" style="font-size: 20px;" class="col-sm-1">GST :</label>
+                <label for="gst" style="font-size: 20px;" class="col-sm-1">{{calGST}}</label>
                 <!--<input type="text" id="gst" name="stotal" size="10" disabled><br><br>-->
                 
-                <label for="finaltotal" style="font-size: 20px;">Total :</label>
-                <label for="finaltotal" style="font-size: 20px;">{{ftotal}}</label>
+                <label for="finaltotal" style="font-size: 20px;" class="col-sm-1">Total :</label>
+                <label for="finaltotal" style="font-size: 20px;" class="col-sm-1">{{ftotal}}</label>
                 <!--<input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>-->
-                
+                <button type="submit" [disabled]="isLoading" class="btn btn-primary col-sm-1">Create</button>
    
             </div>
-            <div style="margin:10px; float:right;">
-                <button type="submit" [disabled]="isLoading" class="btn btn-primary float:right; marging:10px;">Create</button>
-            </div>
-            
         </div>
+            
+        
         <div class="col-sm-12" >
             <ag-grid-angular #agGrid style="width: 100%; height: 385px; "
                 (cellValueChanged)="onCellValueChanged($event)"
