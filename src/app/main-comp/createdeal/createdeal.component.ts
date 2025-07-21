@@ -27,7 +27,6 @@ import { error } from 'console';
 
 
 
-
 export class CreatedealComponent {
   @ViewChild('agGrid') agGrid!: AgGridAngular;
     createDealForm: FormGroup;
@@ -39,6 +38,8 @@ export class CreatedealComponent {
     mode: "multiRow",
   };
 
+
+
   colDefs: ColDef[] ;
   gridOptions: GridOptions;
   bitrixPipelineList: BitrixPipeline[];
@@ -46,9 +47,10 @@ export class CreatedealComponent {
   bitrixStores: BitrixStores[];
   bitrixStoreProducts: BitrixStoreProduct[];
   storeId: number;
-  ftotal = 0;
-  finalTotal: number;
-  
+  ftotal: string;
+  finalTotal: string;
+  calGST: string;
+
   
    constructor(private formBuilder: FormBuilder,  private bitrixstockservice: BitrixStockService) {
         
@@ -89,7 +91,7 @@ export class CreatedealComponent {
     dealHeader.CURRENCY_ID = 'INR';
     dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
     //dealHeader.CATEGORY_ID = 
-    dealHeader.OPPORTUNITY = this.finalTotal;
+    dealHeader.OPPORTUNITY = +this.finalTotal;
     dealHeader.OWNER_TYPE = 'D';
     //dealHeader.STAGE_ID = 'NEW';
     dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
@@ -264,6 +266,7 @@ export class CreatedealComponent {
         for( i=0; i<this.rowData.length; i++){
           totalcost = totalcost + this.rowData[i].total;
         }
+        this.finalTotal = totalcost.toString();
         this.onTotalCal(totalcost)
       }
 
@@ -273,22 +276,24 @@ export class CreatedealComponent {
 
     onTotalCal(stotal){
     
-      //const inputElement = document.getElementById('subtotal') as HTMLInputElement;
-      const totalElement = document.getElementById('subtotal') as HTMLInputElement; 
-      const gstElement = document.getElementById('gst') as HTMLInputElement;
-      const finalElement = document.getElementById('finaltotal') as HTMLInputElement;
+    //   const totalElement = document.getElementById('subtotal') as HTMLInputElement; 
+    //   const gstElement = document.getElementById('gst') as HTMLInputElement;
+    //   const finalElement = document.getElementById('finaltotal') as HTMLInputElement;
         
-      var subtotal=0, calgst = 0, fintot = 0 
-      subtotal = stotal;
-      calgst = subtotal * 0.18;
+       //var subtotal=0, calgst = 0, fintot = 0 
+       var subtotal= 0;
+       subtotal = stotal;
+       this.ftotal= this.finalTotal + this.calGST;
+       
+    //   calgst = subtotal * 0.18;
    
-      totalElement.value = subtotal.toString();
-      gstElement.value = calgst.toString();
+    //   //totalElement.value = subtotal.toString();
+    //   gstElement.value = calgst.toString();
 
-      fintot = parseInt(totalElement.value) + parseInt(gstElement.value);
-      finalElement.value= fintot.toString();
-      this.finalTotal = fintot;
-      this.agGrid.api.setGridOption('rowData', this.rowData);
+    //   fintot = parseInt(totalElement.value) + parseInt(gstElement.value);
+    //   finalElement.value= fintot.toString();
+    //   //this.finalTotal = fintot;
+    //   this.agGrid.api.setGridOption('rowData', this.rowData);
     }
 
   

@@ -6,7 +6,7 @@
             <label>Inovice Number</label>
             <input type="text" class="form-control" placeholder="Enter Invoice Number" formControlName="invoiceNumber" required />
             </div> -->
-            <div class="deal-name" style="display:flex">
+            <div class="deal-name" style="display:flex;">
              <input type="text" id="dealName" name="dealName" placeholder="Enter Deal Name/No #" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
             </div>
             <p></p>
@@ -32,32 +32,39 @@
                         </select>
                     
                 </div>
-                <div class="form-group" class="col-sm-3" style="margin: 15px;">
+                <div class="form-group" class="col-sm-3" style="margin: 10px;">
                     <!--<label>Stores*</label>-->
                 <!--LABELS REMOVED & ADDED DISABLED VALUE, BORDER-RADIUS -->
                         <select matNativeControl formControlName="storesOptions" required style="width: 200px; height: 40px; margin: 10px;border-radius:1rem;">
                             <option disabled value="">Select Warehouse</option>
                             <option *ngFor="let item of bitrixStores" [value]="item.id">{{ item.name }}</option>
-                        </select>
-                    
+                        </select> 
                 </div>
             </div>
             <div class="col-sm-12" style="display: flex;float: right;margin: 15px; margin-left: 10px;">
                 <br>
 
-                <button type="submit" [disabled]="isLoading" class="btn btn-primary">Create/Submit</button>
+                
                 <button type="button" class="btn btn-primary" (click)="onAddProductRoe()">Add Product</button>
                 <button type="button" class="btn btn-primary" (click)="onDeleteProductRowClick()">Remove Product</button>
                 <label for="subtotal" style="font-size: 20px;">Subtotal :</label>
-                <input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>
+                <label for="subtotal" style="font-size: 20px;">{{finalTotal}}</label>
+                <!--<input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>-->
 
                 <label for="gst" style="font-size: 20px;">GST :</label>
-                <input type="text" id="gst" name="stotal" size="10" disabled><br><br>
+                <label for="gst" style="font-size: 20px;">{{calGST}}</label>
+                <!--<input type="text" id="gst" name="stotal" size="10" disabled><br><br>-->
                 
                 <label for="finaltotal" style="font-size: 20px;">Total :</label>
-                <input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>
+                <label for="finaltotal" style="font-size: 20px;">{{ftotal}}</label>
+                <!--<input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>-->
+                
    
             </div>
+            <div style="margin:10px; float:right;">
+                <button type="submit" [disabled]="isLoading" class="btn btn-primary float:right; marging:10px;">Create</button>
+            </div>
+            
         </div>
         <div class="col-sm-12" >
             <ag-grid-angular #agGrid style="width: 100%; height: 385px; "
