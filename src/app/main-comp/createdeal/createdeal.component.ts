@@ -224,7 +224,7 @@ export class CreatedealComponent {
       // Perform actions based on the new value
       if (event.colDef.field === 'productName') {
           const rowId = event.rowIndex;
-          var filterRow = this.productsList.filter(x => x.productName === event.newValue)[0];
+          var filterRow = this.productsList.filter(x => x.productName == event.newValue)[0];
           console.log(this.storeId);
           console.log(event.newValue);
           var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == filterRow.id)[0]
