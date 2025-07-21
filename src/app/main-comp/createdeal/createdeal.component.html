@@ -6,16 +6,16 @@
             <label>Inovice Number</label>
             <input type="text" class="form-control" placeholder="Enter Invoice Number" formControlName="invoiceNumber" required />
             </div> -->
-            <div class="deal-name" style="display:flex">
-             <input type="text" id="dealName" name="dealName" placeholder="Enter Deal Name/No #" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
+            <div class="deal-name" style="display:flex" class="col-sm-2">
+             <input type="text" id="dealName" name="dealName" placeholder="Enter Deal description" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
             </div>
             <p></p>
             
-            <div class="col-sm-10" style="margin: 15px; display: flex;  border-radius: 1rem;  border: 1px solid #28a745;background-color: #d2edee;">                            
+            <div class="col-sm-12" style="margin: 15px; display: flex;  border-radius: 1rem;  border: 1px solid #28a745;background-color: #d2edee;">                            
 
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                 <!-- <label>Pipeline*</label> -->
-                        <select matNativeControl formControlName="pipelineOptions" required style="width: 200px; height: 40px; margin: 10px; border-radius:1rem;">
+                        <select matNativeControl formControlName="pipelineOptions" required  style="width: 200px; height: 40px; margin: 10px; border-radius:1rem;">
                             <option disabled value="">Select Pipeline</option>
                             <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>
                             
@@ -32,7 +32,7 @@
                         </select>
                     
                 </div>
-                <div class="form-group" class="col-sm-3" style="margin: 15px;">
+                <div class="form-group" class="col-sm-4" style="margin: 15px;">
                     <!--<label>Stores*</label>-->
                 <!--LABELS REMOVED & ADDED DISABLED VALUE, BORDER-RADIUS -->
                         <select matNativeControl formControlName="storesOptions" required style="width: 200px; height: 40px; margin: 10px;border-radius:1rem;">

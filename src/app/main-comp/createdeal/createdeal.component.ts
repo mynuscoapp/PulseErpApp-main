@@ -224,13 +224,15 @@ export class CreatedealComponent {
       // Perform actions based on the new value
       if (event.colDef.field === 'productName') {
           const rowId = event.rowIndex;
-          var filterRow = this.productsList.filter(x => x.productName === event.newValue)[0];
+          var filterRow = this.productsList.filter(x => x.productName == event.newValue)[0];
           console.log(this.storeId);
+          console.log(filterRow);
           console.log(event.newValue);
-          var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == filterRow.id)[0]
+          var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == filterRow.id)[0];
+          console.log(stockAvail.overallQuantity);
           console.log(stockAvail);
-          filterRow.stock = stockAvail.quantity;
-          filterRow.reserved = stockAvail.reservedQuantity;
+          filterRow.stock = stockAvail.overallQuantity;
+          filterRow.reserved = stockAvail.overallreserved;
           this.rowData[rowId] = filterRow;
           this.agGrid.api.setGridOption('rowData', this.rowData);
           console.log(this.rowData[rowId].PREVIEW_PICTURE);
