@@ -4,6 +4,7 @@ import { error } from 'console';
 import { tap } from 'lodash';
 import { catchError } from 'rxjs';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
+import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
 import { BitrixProducts } from 'src/app/demo/models/bitrixproducts';
 import { BitrixStoreProduct } from 'src/app/demo/models/BitrixStoreProduct';
@@ -25,12 +26,14 @@ export class BitrixStockService {
     bitrixPipeLine: BitrixPipeline[];
     bitrixCustomers: BitrixCustomers[];
     bitrixStores: BitrixStores[];
+    bitrixOverAllStock: BitrixOverallStock[];
 
     private bitrixStockUrl = `${environment.bitrixStockUrl}/bitrixstock`;
     private bitrixProductsUrl = `${environment.bitrixStockUrl}/productslist`;
     private bitrixPipelineUrl = `${environment.bitrixStockUrl}/pipelinelist`;
     private bitrixCustomersUrl = `${environment.bitrixStockUrl}/customerlist`;
     private bitrixStoresUrl = `${environment.bitrixStockUrl}/storelist`;
+    private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
 
     private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
     private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
@@ -42,6 +45,16 @@ export class BitrixStockService {
           return this.http.get(this.bitrixStockUrl);
         } else {
           return this.bitrixStockList;
+        }
+        return rowdata;
+      }
+
+      loadBitrixOverallStock() {
+        let rowdata: any;
+        if (this.bitrixOveralStoresUrl.length > 0 && !this.bitrixOverAllStock) {
+          return this.http.get(this.bitrixOveralStoresUrl);
+        } else {
+          return this.bitrixOverAllStock;
         }
         return rowdata;
       }

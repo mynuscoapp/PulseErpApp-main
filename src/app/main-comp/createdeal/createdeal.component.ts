@@ -17,6 +17,7 @@ import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
 import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
+import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 
 @Component({
   selector: 'app-createdeal',
@@ -38,7 +39,7 @@ export class CreatedealComponent {
   rowSelection: RowSelectionOptions | "single" | "multiple" = {
     mode: "multiRow",
   };
-
+  bitrixOverAllStock: BitrixOverallStock[];
   colDefs: ColDef[] ;
   gridOptions: GridOptions;
   bitrixPipelineList: BitrixPipeline[];
@@ -166,6 +167,11 @@ export class CreatedealComponent {
         this.bitrixStoreProducts = data;
         console.log(data);
       });
+
+      this.bitrixstockservice.loadBitrixOverallStock().subscribe((data: any) => {
+        this.bitrixOverAllStock = data;
+        console.log(data);
+      });
     }
 
     ngAfterViewInit() {
@@ -221,10 +227,10 @@ export class CreatedealComponent {
           var filterRow = this.productsList.filter(x => x.productName === event.newValue)[0];
           console.log(this.storeId);
           console.log(event.newValue);
-          var stockAvail = this.bitrixStoreProducts.filter(x => x.id_of_store == this.storeId && x.productName == event.newValue)[0]
+          var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == filterRow.id)[0]
           console.log(stockAvail);
           filterRow.stock = stockAvail.quantity;
-          filterRow.reserved = stockAvail.quantityReserved;
+          filterRow.reserved = stockAvail.reservedQuantity;
           this.rowData[rowId] = filterRow;
           this.agGrid.api.setGridOption('rowData', this.rowData);
           console.log(this.rowData[rowId].PREVIEW_PICTURE);
