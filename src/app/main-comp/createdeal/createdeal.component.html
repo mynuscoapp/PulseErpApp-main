@@ -7,7 +7,7 @@
             <input type="text" class="form-control" placeholder="Enter Invoice Number" formControlName="invoiceNumber" required />
             </div> -->
             <div class="deal-name" style="display:flex;">
-             <input type="text" id="dealName" name="dealName" placeholder="Enter Deal Name/No #" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
+             <input type="text" id="dealName" name="dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
             </div>
             <p></p>
             
@@ -65,14 +65,14 @@
             
         
         <div class="col-sm-12" >
-            <ag-grid-angular #agGrid style="width: 100%; height: 385px; "
+            <ag-grid-angular #agGrid style="width: 100%; height: 385px;"
                 (cellValueChanged)="onCellValueChanged($event)"
                 class="ag-theme-alpine"
                 [columnDefs]="colDefs"
                 [rowData]="rowData"
                 [gridOptions]="gridOptions"
                 [rowSelection]="rowSelection"
-                
+               
             />
             <!-- [rowData]="productRowData"
                 [columnDefs]="colDefs" -->

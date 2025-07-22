@@ -192,20 +192,25 @@ export class CreatedealComponent {
 
     createColumnsDefinition(){
       this.colDefs = [
-        { headerName: 'Product', field: 'productName', sortable: true, width : 400, resizable: true, filter: true, editable: true, cellEditor: 'agRichSelectCellEditor',cellEditorParams: {values : this.productNamesList,
+        { headerName: 'Product', field: 'productName', sortable: true, width : 300, resizable: true, filter: true, editable: true, cellEditor: 'agRichSelectCellEditor',cellEditorParams: {values : this.productNamesList,
           searchType: "matchAny",
           allowTyping: true,
           filterList: true,
           highlightMatch: true,
           valueListMaxHeight: 220,
-        }},
-        { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />` },
-        { headerName: 'Quantity', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:150 },
-        { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100 },
-        { headerName: 'Discount %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:140 },
-        { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100 },
-        { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:130 },
-        { headerName: 'Total', field: 'total', sortable: true, resizable: true, filter: true },
+          
+        },
+        cellStyle: {border: '1px solid blue' }},
+
+        { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, 
+          checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />`,cellStyle: {border: '1px solid blue' } },
+        { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100, cellStyle: { backgroundColor: '#d7dedfff',border: '1px solid blue' }},
+        { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:100,cellStyle: { backgroundColor: '#d7dedfff',border: '1px solid blue' } },
+        { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100,cellStyle: {border: '1px solid blue' } },
+        { headerName: 'Qtty', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' }},
+        { headerName: 'Disc %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' } },
+        { headerName: 'VAT Included', field: 'vat', sortable: true, resizable: true, filter: true, editable: true, width:100, checkboxSelection:true,cellStyle: {border: '1px solid blue' }},
+        { headerName: 'Total Price', field: 'total', sortable: true, resizable: true, filter: true,width:150,cellStyle: {border: '1px solid blue' } },
         ];
         
  }
