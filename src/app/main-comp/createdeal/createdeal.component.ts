@@ -51,6 +51,7 @@ export class CreatedealComponent {
   calGST: string;
   selectedCustomer: string='';
   customerSelect: boolean = true;
+  dealNum: string;
   
   errorDisplayMsg: string;
 
@@ -117,7 +118,12 @@ export class CreatedealComponent {
       response => {
         console.log('POST request successful:', response);
         const deal_id = response.result;
+
+        console.log(deal_id);
+        this.dealNum = "  Deal ID : " + deal_id.toString();
+
         //console.log(deal_id);
+
         // Process the response data here
         let dealProducts = new DealProductsRows;
         dealProducts.id = deal_id;
@@ -220,7 +226,7 @@ export class CreatedealComponent {
 
     createColumnsDefinition(){
       this.colDefs = [
-        { headerName: 'Product', field: 'productName', sortable: true, width : 300, resizable: true, filter: true, editable: true, cellEditor: 'agRichSelectCellEditor',cellEditorParams: {values : this.productNamesList,
+        { headerName: 'Product', field: 'productName', sortable: true, width : 280, resizable: true, filter: true, editable: true, cellEditor: 'agRichSelectCellEditor',cellEditorParams: {values : this.productNamesList,
           searchType: "matchAny",
           allowTyping: true,
           filterList: true,
@@ -228,7 +234,8 @@ export class CreatedealComponent {
           valueListMaxHeight: 220,
           
         },
-        cellStyle: {border: '1px solid blue' }},
+        cellStyle: {border: '1px solid blue' }
+      },
 
         { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, 
           checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />`,cellStyle: {border: '1px solid blue' } },
