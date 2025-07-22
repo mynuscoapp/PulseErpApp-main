@@ -9,4 +9,5 @@ export class BitrixProducts{
     reserved!: number;
     total!: number;
     VAT_INCLUDED: string;
+    tax_rate: number;
 }
