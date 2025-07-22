@@ -18,7 +18,6 @@ import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
-import { themeQuartz } from 'ag-grid-enterprise';
 
 @Component({
   selector: 'app-createdeal',
@@ -69,24 +68,9 @@ export class CreatedealComponent {
         // selectedOption: ['', [Validators.required]]
       });
 
-      const myTheme = themeQuartz.withParams({
-        wrapperBorder: false, // Border around the entire grid
-        headerRowBorder: false, // Horizontal border in the header
-        rowBorder: {
-          style: 'dotted',
-          width: 3,
-          color: '#9696C8'
-        }, // Horizontal borders between rows
-        columnBorder: {
-          style: 'dashed',
-          color: '#9696C8'
-        }, // Vertical borders between columns
-      });
-
       this.gridOptions = <GridOptions>{
         singleClickEdit: true,
         rowHeight: 50,
-        enableAdvancedFilter: true,
         onGridReady: function (params) {
           // Following line to make the currently visible columns fit the screen  
           params.api.sizeColumnsToFit();
@@ -321,6 +305,7 @@ export class CreatedealComponent {
             return;
           }
           var filterRow = this.productsList.filter(x => x.productName == event.newValue)[0];
+          
           console.log(this.storeId);
           console.log(filterRow);
           console.log(event.newValue);
@@ -329,9 +314,8 @@ export class CreatedealComponent {
           console.log(stockAvail);
           filterRow.stock = stockAvail.overallQuantity;
           filterRow.reserved = stockAvail.overallreserved;
-          this.rowData[rowId] = filterRow;
+          this.rowData[rowId] = { ...this.rowData[rowId], ...filterRow };
           this.agGrid.api.setGridOption('rowData', this.rowData);
-          console.log(this.rowData[rowId].PREVIEW_PICTURE);
           
       } 
       else if ( event.colDef.field === 'quantity') {
