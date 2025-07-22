@@ -7,7 +7,7 @@ import { BitrixProducts } from 'src/app/demo/models/bitrixproducts';
 import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
 import { environment } from 'src/environments/environment';
 import { AgGridAngular } from 'ag-grid-angular';
-import { AutoWidthCalculator, ColDef, GridOptions, ModuleRegistry, RowSelectionOptions } from 'ag-grid-enterprise';
+import { _isVisible, AutoWidthCalculator, ColDef, GridOptions, ModuleRegistry, RowSelectionOptions } from 'ag-grid-enterprise';
 import 'ag-grid-enterprise';
 import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
@@ -18,6 +18,7 @@ import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
+import { themeQuartz } from 'ag-grid-enterprise';
 
 @Component({
   selector: 'app-createdeal',
@@ -49,6 +50,7 @@ export class CreatedealComponent {
   ftotal: string;
   finalTotal: string;
   calGST: string;
+  errorDisplayMsg: string;
 
   
    constructor(private formBuilder: FormBuilder,  private bitrixstockservice: BitrixStockService) {
@@ -64,7 +66,20 @@ export class CreatedealComponent {
         // selectedOption: ['', [Validators.required]]
       });
 
-     
+      const myTheme = themeQuartz.withParams({
+        wrapperBorder: false, // Border around the entire grid
+        headerRowBorder: false, // Horizontal border in the header
+        rowBorder: {
+          style: 'dotted',
+          width: 3,
+          color: '#9696C8'
+        }, // Horizontal borders between rows
+        columnBorder: {
+          style: 'dashed',
+          color: '#9696C8'
+        }, // Vertical borders between columns
+      });
+
       this.gridOptions = <GridOptions>{
         singleClickEdit: true,
         rowHeight: 50,
@@ -84,6 +99,12 @@ export class CreatedealComponent {
    }
 
   private GenrateDeal() {
+    this.errorDisplayMsg = '';
+    if (!this.IsQuantityEntered())
+    {
+        this.errorDisplayMsg  = 'Please enter quantity!';
+        return;
+    }
     let dealHeader = new DealHeaderModel;
     dealHeader.TITLE = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = this.createDealForm.get("pipelineOptions").value;
@@ -92,6 +113,7 @@ export class CreatedealComponent {
     //dealHeader.CATEGORY_ID = 
     dealHeader.OPPORTUNITY = +this.finalTotal;
     dealHeader.OWNER_TYPE = 'D';
+    dealHeader.ASSIGNED_BY_ID = 1;
     //dealHeader.STAGE_ID = 'NEW';
     dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
 
@@ -99,7 +121,7 @@ export class CreatedealComponent {
       response => {
         console.log('POST request successful:', response);
         const deal_id = response.result;
-        console.log(deal_id);
+        //console.log(deal_id);
         // Process the response data here
         let dealProducts = new DealProductsRows;
         dealProducts.id = deal_id;
@@ -112,32 +134,54 @@ export class CreatedealComponent {
             alert('Deal Created Successfully');
           },
           error => {
-            console.error('Error receiving POST response:', error);
+            alert('Error creating deal : '+ error);
           }
         );
       },
       error => {
-        console.error('Error receiving POST response:', error);
+        alert('Error creating deal products :'+ error);
       }
     );
   }
 
+  IsQuantityEntered() {
+    let hasQuantity = true;
+    for(let i=0; i< this.rowData.length; i++) {
+        if (!this.rowData[i].quantity) {
+          this.onFlashOneCell(i, 'quantity');
+          hasQuantity = false;
+        }
+      }
+
+      return hasQuantity;
+  }
     GetProductRowsList() {
       let rowsList: DealProductList[] = [];
       for(let i=0; i< this.rowData.length; i++) {
-        let productRow = new DealProductList;
-        productRow.PRODUCT_ID = this.rowData[i].id;
-        productRow.PRICE = this.rowData[i].RRP;
-        productRow.QUANTITY = this.rowData[i].quantity;
-        productRow.DISCOUNT_RATE= this.rowData[i].discount;
-        productRow.MEASURE_CODE = 'pcs';
-        rowsList.push(productRow);
-        console.log('productRow.PRODUCT_ID ' + productRow.PRODUCT_ID)
+        if(this.rowData[i].productName && this.rowData[i].id) {
+          if (this.rowData[i].quantity) {
+            let productRow = new DealProductList;
+            productRow.PRODUCT_ID = this.rowData[i].id;
+            productRow.PRICE = this.rowData[i].RRP;
+            productRow.QUANTITY = this.rowData[i].quantity;
+            productRow.DISCOUNT_RATE= this.rowData[i].discount;
+            productRow.MEASURE_CODE = 'pcs';
+            rowsList.push(productRow);
+          } else {
+            this.onFlashOneCell(i, 'quantity');
+          }
+        }
       }
       return rowsList;
 
     }
 
+    onFlashOneCell(rowIndex: number, colName: string) {
+      // pick fourth row at random
+      const rowNode = this.agGrid.api.getDisplayedRowAtIndex(rowIndex)!;
+      // pick 'c' column
+      this.agGrid.api.flashCells({ rowNodes: [rowNode], columns: [colName], flashDuration: 10000, flashDelay: 10000 });
+    }
     ngOnInit() {
       this.rowData.push(new BitrixProducts);
       this.bitrixstockservice.loadBitrixProducts().subscribe((data: any) => {
@@ -185,8 +229,8 @@ export class CreatedealComponent {
           allowTyping: true,
           filterList: true,
           highlightMatch: true,
-          valueListMaxHeight: 220,
-        }},
+          valueListMaxHeight: 220, 
+        }, cellClass: ['age-border']},
         { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />` },
         { headerName: 'Quantity', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:150 },
         { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100 },
@@ -224,6 +268,11 @@ export class CreatedealComponent {
       // Perform actions based on the new value
       if (event.colDef.field === 'productName') {
           const rowId = event.rowIndex;
+          if (this.rowData.filter(x => x.productName == event.newValue).length > 1){
+            alert('Product already added!');
+            event.node.setDataValue("productName", "");
+            return;
+          }
           var filterRow = this.productsList.filter(x => x.productName == event.newValue)[0];
           console.log(this.storeId);
           console.log(filterRow);
