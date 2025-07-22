@@ -236,8 +236,7 @@ export class CreatedealComponent {
         },
         cellStyle: {border: '1px solid blue' }
       },
-
-        { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, 
+       { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, 
           checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />`,cellStyle: {border: '1px solid blue' } },
         { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100, cellStyle: { backgroundColor: '#d7dedfff',border: '1px solid blue' }},
         { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:100,cellStyle: { backgroundColor: '#d7dedfff',border: '1px solid blue' } },
@@ -339,29 +338,37 @@ export class CreatedealComponent {
 
         
         //---------------Calling function to calculate Subtotal value and display it ---------------
-        var totalcost = 0 , i =0;
-        for( i=0; i<this.rowData.length; i++){
-          totalcost = totalcost + this.rowData[i].total;
-        }
-        this.onTotalCal(totalcost)
-        }
-        
-      else if( event.colDef.field === 'discount'){
+        this.GetTotals();
+        } else if( event.colDef.field === 'discount'){
         const rowId = event.rowIndex;
         var calDisc = this.rowData[rowId].total - (this.rowData[rowId].total * (this.rowData[rowId].discount / 100))
         this.rowData[rowId].total = calDisc
         this.agGrid.api.setGridOption('rowData', this.rowData);
-
-        //---------------Calling function to calculate Subtotal value and display it ---------------
-        var totalcost = 0,i =0;
-        for( i=0; i<this.rowData.length; i++){
-          totalcost = totalcost + this.rowData[i].total;
-        }
-        this.finalTotal = totalcost.toString();
-        this.onTotalCal(totalcost)
+        this.GetTotals();
       }
 
     }
+
+  private GetTotals() {
+    var totalcost = 0, i = 0;
+    var gstTotal = 0;
+    var subTotal = 0;
+    for (i = 0; i < this.rowData.length; i++) {
+      totalcost = totalcost + this.rowData[i].total;
+      if (this.rowData[i].VAT_INCLUDED == 'Y') {
+        this.rowData[i].tax_rate = this.rowData[i].tax_rate ?? 0;
+        subTotal += (this.rowData[i].total / (1 + (this.rowData[i].tax_rate / 100)));
+        gstTotal += this.rowData[i].total - (this.rowData[i].total / (1 + (this.rowData[i].tax_rate / 100)));
+      } else {
+        gstTotal += (this.rowData[i].total * (this.rowData[i].tax_rate / 100));
+        subTotal += this.rowData[i].total - (this.rowData[i].total * (this.rowData[i].tax_rate / 100));
+
+      }
+    }
+    this.calGST = gstTotal.toFixed(2);
+    this.finalTotal = subTotal.toFixed(2);
+    this.ftotal = totalcost.toFixed(2);
+  }
 
     //---------------Called function to calculate Subtotal value and display it ---------------
 
