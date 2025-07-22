@@ -63,7 +63,10 @@
    
             </div>
         </div>
-            
+        
+        <div class="col-sm-12">
+            <label id="errorMsg" name="errorMsg" *ngIf="errorDisplayMsg" style="font-weight: bold;background-color: red; color: white;">{{errorDisplayMsg}}</label>
+        </div>
         
         <div class="col-sm-12" >
             <ag-grid-angular #agGrid style="width: 100%; height: 385px;"
