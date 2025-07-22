@@ -319,6 +319,8 @@ export class CreatedealComponent {
           var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == filterRow.id)[0];
           console.log(stockAvail.overallQuantity);
           console.log(stockAvail);
+          filterRow.quantity = 0;
+          filterRow.total = 0;
           filterRow.stock = stockAvail.overallQuantity;
           filterRow.reserved = stockAvail.overallreserved;
           console.log(filterRow.VAT_INCLUDED);
