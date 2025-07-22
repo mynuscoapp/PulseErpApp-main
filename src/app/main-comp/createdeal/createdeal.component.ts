@@ -244,7 +244,7 @@ export class CreatedealComponent {
         { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100,cellStyle: {border: '1px solid blue' } },
         { headerName: 'Qtty', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' }},
         { headerName: 'Disc %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' } },
-        { headerName: 'VAT Included', field: 'vat', sortable: true, resizable: true, filter: true, editable: true, width:100, checkboxSelection:true,cellStyle: {border: '1px solid blue' }},
+        { headerName: 'VAT Included', field: 'VAT_INCLUDED', sortable: true, resizable: true, filter: true, editable: false, width:100,cellStyle: {border: '1px solid blue' }},
         { headerName: 'Total Price', field: 'total', sortable: true, resizable: true, filter: true,width:150,cellStyle: {border: '1px solid blue' } }
         ];
       }
@@ -321,8 +321,10 @@ export class CreatedealComponent {
           console.log(stockAvail);
           filterRow.stock = stockAvail.overallQuantity;
           filterRow.reserved = stockAvail.overallreserved;
+          console.log(filterRow.VAT_INCLUDED);
           this.rowData[rowId] = { ...this.rowData[rowId], ...filterRow };
           this.agGrid.api.setGridOption('rowData', this.rowData);
+          
           
       } 
       else if ( event.colDef.field === 'quantity') {
