@@ -254,19 +254,9 @@ export class CreatedealComponent {
         { headerName: 'Qtty', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' }},
         { headerName: 'Disc %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' } },
         { headerName: 'VAT Included', field: 'vat', sortable: true, resizable: true, filter: true, editable: true, width:100, checkboxSelection:true,cellStyle: {border: '1px solid blue' }},
-        { headerName: 'Total Price', field: 'total', sortable: true, resizable: true, filter: true,width:150,cellStyle: {border: '1px solid blue' } },
-          valueListMaxHeight: 220, 
-        },
-        { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />` },
-        { headerName: 'Quantity', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:150 },
-        { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100 },
-        { headerName: 'Discount %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:140 },
-        { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100 },
-        { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:130 },
-        { headerName: 'Total', field: 'total', sortable: true, resizable: true, filter: true },
+        { headerName: 'Total Price', field: 'total', sortable: true, resizable: true, filter: true,width:150,cellStyle: {border: '1px solid blue' } }
         ];
-        
- }
+      }
     onAddProductRoe(){
       this.rowData.push(new BitrixProducts);
       this.agGrid.api.setGridOption('rowData', this.rowData);
