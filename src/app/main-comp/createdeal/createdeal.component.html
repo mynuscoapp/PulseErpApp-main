@@ -6,16 +6,16 @@
             <label>Inovice Number</label>
             <input type="text" class="form-control" placeholder="Enter Invoice Number" formControlName="invoiceNumber" required />
             </div> -->
-            <div class="deal-name" style="display:flex;">
+            <div class="deal-name" >
              <input type="text" id="dealName" name="dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
-             <label for="dealId" style="font-size: 20px;" class="col-sm-1">Deal ID</label>
+             <label for="dealId" style="font-size: 20px;" class="col-sm-1"> {{dealNum}}</label>
             </div>
             <p></p>
             
-            <div class="col-sm-12" style="display: flex;  border-radius: 1rem;  border: 1px solid #28a745;background-color: #d2edee;">                            
+            <div class="col-sm-12" style="display: flex; border-radius: 1rem; border: 1px solid #28a745; background-color: #d2edee;">                            
 
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
-                        <select matNativeControl formControlName="pipelineOptions" required  style="width: 200px; height: 40px; margin: 10px; border-radius:1rem;">
+                        <select matNativeControl formControlName="pipelineOptions" required  style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
                             <option disabled value="">Select Pipeline</option>
                             <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>
                             
@@ -25,7 +25,7 @@
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                     <!--  <label>Customer*</label>-->
                 
-                        <select matNativeControl formControlName="customersOptions" required [ngClass]="{'invalid-select':isCustomerInvalid()}" style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;">
+                        <select matNativeControl formControlName="customersOptions" required style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue">
                             <!--[(ngModel)] = "selectedCustomer" [ngClass]="{'invalid-select':isCustomerInvalid()}"-->
                             <option disabled value="">Select Customer</option>
                             <option *ngFor="let item of bitrixCustomers"  [value]="item.id">{{ item.name }}</option>
@@ -36,7 +36,7 @@
                 <div class="form-group" class="col-sm-3" style="margin: 10px;">
                     <!--<label>Stores*</label>-->
                 <!--LABELS REMOVED & ADDED DISABLED VALUE, BORDER-RADIUS -->
-                        <select matNativeControl formControlName="storesOptions" required style="width: 200px; height: 40px; margin: 10px;border-radius:1rem;">
+                        <select matNativeControl formControlName="storesOptions" required style="width: 200px; height: 40px; margin: 10px;border-radius:1rem; border:2px solid cornflowerblue">
                             <option disabled value="">Select Warehouse</option>
                             <option *ngFor="let item of bitrixStores" [value]="item.id">{{ item.name }}</option>
                         </select> 
