@@ -49,6 +49,9 @@ export class CreatedealComponent {
   ftotal: string;
   finalTotal: string;
   calGST: string;
+  selectedCustomer: string='';
+  customerSelect: boolean = true;
+  
 
   
    constructor(private formBuilder: FormBuilder,  private bitrixstockservice: BitrixStockService) {
@@ -80,7 +83,16 @@ export class CreatedealComponent {
     ;
 
     onSubmit() {
-      this.GenrateDeal();
+      alert(this.createDealForm.get("customersOptions").value);
+      if(this.customerSelect)
+      {
+        this.GenrateDeal();
+
+      }
+      else{
+        alert("Please select the customer");
+       // this.customerSelect = this.isCustomerInvalid();
+      }
    }
 
   private GenrateDeal() {
@@ -216,7 +228,9 @@ export class CreatedealComponent {
       this.agGrid.api.setGridOption('rowData', this.rowData);
     }
 
+ 
     onCellValueChanged(event: any) {
+      //myData: any[] = [];
       // Access the changed row data and column details
       console.log('Cell value changed:', event.data, event.colDef.field, event.newValue);
       //alert('fieldname ' + event.colDef.field); 
@@ -224,6 +238,35 @@ export class CreatedealComponent {
       // Perform actions based on the new value
       if (event.colDef.field === 'productName') {
           const rowId = event.rowIndex;
+          // const exists = this.myData.some(p=>p.productName===event.productName);
+          // for (i= 0;i<=rowId;i++){
+            
+          //     alert(event.productId);
+          //     //alert(this.rowData[i].id);
+          //     if (event.productId === this.rowData[i].id){
+          //       alert('Duplicates');
+          //     }
+            
+          // }
+          // var productSelected =  event.newValue;
+          // alert(productSelected);
+          // for (i= 0;i<rowId;i++){
+          //   if (productSelected = this.rowData[i].productName)
+          //   {
+          //     alert(productSelected);
+          //     //alert(this.rowData[i].productName);
+            
+          //   }
+          // }
+
+
+          // const exists = this.productsList.some(x => x.productName === event.newValue)[0];
+          // const exists = this.rowData.some(x=> x.productName === event.productName);
+          // if(exists)
+          // {
+          //   alert(exists);
+          // }
+          
           var filterRow = this.productsList.filter(x => x.productName == event.newValue)[0];
           console.log(this.storeId);
           console.log(filterRow);
@@ -236,14 +279,13 @@ export class CreatedealComponent {
           this.rowData[rowId] = filterRow;
           this.agGrid.api.setGridOption('rowData', this.rowData);
           console.log(this.rowData[rowId].PREVIEW_PICTURE);
-
+          
       } 
       else if ( event.colDef.field === 'quantity') {
         //alert('Qaumtity changed');
         const rowId = event.rowIndex;
-        // CHECK IF QUANTITY IS LESSSER THAN AVAILABLE STOCK ----
-        if(this.rowData[rowId].quantity<= this.rowData[rowId].stock){
-          this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
+       
+        this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
         this.agGrid.api.setGridOption('rowData', this.rowData);
         //this.onTotalCal(this.rowData[rowId].total)
 
@@ -255,12 +297,7 @@ export class CreatedealComponent {
         }
         this.onTotalCal(totalcost)
         }
-        else{
-          alert("Entered quantity is larger than stock availability");
-          this.rowData[rowId].quantity = 0;
-        }
         
-      } 
       else if( event.colDef.field === 'discount'){
         const rowId = event.rowIndex;
         var calDisc = this.rowData[rowId].total - (this.rowData[rowId].total * (this.rowData[rowId].discount / 100))
@@ -302,6 +339,24 @@ export class CreatedealComponent {
     //   //this.finalTotal = fintot;
     //   this.agGrid.api.setGridOption('rowData', this.rowData);
     }
+   isCustomerInvalid(){
+      //return !this.selectedCustomer || this.selectedCustomer === '';
+      if (this.createDealForm.get("customersOptions").value != "")
+      {
+        this.customerSelect = true;
+      }
+      else
+      {
+        //this.createDealForm.se
+        this.customerSelect = false;
+        //this.createDealForm.addValidators()
+      }
 
-  
+    }
+       
+   
 }
+ 
+
+ 
+  
