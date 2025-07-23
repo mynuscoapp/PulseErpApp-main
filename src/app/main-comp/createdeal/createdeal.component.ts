@@ -99,11 +99,10 @@ export class CreatedealComponent {
     ;
 
     onSubmit() {
-      alert(this.createDealForm.get("customersOptions").value);
+      
       if(this.customerSelect)
       {
         this.GenrateDeal();
-
       }
       else{
         alert("Please select the customer");
