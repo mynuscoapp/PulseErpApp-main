@@ -18,7 +18,6 @@ import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
-import { themeQuartz } from 'ag-grid-enterprise';
 
 @Component({
   selector: 'app-createdeal',
@@ -70,24 +69,9 @@ export class CreatedealComponent {
         // selectedOption: ['', [Validators.required]]
       });
 
-      const myTheme = themeQuartz.withParams({
-        wrapperBorder: false, // Border around the entire grid
-        headerRowBorder: false, // Horizontal border in the header
-        rowBorder: {
-          style: 'dotted',
-          width: 3,
-          color: '#9696C8'
-        }, // Horizontal borders between rows
-        columnBorder: {
-          style: 'dashed',
-          color: '#9696C8'
-        }, // Vertical borders between columns
-      });
-
       this.gridOptions = <GridOptions>{
         singleClickEdit: true,
         rowHeight: 50,
-        enableAdvancedFilter: true,
         onGridReady: function (params) {
           // Following line to make the currently visible columns fit the screen  
           params.api.sizeColumnsToFit();
@@ -164,7 +148,7 @@ export class CreatedealComponent {
   IsQuantityEntered() {
     let hasQuantity = true;
     for(let i=0; i< this.rowData.length; i++) {
-        if (!this.rowData[i].quantity) {
+        if (!this.rowData[i].quantity || !(this.rowData[i].quantity === 0)) {
           this.onFlashOneCell(i, 'quantity');
           hasQuantity = false;
         }
@@ -251,15 +235,14 @@ export class CreatedealComponent {
         },
         cellStyle: {border: '1px solid blue' }
       },
-
-        { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, 
+       { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, 
           checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />`,cellStyle: {border: '1px solid blue' } },
         { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100, cellStyle: { backgroundColor: '#d7dedfff',border: '1px solid blue' }},
         { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:100,cellStyle: { backgroundColor: '#d7dedfff',border: '1px solid blue' } },
         { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100,cellStyle: {border: '1px solid blue' } },
         { headerName: 'Qtty', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' }},
         { headerName: 'Disc %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' } },
-        { headerName: 'VAT Included', field: 'vat', sortable: true, resizable: true, filter: true, editable: true, width:100, checkboxSelection:true,cellStyle: {border: '1px solid blue' }},
+        { headerName: 'VAT Included', field: 'VAT_INCLUDED', sortable: true, resizable: true, filter: true, editable: false, width:100,cellStyle: {border: '1px solid blue' }},
         { headerName: 'Total Price', field: 'total', sortable: true, resizable: true, filter: true,width:150,cellStyle: {border: '1px solid blue' } }
         ];
       }
@@ -327,17 +310,21 @@ export class CreatedealComponent {
             return;
           }
           var filterRow = this.productsList.filter(x => x.productName == event.newValue)[0];
+          
           console.log(this.storeId);
           console.log(filterRow);
           console.log(event.newValue);
           var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == filterRow.id)[0];
           console.log(stockAvail.overallQuantity);
           console.log(stockAvail);
+          filterRow.quantity = 0;
+          filterRow.total = 0;
           filterRow.stock = stockAvail.overallQuantity;
           filterRow.reserved = stockAvail.overallreserved;
-          this.rowData[rowId] = filterRow;
+          console.log(filterRow.VAT_INCLUDED);
+          this.rowData[rowId] = { ...this.rowData[rowId], ...filterRow };
           this.agGrid.api.setGridOption('rowData', this.rowData);
-          console.log(this.rowData[rowId].PREVIEW_PICTURE);
+          
           
       } 
       else if ( event.colDef.field === 'quantity') {
@@ -350,29 +337,37 @@ export class CreatedealComponent {
 
         
         //---------------Calling function to calculate Subtotal value and display it ---------------
-        var totalcost = 0 , i =0;
-        for( i=0; i<this.rowData.length; i++){
-          totalcost = totalcost + this.rowData[i].total;
-        }
-        this.onTotalCal(totalcost)
-        }
-        
-      else if( event.colDef.field === 'discount'){
+        this.GetTotals();
+        } else if( event.colDef.field === 'discount'){
         const rowId = event.rowIndex;
         var calDisc = this.rowData[rowId].total - (this.rowData[rowId].total * (this.rowData[rowId].discount / 100))
         this.rowData[rowId].total = calDisc
         this.agGrid.api.setGridOption('rowData', this.rowData);
-
-        //---------------Calling function to calculate Subtotal value and display it ---------------
-        var totalcost = 0,i =0;
-        for( i=0; i<this.rowData.length; i++){
-          totalcost = totalcost + this.rowData[i].total;
-        }
-        this.finalTotal = totalcost.toString();
-        this.onTotalCal(totalcost)
+        this.GetTotals();
       }
 
     }
+
+  private GetTotals() {
+    var totalcost = 0, i = 0;
+    var gstTotal = 0;
+    var subTotal = 0;
+    for (i = 0; i < this.rowData.length; i++) {
+      totalcost = totalcost + this.rowData[i].total;
+      if (this.rowData[i].VAT_INCLUDED == 'Y') {
+        this.rowData[i].tax_rate = this.rowData[i].tax_rate ?? 0;
+        subTotal += (this.rowData[i].total / (1 + (this.rowData[i].tax_rate / 100)));
+        gstTotal += this.rowData[i].total - (this.rowData[i].total / (1 + (this.rowData[i].tax_rate / 100)));
+      } else {
+        gstTotal += (this.rowData[i].total * (this.rowData[i].tax_rate / 100));
+        subTotal += this.rowData[i].total - (this.rowData[i].total * (this.rowData[i].tax_rate / 100));
+
+      }
+    }
+    this.calGST = gstTotal.toFixed(2);
+    this.finalTotal = subTotal.toFixed(2);
+    this.ftotal = totalcost.toFixed(2);
+  }
 
     //---------------Called function to calculate Subtotal value and display it ---------------
 

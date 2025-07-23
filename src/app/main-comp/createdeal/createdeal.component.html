@@ -28,7 +28,7 @@
                         <select matNativeControl formControlName="customersOptions" required style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue">
                             <!--[(ngModel)] = "selectedCustomer" [ngClass]="{'invalid-select':isCustomerInvalid()}"-->
                             <option disabled value="">Select Customer</option>
-                            <option *ngFor="let item of bitrixCustomers"  [value]="item.id">{{ item.name }}</option>
+                            <option *ngFor="let item of bitrixCustomers" [value]="item.id">{{ item.name }}</option>
                            
                         </select>
                     
@@ -69,14 +69,13 @@
         </div>
         
         <div class="col-sm-12" >
-            <ag-grid-angular #agGrid style="width: 100%; height: 385px;"
+            <ag-grid-angular #agGrid style="width: 100%; height: 385px; "
                 (cellValueChanged)="onCellValueChanged($event)"
                 class="ag-theme-alpine"
                 [columnDefs]="colDefs"
                 [rowData]="rowData"
                 [gridOptions]="gridOptions"
                 [rowSelection]="rowSelection"
-               
             />
             <!-- [rowData]="productRowData"
                 [columnDefs]="colDefs" -->

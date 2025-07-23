@@ -8,4 +8,6 @@ export class BitrixProducts{
     stock!: number;
     reserved!: number;
     total!: number;
+    VAT_INCLUDED: string;
+    tax_rate: number;
 }
