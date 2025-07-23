@@ -6,9 +6,9 @@
             <label>Inovice Number</label>
             <input type="text" class="form-control" placeholder="Enter Invoice Number" formControlName="invoiceNumber" required />
             </div> -->
-            <div class="deal-name" >
+            <div class="deal-name" style="display:flex; padding-top:10px;">
              <input type="text" id="dealName" name="dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
-             <label for="dealId" style="font-size: 20px;" class="col-sm-1"> {{dealNum}}</label>
+             <label for="dealId" style="font-size: 18px;" class="col-sm-1"> {{dealNum}}</label>
             </div>
             <p></p>
             
@@ -76,6 +76,7 @@
                 [rowData]="rowData"
                 [gridOptions]="gridOptions"
                 [rowSelection]="rowSelection"
+                
             />
             <!-- [rowData]="productRowData"
                 [columnDefs]="colDefs" -->

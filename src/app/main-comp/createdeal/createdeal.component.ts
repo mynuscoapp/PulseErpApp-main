@@ -233,18 +233,26 @@ export class CreatedealComponent {
           valueListMaxHeight: 220,
           
         },
-        cellStyle: {border: '1px solid blue' }
+        cellStyle: {border: '1px solid #c1c6c7ff' }
       },
-       { headerName: 'Image',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, 
-          checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />`,cellStyle: {border: '1px solid blue' } },
-        { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100, cellStyle: { backgroundColor: '#d7dedfff',border: '1px solid blue' }},
-        { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:100,cellStyle: { backgroundColor: '#d7dedfff',border: '1px solid blue' } },
-        { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100,cellStyle: {border: '1px solid blue' } },
-        { headerName: 'Qtty', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' }},
-        { headerName: 'Disc %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:100,cellStyle: {border: '1px solid blue' } },
-        { headerName: 'VAT Included', field: 'VAT_INCLUDED', sortable: true, resizable: true, filter: true, editable: false, width:100,cellStyle: {border: '1px solid blue' }},
-        { headerName: 'Total Price', field: 'total', sortable: true, resizable: true, filter: true,width:150,cellStyle: {border: '1px solid blue' } }
-        ];
+       { headerName: 'Img',field: 'PREVIEW_PICTURE', sortable: true, resizable: true, filter: true, 
+          checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />`,
+          cellStyle: {border: '1px solid #c1c6c7ff' } },
+       { headerName: 'Qtty', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:100,
+        cellStyle: {border: '1px solid #c1c6c7ff' }, cellEditor: 'numericCellEditor'},//,  cellEditorParams: {min: 0},
+       { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100,
+          cellStyle: {border: '1px solid #c1c6c7ff' } }, 
+       { headerName: 'Tax Incl', field: 'VAT_INCLUDED', sortable: true, resizable: true, filter: true, editable: true, width:100,
+          cellStyle: {backgroundColor: '#ecf1f2ff', border: '1px solid #c1c6c7ff' }},
+       { headerName: 'Disc %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:100,
+          cellStyle: {border: '1px solid #c1c6c7ff' } },
+       { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100, 
+          cellStyle: { backgroundColor: '#ecf1f2ff',border: '1px solid #c1c6c7ff' }},
+       { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:100,
+          cellStyle: { backgroundColor: '#ecf1f2ff',border: '1px solid #c1c6c7ff' } },
+       { headerName: 'Total Price', field: 'total', sortable: true, resizable: true, filter: true,width:150,
+          cellStyle: {backgroundColor: '#ecf1f2ff', border: '1px solid #c1c6c7ff' } }
+       ];
       }
     onAddProductRoe(){
       this.rowData.push(new BitrixProducts);
@@ -253,12 +261,18 @@ export class CreatedealComponent {
 
     onDeleteProductRowClick() {
       const selectedData = this.agGrid.api.getSelectedRows();
+      var selectedlength:number =0;
+      if (selectedlength<this.agGrid.rowHeight){
+        deleteselected();
+      }
       const res = this.agGrid.api.applyTransaction({ remove: selectedData });
       console.log(res.remove);
       let filterList : BitrixProducts[];
       res.remove.forEach( x => {
         console.log(x);
         filterList = this.rowData.filter((item: any) => !item.productName.includes(x.data["productName"]));
+        
+        //this.finalTotal = this.finalTotal - this.rowData[x].total.value;
       });
       console.log(filterList);
        this.rowData = filterList;
@@ -349,24 +363,35 @@ export class CreatedealComponent {
     }
 
   private GetTotals() {
-    var totalcost = 0, i = 0;
-    var gstTotal = 0;
-    var subTotal = 0;
+    var totalcost:number = 0, i:number = 0;
+    var gstTotal:number = 0;
+    var subTotal:number = 0;
     for (i = 0; i < this.rowData.length; i++) {
-      totalcost = totalcost + this.rowData[i].total;
+      totalcost = totalcost + +this.rowData[i].total;
       if (this.rowData[i].VAT_INCLUDED == 'Y') {
+        
         this.rowData[i].tax_rate = this.rowData[i].tax_rate ?? 0;
-        subTotal += (this.rowData[i].total / (1 + (this.rowData[i].tax_rate / 100)));
-        gstTotal += this.rowData[i].total - (this.rowData[i].total / (1 + (this.rowData[i].tax_rate / 100)));
+        subTotal += (+this.rowData[i].total / (1 + (+this.rowData[i].tax_rate / 100)));
+        gstTotal += +this.rowData[i].total - (+this.rowData[i].total / (1 + (+this.rowData[i].tax_rate / 100)));
       } else {
-        gstTotal += (this.rowData[i].total * (this.rowData[i].tax_rate / 100));
-        subTotal += this.rowData[i].total - (this.rowData[i].total * (this.rowData[i].tax_rate / 100));
+        //alert(this.rowData[i].tax_rate);
+        gstTotal += (+this.rowData[i].total * (+this.rowData[i].tax_rate / 100));
+        subTotal += +this.rowData[i].total - (+this.rowData[i].total * (+this.rowData[i].tax_rate / 100));
 
       }
     }
-    this.calGST = gstTotal.toFixed(2);
-    this.finalTotal = subTotal.toFixed(2);
-    this.ftotal = totalcost.toFixed(2);
+    this.finalTotal= totalcost.toFixed(2).toString(); // CHANGED HERE
+    this.calGST = gstTotal.toFixed(2).toString();
+    //this.finalTotal = subTotal.toFixed(2).toString();
+    this.ftotal = subTotal.toFixed(2).toString();
+  
+    //this.ftotal = totalcost.toFixed(2).toString();
+  }
+  deleteSelected(){
+    const selectedData = this.agGrid.api.getSelectedRows();
+    //this.agGrid.api.getSelectedRows();
+
+    
   }
 
     //---------------Called function to calculate Subtotal value and display it ---------------
