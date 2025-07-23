@@ -189,6 +189,7 @@ export class CreatedealComponent {
       this.bitrixstockservice.loadBitrixProducts().subscribe((data: any) => {
         this.productNamesList = data.map(x => x.productName);
         this.productsList = data;
+        this.bitrixstockservice.bitrixProductList = data;
         console.log(this.productNamesList);
         this.createColumnsDefinition();
         
@@ -196,32 +197,37 @@ export class CreatedealComponent {
 
       this.bitrixstockservice.loadBitrixPipline().subscribe((data: any) => {
         this.bitrixPipelineList = data;
+        this.bitrixstockservice.bitrixPipeLine = data;
         console.log(data);
       });
 
       this.bitrixstockservice.loadBitrixCustomers().subscribe((data: any) => {
         this.bitrixCustomers = data;
+        this.bitrixstockservice.bitrixCustomers = data;
         console.log(data);
       });
 
       this.bitrixstockservice.loadBitrixStoress().subscribe((data: any) => {
         this.bitrixStores = data;
+        this.bitrixstockservice.bitrixStores = data;
         console.log(data);
       });
 
       this.bitrixstockservice.loadBitrixStock().subscribe((data: any) => {
         this.bitrixStoreProducts = data;
+        this.bitrixstockservice.bitrixStockList = data;
         console.log(data);
       });
 
       this.bitrixstockservice.loadBitrixOverallStock().subscribe((data: any) => {
         this.bitrixOverAllStock = data;
+        this.bitrixstockservice.bitrixOverAllStock = data;
         console.log(data);
       });
     }
 
     ngAfterViewInit() {
-      this.createDealForm.get("option").setValue(4)
+      
     }
 
     createColumnsDefinition(){

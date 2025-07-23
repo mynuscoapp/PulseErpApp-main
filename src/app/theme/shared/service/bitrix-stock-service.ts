@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { error } from 'console';
 import { tap } from 'lodash';
-import { catchError } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
@@ -44,7 +44,7 @@ export class BitrixStockService {
         if (this.bitrixStockUrl.length > 0 && !this.bitrixStockList) {
           return this.http.get(this.bitrixStockUrl);
         } else {
-          return this.bitrixStockList;
+          return of(this.bitrixStockList);
         }
         return rowdata;
       }
@@ -54,7 +54,7 @@ export class BitrixStockService {
         if (this.bitrixOveralStoresUrl.length > 0 && !this.bitrixOverAllStock) {
           return this.http.get(this.bitrixOveralStoresUrl);
         } else {
-          return this.bitrixOverAllStock;
+          return of(this.bitrixOverAllStock);
         }
         return rowdata;
       }
@@ -64,7 +64,7 @@ export class BitrixStockService {
         if (this.bitrixProductsUrl.length > 0 && !this.bitrixProductList) {
           return this.http.get(this.bitrixProductsUrl);
         } else {
-          return this.bitrixProductList;
+          return of(this.bitrixProductList);
         }
         return rowdata;
       }
@@ -74,7 +74,7 @@ export class BitrixStockService {
         if (this.bitrixPipelineUrl.length > 0 && !this.bitrixPipeLine) {
           return this.http.get(this.bitrixPipelineUrl); 
         } else {
-          return this.bitrixPipeLine;
+          return of(this.bitrixPipeLine);
         }
         return rowdata;
       }
@@ -84,7 +84,7 @@ export class BitrixStockService {
         if (this.bitrixCustomersUrl.length > 0 && !this.bitrixCustomers) {
           return this.http.get(this.bitrixCustomersUrl);
         } else {
-          return this.bitrixCustomers;
+          return of(this.bitrixCustomers);
         }
         return rowdata;
       }
@@ -94,7 +94,7 @@ export class BitrixStockService {
         if (this.bitrixStoresUrl.length > 0 && !this.bitrixStores) {
           return this.http.get(this.bitrixStoresUrl);
         } else{
-          return this.bitrixStores;
+          return of(this.bitrixStores);
         }
         return rowdata;
       }
