@@ -220,7 +220,7 @@ export class CreatedealComponent {
     }
 
     ngAfterViewInit() {
-      
+      this.createDealForm.get("option").setValue(4)
     }
 
     createColumnsDefinition(){
