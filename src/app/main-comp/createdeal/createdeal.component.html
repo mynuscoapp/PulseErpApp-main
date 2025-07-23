@@ -2,20 +2,23 @@
     <div class="col-sm-12" style="background: radial-gradient(circle at top left, #efefe8, #8fcde8)">
       <form [formGroup]="createDealForm" (ngSubmit)="onSubmit()">
         <div class="col-sm-12">
-            <!-- <div class="form-group" class="col-sm-2 child inline-block-child">
-            <label>Inovice Number</label>
-            <input type="text" class="form-control" placeholder="Enter Invoice Number" formControlName="invoiceNumber" required />
-            </div> -->
-            <div class="deal-name" style="display:flex; padding-top:10px;">
+
+            <div class="col-sm-12" style="display:flex; padding-top:10px;padding-left: 25px;">
+                <div class="col-sm-4">
+
              <input type="text" id="dealName" name="dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
-             <label for="dealId" style="font-size: 18px;" class="col-sm-1"> {{dealNum}}</label>
-            </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" > {{dealNum}}</label>
+               </div>
+             </div>
             <p></p>
             
             <div class="col-sm-12" style="display: flex; border-radius: 1rem; border: 1px solid #28a745; background-color: #d2edee;">                            
 
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
-                        <select matNativeControl formControlName="pipelineOptions" required  style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
+                        <select matNativeControl formControlName="pipelineOptions" required (change)="warehouseSet()"
+                        style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
                             <option disabled value="">Select Pipeline</option>
                             <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>
                             
@@ -25,7 +28,8 @@
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                     <!--  <label>Customer*</label>-->
                 
-                        <select matNativeControl formControlName="customersOptions" required style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue">
+                        <select matNativeControl formControlName="customersOptions" required [(ngModel)]="selectedCustomer" class="{'error-border':isCustomerInvalid}"
+                         style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue">
                             <!--[(ngModel)] = "selectedCustomer" [ngClass]="{'invalid-select':isCustomerInvalid()}"-->
                             <option disabled value="">Select Customer</option>
                             <option *ngFor="let item of bitrixCustomers" [value]="item.id">{{ item.name }}</option>
@@ -36,7 +40,8 @@
                 <div class="form-group" class="col-sm-3" style="margin: 10px;">
                     <!--<label>Stores*</label>-->
                 <!--LABELS REMOVED & ADDED DISABLED VALUE, BORDER-RADIUS -->
-                        <select matNativeControl formControlName="storesOptions" required style="width: 200px; height: 40px; margin: 10px;border-radius:1rem; border:2px solid cornflowerblue">
+                        <select matNativeControl formControlName="storesOptions" required
+                        style="width: 200px; height: 40px; margin: 10px;border-radius:1rem; border:2px solid cornflowerblue">
                             <option disabled value="">Select Warehouse</option>
                             <option *ngFor="let item of bitrixStores" [value]="item.id">{{ item.name }}</option>
                         </select> 
@@ -44,22 +49,22 @@
             </div>
         </div>
             <div class="col-sm-12">
-                <div class="col-sm-18" style="margin: 10px;">               
-                
+                <div style="margin: 10px;">               
+                <!--class="col-sm-18"-->
                 <button type="button" class="btn btn-primary col-sm-1.5" (click)="onAddProductRoe()">Add Product</button>
                 <button type="button" class="btn btn-primary  col-sm-1.5" (click)="onDeleteProductRowClick()">Remove Product</button>
                 <label for="subtotal" style="font-size: 20px;" class="col-sm-2">Subtotal :</label>
-                <label for="subtotal" style="font-size: 20px;" class="col-sm-1">{{finalTotal}}</label>
+                <label for="subtotal" style="font-size: 20px; text-align: left;" class="col-sm-1">{{finalTotal}}</label>
                 <!--<input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>-->
 
                 <label for="gst" style="font-size: 20px;" class="col-sm-1">GST :</label>
-                <label for="gst" style="font-size: 20px;" class="col-sm-1">{{calGST}}</label>
+                <label for="gst" style="font-size: 20px; text-align: left;" class="col-sm-1">{{calGST}}</label>
                 <!--<input type="text" id="gst" name="stotal" size="10" disabled><br><br>-->
                 
                 <label for="finaltotal" style="font-size: 20px;" class="col-sm-1">Total :</label>
-                <label for="finaltotal" style="font-size: 20px;" class="col-sm-1">{{ftotal}}</label>
+                <label for="finaltotal" style="font-size: 20px; text-align: left;" class="col-sm-1">{{ftotal}}</label>
                 <!--<input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>-->
-                <button type="submit" [disabled]="isLoading" class="btn btn-primary col-sm-1">Create</button>
+                <button type="submit" [disabled]="isLoading" class="btn btn-primary col-sm-1" (click)="validateCustomer()">Create</button>
    
             </div>
         </div>

@@ -50,9 +50,11 @@ export class CreatedealComponent {
   finalTotal: string;
   calGST: string;
   selectedCustomer: string='';
-  customerSelect: boolean = true;
+  customerSelect: boolean = false;
   dealNum: string;
-  
+  isCustomerInvalid:boolean = false;
+
+
   errorDisplayMsg: string;
 
   
@@ -83,14 +85,12 @@ export class CreatedealComponent {
     ;
 
     onSubmit() {
-      
       if(this.customerSelect)
       {
         this.GenrateDeal();
       }
       else{
-        alert("Please select the customer");
-       // this.customerSelect = this.isCustomerInvalid();
+        this.errorDisplayMsg = "Please select the customer";
       }
    }
 
@@ -101,6 +101,7 @@ export class CreatedealComponent {
         this.errorDisplayMsg  = 'Please enter quantity!';
         return;
     }
+     
     let dealHeader = new DealHeaderModel;
     dealHeader.TITLE = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = this.createDealForm.get("pipelineOptions").value;
@@ -239,13 +240,13 @@ export class CreatedealComponent {
           checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.PREVIEW_PICTURE} />`,
           cellStyle: {border: '1px solid #c1c6c7ff' } },
        { headerName: 'Qtty', field: 'quantity', sortable: true, resizable: true, filter: true, editable: true,width:100,
-        cellStyle: {border: '1px solid #c1c6c7ff' }, cellEditor: 'numericCellEditor'},//,  cellEditorParams: {min: 0},
+        cellStyle: {border: '1px solid #c1c6c7ff' }, cellDataType: 'number'},
        { headerName: 'Price', field: 'RRP', sortable: true, resizable: true, filter: true, editable: true, width:100,
-          cellStyle: {border: '1px solid #c1c6c7ff' } }, 
+          cellStyle: {border: '1px solid #c1c6c7ff' }, cellDataType: 'number'}, 
        { headerName: 'Tax Incl', field: 'VAT_INCLUDED', sortable: true, resizable: true, filter: true, editable: true, width:100,
           cellStyle: {backgroundColor: '#ecf1f2ff', border: '1px solid #c1c6c7ff' }},
        { headerName: 'Disc %', field: 'discount', sortable: true, resizable: true, filter: true, editable: true,width:100,
-          cellStyle: {border: '1px solid #c1c6c7ff' } },
+          cellStyle: {border: '1px solid #c1c6c7ff' }, cellDataType: 'number' },
        { headerName: 'Stock', field: 'stock', sortable: true, resizable: true, filter: true,width:100, 
           cellStyle: { backgroundColor: '#ecf1f2ff',border: '1px solid #c1c6c7ff' }},
        { headerName: 'Reserved', field: 'reserved', sortable: true, resizable: true, filter: true,width:100,
@@ -273,48 +274,20 @@ export class CreatedealComponent {
       });
       console.log(filterList);
        this.rowData = filterList;
+       this.GetTotals();
       this.agGrid.api.setGridOption('rowData', this.rowData);
+
     }
 
  
     onCellValueChanged(event: any) {
-      //myData: any[] = [];
+      
       // Access the changed row data and column details
       console.log('Cell value changed:', event.data, event.colDef.field, event.newValue);
-      //alert('fieldname ' + event.colDef.field); 
       this.storeId = this.createDealForm.get('storesOptions')?.value;
       // Perform actions based on the new value
       if (event.colDef.field === 'productName') {
           const rowId = event.rowIndex;
-          // const exists = this.myData.some(p=>p.productName===event.productName);
-          // for (i= 0;i<=rowId;i++){
-            
-          //     alert(event.productId);
-          //     //alert(this.rowData[i].id);
-          //     if (event.productId === this.rowData[i].id){
-          //       alert('Duplicates');
-          //     }
-            
-          // }
-          // var productSelected =  event.newValue;
-          // alert(productSelected);
-          // for (i= 0;i<rowId;i++){
-          //   if (productSelected = this.rowData[i].productName)
-          //   {
-          //     alert(productSelected);
-          //     //alert(this.rowData[i].productName);
-            
-          //   }
-          // }
-
-
-          // const exists = this.productsList.some(x => x.productName === event.newValue)[0];
-          // const exists = this.rowData.some(x=> x.productName === event.productName);
-          // if(exists)
-          // {
-          //   alert(exists);
-          // }
-          
           if (this.rowData.filter(x => x.productName == event.newValue).length > 1){
             alert('Product already added!');
             event.node.setDataValue("productName", "");
@@ -339,13 +312,10 @@ export class CreatedealComponent {
           
       } 
       else if ( event.colDef.field === 'quantity') {
-        //alert('Qaumtity changed');
         const rowId = event.rowIndex;
        
         this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
         this.agGrid.api.setGridOption('rowData', this.rowData);
-        //this.onTotalCal(this.rowData[rowId].total)
-
         
         //---------------Calling function to calculate Subtotal value and display it ---------------
         this.GetTotals();
@@ -377,56 +347,37 @@ export class CreatedealComponent {
 
       }
     }
-    this.finalTotal= totalcost.toFixed(2).toString(); // CHANGED HERE
+    //this.finalTotal= totalcost.toFixed(2).toString(); // CHANGED HERE
     this.calGST = gstTotal.toFixed(2).toString();
-    //this.finalTotal = subTotal.toFixed(2).toString();
-    this.ftotal = subTotal.toFixed(2).toString();
+    this.finalTotal = subTotal.toFixed(2).toString();
+    //this.ftotal = subTotal.toFixed(2).toString();
   
-    //this.ftotal = totalcost.toFixed(2).toString();
+    this.ftotal = totalcost.toFixed(2).toString();
   }
-  
-
-    //---------------Called function to calculate Subtotal value and display it ---------------
-
-    onTotalCal(stotal){
+  warehouseSet(){
+    if(this.createDealForm.get("pipelineOptions").value == "0"){
+    this.createDealForm.get("storesOptions").setValue(1);  
+    }
+    else{
+      this.createDealForm.get("storesOptions").setValue(10);
+    }
     
-    //   const totalElement = document.getElementById('subtotal') as HTMLInputElement; 
-    //   const gstElement = document.getElementById('gst') as HTMLInputElement;
-    //   const finalElement = document.getElementById('finaltotal') as HTMLInputElement;
-        
-       //var subtotal=0, calgst = 0
-       var subtotal= 0, fintot = 0 ;
-       subtotal = stotal;
-       fintot = +this.finalTotal + +this.calGST;
-       this.ftotal= this.finalTotal;
-       
-    //   calgst = subtotal * 0.18;
-   
-    //   //totalElement.value = subtotal.toString();
-    //   gstElement.value = calgst.toString();
+  }
 
-    //   fintot = parseInt(totalElement.value) + parseInt(gstElement.value);
-    //   finalElement.value= fintot.toString();
-    //   //this.finalTotal = fintot;
-    //   this.agGrid.api.setGridOption('rowData', this.rowData);
-    }
-   isCustomerInvalid(){
-      //return !this.selectedCustomer || this.selectedCustomer === '';
-      if (this.createDealForm.get("customersOptions").value != "")
-      {
-        this.customerSelect = true;
-      }
-      else
-      {
-        //this.createDealForm.se
-        this.customerSelect = false;
-        //this.createDealForm.addValidators()
-      }
 
-    }
-       
+  validateCustomer() {
+    if(this.createDealForm.get("customersOptions").value === "")
+     {
+      this.customerSelect = false;
+     }
+     else{
+      this.customerSelect = true;
+     }
+          
    
 }
+}
+
  
 
  
