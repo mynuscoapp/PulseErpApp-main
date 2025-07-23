@@ -261,10 +261,7 @@ export class CreatedealComponent {
 
     onDeleteProductRowClick() {
       const selectedData = this.agGrid.api.getSelectedRows();
-      var selectedlength:number =0;
-      if (selectedlength<this.agGrid.rowHeight){
-        deleteselected();
-      }
+     
       const res = this.agGrid.api.applyTransaction({ remove: selectedData });
       console.log(res.remove);
       let filterList : BitrixProducts[];
@@ -387,12 +384,7 @@ export class CreatedealComponent {
   
     //this.ftotal = totalcost.toFixed(2).toString();
   }
-  deleteSelected(){
-    const selectedData = this.agGrid.api.getSelectedRows();
-    //this.agGrid.api.getSelectedRows();
-
-    
-  }
+  
 
     //---------------Called function to calculate Subtotal value and display it ---------------
 
