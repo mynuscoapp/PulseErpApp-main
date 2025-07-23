@@ -148,7 +148,7 @@ export class CreatedealComponent {
   IsQuantityEntered() {
     let hasQuantity = true;
     for(let i=0; i< this.rowData.length; i++) {
-        if (!this.rowData[i].quantity || !(this.rowData[i].quantity === 0)) {
+        if (!this.rowData[i].quantity || (this.rowData[i].quantity === 0)) {
           this.onFlashOneCell(i, 'quantity');
           hasQuantity = false;
         }
