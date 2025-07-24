@@ -40,11 +40,13 @@
                 <div class="form-group" class="col-sm-3" style="margin: 10px;">
                     <!--<label>Stores*</label>-->
                 <!--LABELS REMOVED & ADDED DISABLED VALUE, BORDER-RADIUS -->
-                        <select matNativeControl formControlName="storesOptions" required
+                <!-- <select matNativeControl formControlName="storesOptions" required (change)="warehouseCheck()" -->
+                
+                    <select matNativeControl formControlName="storesOptions" required        
                         style="width: 200px; height: 40px; margin: 10px;border-radius:1rem; border:2px solid cornflowerblue">
                             <option disabled value="">Select Warehouse</option>
                             <option *ngFor="let item of bitrixStores" [value]="item.id">{{ item.name }}</option>
-                        </select> 
+                    </select> 
                 </div>
             </div>
         </div>

@@ -10,4 +10,5 @@ export class DealHeaderModel{
     COMMENTS: string;
     CATEGORY_ID: number;
     OWNER_TYPE: string;
+    WAREHOUSE_ID:string;
 }

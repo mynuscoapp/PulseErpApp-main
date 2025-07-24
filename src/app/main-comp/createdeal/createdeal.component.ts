@@ -108,6 +108,7 @@ export class CreatedealComponent {
     dealHeader.CURRENCY_ID = 'INR';
     dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
     //dealHeader.CATEGORY_ID = 
+    dealHeader.WAREHOUSE_ID= this.createDealForm.get("storesOptions").value;
     dealHeader.OPPORTUNITY = +this.finalTotal;
     dealHeader.OWNER_TYPE = 'D';
     dealHeader.ASSIGNED_BY_ID = 1;
@@ -364,11 +365,15 @@ export class CreatedealComponent {
     if(this.createDealForm.get("pipelineOptions").value == "0"){
     this.createDealForm.get("storesOptions").setValue(1);  
     }
-    else{
-      this.createDealForm.get("storesOptions").setValue(10);
+    if(this.createDealForm.get("pipelineOptions").value == "12"){
+      this.createDealForm.get("storesOptions").setValue(8);
     }
-    
   }
+  warehouseCheck() {
+  alert(this.createDealForm.get("storesOptions").value);
+  // alert(this.createDealForm.get("pipelineOptions").value);
+   }
+
 
 
   validateCustomer() {
