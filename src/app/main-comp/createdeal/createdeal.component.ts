@@ -169,6 +169,7 @@ export class CreatedealComponent {
             productRow.QUANTITY = this.rowData[i].quantity;
             productRow.DISCOUNT_RATE= this.rowData[i].discount;
             productRow.MEASURE_CODE = 'pcs';
+            productRow.WAREHOUSE_ID = this.rowData[i].WAREHOUSE_ID;
             rowsList.push(productRow);
           } else {
             this.onFlashOneCell(i, 'quantity');

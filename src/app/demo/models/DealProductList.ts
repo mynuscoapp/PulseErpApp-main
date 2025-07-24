@@ -7,4 +7,5 @@ export class DealProductList{
     TAX_RATE: number;
     TAX_INCLUDED: string;
     MEASURE_CODE: string;
+    WAREHOUSE_ID:string;
 }
