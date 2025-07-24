@@ -170,6 +170,7 @@ export class CreatedealComponent {
             productRow.DISCOUNT_RATE= this.rowData[i].discount;
             productRow.MEASURE_CODE = 'pcs';
             productRow.WAREHOUSE_ID = this.createDealForm.get("storesOptions").value;
+            //productRow.WAREHOUSE_ID = this.warehouseSelection();
             //alert(this.createDealForm.get("storesOptions").value);
             //alert(productRow.WAREHOUSE_ID.toString());
            rowsList.push(productRow);
@@ -366,17 +367,17 @@ export class CreatedealComponent {
   }
   warehouseSet(){
     if(this.createDealForm.get("pipelineOptions").value == "0"){
-    this.createDealForm.get("storesOptions").setValue(1);  
+    this.createDealForm.get("storesOptions").setValue(1); 
     }
     if(this.createDealForm.get("pipelineOptions").value == "12"){
       this.createDealForm.get("storesOptions").setValue(8);
     }
   }
+
   warehouseCheck() {
   alert(this.createDealForm.get("storesOptions").value);
   // alert(this.createDealForm.get("pipelineOptions").value);
    }
-
 
 
   validateCustomer() {
@@ -386,10 +387,27 @@ export class CreatedealComponent {
      }
      else{
       this.customerSelect = true;
-     }
-          
-   
+     }     
 }
+
+ 
+  resetForm(){
+    this.createDealForm.reset();
+    
+    this.rowData = [];
+    this.rowData.push(new BitrixProducts);
+    this.agGrid.api.setGridOption('rowData', this.rowData);
+    this.finalTotal = '';
+    this.ftotal = '';
+    this.calGST = '';
+    this.dealNum = '';
+    this.customerSelect = false;
+    this.isCustomerInvalid = false;
+    this.errorDisplayMsg = '';
+    //this.createDealForm.get(" pipelineOptions").setValue('0');
+    //this.createDealForm.get("customersOptions").setValue('0');
+    //this.createDealForm.get("storesOptions").setValue('0');
+  }
 }
 
  
