@@ -103,14 +103,11 @@ export class CreatedealComponent {
     }
      
     let dealHeader = new DealHeaderModel;
-    dealHeader.TITLE = this.createDealForm.get("dealName").value;
+    dealHeader.NAME = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = this.createDealForm.get("pipelineOptions").value;
-    dealHeader.CURRENCY_ID = 'INR';
     dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
     //dealHeader.CATEGORY_ID = 
-    dealHeader.WAREHOUSE_ID= this.createDealForm.get("storesOptions").value;
-    dealHeader.OPPORTUNITY = +this.finalTotal;
-    dealHeader.OWNER_TYPE = 'D';
+     dealHeader.OPPORTUNITY = +this.finalTotal;
     dealHeader.ASSIGNED_BY_ID = 1;
     //dealHeader.STAGE_ID = 'NEW';
     dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
@@ -169,7 +166,10 @@ export class CreatedealComponent {
             productRow.QUANTITY = this.rowData[i].quantity;
             productRow.DISCOUNT_RATE= this.rowData[i].discount;
             productRow.MEASURE_CODE = 'pcs';
-            productRow.WAREHOUSE_ID = this.createDealForm.get("storesOptions").value;
+            productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
+            productRow.TAX_RATE = this.rowData[i].tax_rate;
+            productRow.OWNER_TYPE = 'D';
+            productRow.STORE_ID = this.createDealForm.get("storesOptions").value;
             //alert(this.createDealForm.get("storesOptions").value);
             //alert(productRow.WAREHOUSE_ID.toString());
            rowsList.push(productRow);

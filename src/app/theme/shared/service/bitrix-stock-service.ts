@@ -36,7 +36,7 @@ export class BitrixStockService {
     private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
 
     private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
-    private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
+    private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set`;
     
     
     loadBitrixStock() {
@@ -104,9 +104,9 @@ export class BitrixStockService {
         const headers = new HttpHeaders({
           'Content-Type': 'application/json'
         });
-        const data = JSON.stringify(dealHeader);
+        
         return this.http.post<any>(`${this.createDealHeaderUrl}`,
-          data).pipe(
+          dealHeader).pipe(
             catchError(error => {
               console.error('Error during POST request:', error);
               throw error; // Re-throw the error or handle it as needed
@@ -118,7 +118,6 @@ export class BitrixStockService {
       const headers = new HttpHeaders({
         'Content-Type': 'application/json'
       });
-      const data = JSON.stringify(dealProductRows);
       return this.http.post<any>(`${this.createDealProductRowUrl}`,
         dealProductRows).pipe(
           catchError(error => {

@@ -1,5 +1,6 @@
 export class DealHeaderModel{
     TITLE: string;
+    NAME: string;
     TYPE_ID: string;
     STAGE_ID: string;
     OPPORTUNITY: number;
