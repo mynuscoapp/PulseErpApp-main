@@ -10,5 +10,5 @@ export class BitrixProducts{
     total!: number;
     VAT_INCLUDED: string;
     tax_rate: number;
-    WAREHOUSE_ID:string;
+    WAREHOUSE_ID:number;
 }
