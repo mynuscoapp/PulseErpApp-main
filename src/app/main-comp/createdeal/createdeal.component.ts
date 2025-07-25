@@ -408,9 +408,66 @@ export class CreatedealComponent {
     //this.createDealForm.get("customersOptions").setValue('0');
     //this.createDealForm.get("storesOptions").setValue('0');
   }
+
+
+ onUpdateDeal(){
+      // if(this.createDealForm.invalid){
+      //   alert('Please enter required values');
+      // return;
+      // }
+    this.isLoading = true;
+    this.productNamesList = [];
+    this.productsList = [];
+    this.rowData = [];
+
+    //this.rowSelection: RowSelectionOptions | "single" | "multiple" = {
+    //mode: "multiRow"
+   //};
+    //this.agGrid.api.setGridOption('loading', true);
+    let dealHeader = new DealHeaderModel;
+
+    this.bitrixstockservice.createDealHeader(this.createDealForm.get('updateDealnum')?.value).subscribe((data: any) => {
+    //this.bitrixstockservice.createDealProductRows(this.createDealForm.get('updateDealnum')?.value).subscribe((data: any) => {
+      //alert(data.result.item);
+      this.rowData = [data.result.item];
+      if (this.rowData) {
+        alert(this.rowData.toString());
+        dealHeader = data.result.item;
+        //alert(dealHeader.TYPE_ID.toString());
+        this.createDealForm.get('pipelineOptions')?.setValue(dealHeader.TYPE_ID);
+        this.createDealForm.get('customersOptions')?.setValue(dealHeader.COMPANY_ID);
+        this.createDealForm.get('storesOptions')?.setValue(dealHeader.WAREHOUSE_ID);
+        this.createDealForm.get('dealName')?.setValue(dealHeader.TITLE);
+        this.isLoading = true;
+        this.rowData.push(new BitrixProducts);
+        this.agGrid.api.setGridOption('rowData', this.rowData);
+      } else {
+        alert('Deal not found');
+        this.isLoading = false;
+        return;
+      }
+    
+    });
+  }
+    //this.createDealForm.value.dealNum = dealHeader.TITLE.toString();
+    
+    //this.invoiceLoaderService.loadInvoiceHeader(this.invoiceDownloadForm.get('invoiceNumber')?.value).subscribe((data: any) => {
+    //   this.rowData = [data.result.item];
+    //   if (this.rowData) {
+    //     this.getBuyerdetails(this.rowData[0].companyId);
+    //     this.getBuyerAddressdetails(this.rowData[0].companyId);
+    //     this.getSellerAddressdetails(this.rowData[0].mycompanyId);
+    //     this.getBuyToShipToGST(this.rowData[0].companyId);
+    //     this.loadProducts();
+    //   }
+
+    //   console.log(this.productRowData);
+    // });
+
+
+  
 }
 
- 
 
  
   
