@@ -103,15 +103,15 @@ export class CreatedealComponent {
     }
      
     let dealHeader = new DealHeaderModel;
-    dealHeader.NAME = this.createDealForm.get("dealName").value;
-    dealHeader.TYPE_ID = this.createDealForm.get("pipelineOptions").value;
-    dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
+    dealHeader.TITLE = this.createDealForm.get("dealName").value;
+    dealHeader.TYPE_ID = "SALE";
+    dealHeader.COMPANY_ID =  this.createDealForm.get("customersOptions").value;
     //dealHeader.CATEGORY_ID = 
-     dealHeader.OPPORTUNITY = +this.finalTotal;
-    dealHeader.ASSIGNED_BY_ID = 1;
+     dealHeader.OPPORTUNITY = +this.ftotal;
+    dealHeader.ASSIGNED_BY_ID = '1';
     //dealHeader.STAGE_ID = 'NEW';
     dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
-
+    console.log(dealHeader);
     this.bitrixstockservice.createDealHeader(dealHeader).subscribe(
       response => {
         console.log('POST request successful:', response);
@@ -125,7 +125,7 @@ export class CreatedealComponent {
         // Process the response data here
         let dealProducts = new DealProductsRows;
         dealProducts.id = deal_id;
-        let dealProductList = this.GetProductRowsList();
+        let dealProductList = this.GetProductRowsList(deal_id);
         dealProducts.rows = dealProductList;
         console.log(dealProducts);
         this.bitrixstockservice.createDealProductRows(dealProducts).subscribe(
@@ -155,17 +155,20 @@ export class CreatedealComponent {
 
       return hasQuantity;
   }
-    GetProductRowsList() {
+    GetProductRowsList(dealId: number) {
       let rowsList: DealProductList[] = [];
       for(let i=0; i< this.rowData.length; i++) {
         if(this.rowData[i].productName && this.rowData[i].id) {
           if (this.rowData[i].quantity) {
             let productRow = new DealProductList;
+            productRow.OWNER_ID = dealId.toString();
             productRow.PRODUCT_ID = this.rowData[i].id;
+            productRow.PRODUCT_NAME = this.rowData[i].productName;
+            productRow.ORIGINAL_PRODUCT_NAME = this.rowData[i].productName;
+            productRow.PRODUCT_DESCRIPTION = this.rowData[i].productName;
             productRow.PRICE = this.rowData[i].RRP;
             productRow.QUANTITY = this.rowData[i].quantity;
             productRow.DISCOUNT_RATE= this.rowData[i].discount;
-            productRow.MEASURE_CODE = 'pcs';
             productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
             productRow.TAX_RATE = this.rowData[i].tax_rate;
             productRow.OWNER_TYPE = 'D';
