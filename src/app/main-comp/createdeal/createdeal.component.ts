@@ -428,7 +428,7 @@ export class CreatedealComponent {
 
     this.bitrixstockservice.createDealHeader(this.createDealForm.get('updateDealnum')?.value).subscribe((data: any) => {
     //this.bitrixstockservice.createDealProductRows(this.createDealForm.get('updateDealnum')?.value).subscribe((data: any) => {
-      //alert(data.result.item);
+      alert(data.result.item);
       this.rowData = [data.result.item];
       if (this.rowData) {
         alert(this.rowData.toString());
