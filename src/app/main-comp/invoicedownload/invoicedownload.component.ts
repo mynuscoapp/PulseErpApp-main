@@ -179,6 +179,7 @@ export class InvoicedownloadComponent implements OnInit {
           this.loadProductDetails(1, 1);
 
         }
+        
         if (totalPages_pre > 0 && totalRows > 50)
           this.loadMoreProducts(2, totalPages_pre);
       }

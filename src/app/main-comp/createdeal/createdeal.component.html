@@ -4,12 +4,11 @@
         <div class="col-sm-12">
 
             <div class="col-sm-12" style="display:flex; padding-top:10px;padding-left: 25px;">
-                <div class="col-sm-4">
-
-             <input type="text" id="dealName" name="dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
+                <div class="col-sm-4" class="form-group">
+                    <input type="text" id="dealName" formControlName = "dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
                 </div>
-                <div class="col-sm-4">
-                    <label for="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" > {{dealNum}}</label>
+                <div class="col-sm-4" class="form-group">
+                    <label for="dealId" formControlName ="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" > {{dealNum}}</label>
                </div>
              </div>
             <p></p>
@@ -18,7 +17,7 @@
 
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                         <select matNativeControl formControlName="pipelineOptions" required (change)="warehouseSet()"
-                        style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
+                            style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
                             <option disabled value="">Select Pipeline</option>
                             <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>
                             
@@ -55,16 +54,16 @@
                 <!--class="col-sm-18"-->
                 <button type="button" class="btn btn-primary col-sm-1.5" (click)="onAddProductRoe()">Add Product</button>
                 <button type="button" class="btn btn-primary  col-sm-1.5" (click)="onDeleteProductRowClick()">Remove Product</button>
-                <label for="subtotal" style="font-size: 20px;" class="col-sm-1.5">Subtotal :</label>
-                <label for="subtotal" style="font-size: 20px; align-content: left;" class="col-sm-1">{{finalTotal}}</label>
-                <!--<input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>-->
+                <!--<label for="subtotal" style="font-size: 15px;" class="col-sm-1.5">Subtotal :</label>
+                <label for="subtotal" style="font-size: 15px; align-content: left;" class="col-sm-1">{{finalTotal}}</label>
+                <input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>
 
-                <label for="gst" style="font-size: 20px;" class="col-sm-1">GST :</label>
-                <label for="gst" style="font-size: 20px; text-align: left;" class="col-sm-1">{{calGST}}</label>
-                <!--<input type="text" id="gst" name="stotal" size="10" disabled><br><br>-->
+                <label for="gst" style="font-size: 15px;" class="col-sm-1">GST :</label>
+                <label for="gst" style="font-size: 15px; text-align: left;" class="col-sm-1">{{calGST}}</label>
+                <input type="text" id="gst" name="stotal" size="10" disabled><br><br>-->
                 
-                <label for="finaltotal" style="font-size: 20px;" class="col-sm-1">Total :</label>
-                <label for="finaltotal" style="font-size: 20px; text-align: left;" class="col-sm-1">{{ftotal}}</label>
+                <label for="finaltotal" style="font-size: 15px;" class="col-sm-1">Total :</label>
+                <label for="finaltotal" style="font-size: 15px; text-align: left;" class="col-sm-1">{{ftotal}}</label>
                 <!--<input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>-->
                 <button type="submit" [disabled]="isLoading" class="btn btn-primary col-sm-1" (click)="validateCustomer()">Create</button>
    
@@ -88,10 +87,14 @@
             <!-- [rowData]="productRowData"
                 [columnDefs]="colDefs" -->
       </div>
-      <div>
+
+      <div class="form-group">
         <button type="button" class="btn btn-primary col-sm-1.5" (click)="resetForm()">Reset</button>
-        <input type="text" id="updateDealnum" name="updateDealnum" size="20" placeholder="Enter Deal Number" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; padding-left:20px;">
+            <input class = "form-group" type="text" id = "updateDealnum" formControlName="updateDealnum" size="20" placeholder="Search Deal Number" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; padding-left:20px;">
         <button type="button" class="btn btn-primary col-sm-1.5" (click)="onUpdateDeal()">Update Deal</button>
+        <button type="button" class="btn btn-primary" (click)="onExport()">Export</button>
+        <label for="listcount" formControlName="listcount" style="font-size: 15px;text-align:right;padding-right:10px;" class="col-sm-1">{{listcount}}</label>
+        
       </div>
       </form>
     </div>

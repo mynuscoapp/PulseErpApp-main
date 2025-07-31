@@ -1,3 +1,4 @@
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { error } from 'console';
@@ -28,6 +29,7 @@ export class BitrixStockService {
     bitrixStores: BitrixStores[];
     bitrixOverAllStock: BitrixOverallStock[];
 
+    
     private bitrixStockUrl = `${environment.bitrixStockUrl}/bitrixstock`;
     private bitrixProductsUrl = `${environment.bitrixStockUrl}/productslist`;
     private bitrixPipelineUrl = `${environment.bitrixStockUrl}/pipelinelist`;
@@ -37,6 +39,8 @@ export class BitrixStockService {
 
     private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
     private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
+    private getDealHeaderUrl = `${environment.apiUrl}crm.deal.get.json?id=`;
+    private getDealProductRowsUrl = `${environment.apiUrl}crm.deal.productrows.get.json?id=`;
     
     
     loadBitrixStock() {
@@ -127,4 +131,27 @@ export class BitrixStockService {
           })
         );
   }
+
+  loadDealHeader(dealNumber: string) {
+    let rowdata: any;
+    if (dealNumber.length > 0) {
+      console.log(this.getDealHeaderUrl + dealNumber.toString());
+      return this.http.get(this.getDealHeaderUrl + dealNumber.toString());
+    }
+    return rowdata;
+
+  }
+ 
+   
+
+  getProductDetails(dealId: number) {
+    let rowdata: any;
+    if (this.getDealProductRowsUrl.length > 0) {
+      console.log(this.getDealProductRowsUrl +dealId.toString());
+      return this.http.get(this.getDealProductRowsUrl +dealId.toString());
+
+    }
+    return rowdata;
+  }
+
 }
