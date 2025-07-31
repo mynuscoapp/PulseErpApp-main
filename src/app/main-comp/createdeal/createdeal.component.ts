@@ -108,14 +108,11 @@ export class CreatedealComponent {
      
     let dealHeader = new DealHeaderModel;
     dealHeader.TITLE = this.createDealForm.get("dealName").value;
-    dealHeader.TYPE_ID = this.createDealForm.get("pipelineOptions").value;
-    dealHeader.CURRENCY_ID = 'INR';
-    dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
+    dealHeader.TYPE_ID = "SALE";
+    dealHeader.COMPANY_ID =  this.createDealForm.get("customersOptions").value;
     //dealHeader.CATEGORY_ID = 
-    dealHeader.WAREHOUSE_ID= this.createDealForm.get("storesOptions").value;
-    dealHeader.OPPORTUNITY = +this.finalTotal;
-    dealHeader.OWNER_TYPE = 'D';
-    dealHeader.ASSIGNED_BY_ID = 1;
+     dealHeader.OPPORTUNITY = +this.ftotal;
+    dealHeader.ASSIGNED_BY_ID = '1';
     //dealHeader.STAGE_ID = 'NEW';
     dealHeader.COMMENTS = 'This deal was created automatically via the Angular application.';
     console.log(dealHeader);
@@ -130,9 +127,13 @@ export class CreatedealComponent {
         // Process the response data here
         let dealProducts = new DealProductsRows;
         dealProducts.id = deal_id;
+<<<<<<< HEAD
 
         
         let dealProductList = this.GetProductRowsList();
+=======
+        let dealProductList = this.GetProductRowsList(deal_id);
+>>>>>>> 9e41d99e8cd94a83bd4e739174c748ab41359717
         dealProducts.rows = dealProductList;
         console.log(dealProducts);
         this.bitrixstockservice.createDealProductRows(dealProducts).subscribe(
@@ -162,20 +163,35 @@ export class CreatedealComponent {
 
       return hasQuantity;
   }
+<<<<<<< HEAD
     GetProductRowsList() {
       
+=======
+    GetProductRowsList(dealId: number) {
+>>>>>>> 9e41d99e8cd94a83bd4e739174c748ab41359717
       let rowsList: DealProductList[] = [];
       for(let i=0; i< this.rowData.length; i++) {
         if(this.rowData[i].productName && this.rowData[i].id) {
           if (this.rowData[i].quantity) {
             let productRow = new DealProductList;
+            productRow.OWNER_ID = dealId.toString();
             productRow.PRODUCT_ID = this.rowData[i].id;
+            productRow.PRODUCT_NAME = this.rowData[i].productName;
+            productRow.ORIGINAL_PRODUCT_NAME = this.rowData[i].productName;
+            productRow.PRODUCT_DESCRIPTION = this.rowData[i].productName;
             productRow.PRICE = this.rowData[i].RRP;
             productRow.QUANTITY = this.rowData[i].quantity;
             productRow.DISCOUNT_RATE= this.rowData[i].discount;
+<<<<<<< HEAD
             //alert("Discount Given =  " + productRow.DISCOUNT_RATE);
             productRow.MEASURE_CODE = 'pcs';
             productRow.WAREHOUSE_ID = this.createDealForm.get("storesOptions").value;
+=======
+            productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
+            productRow.TAX_RATE = this.rowData[i].tax_rate;
+            productRow.OWNER_TYPE = 'D';
+            productRow.STORE_ID = this.createDealForm.get("storesOptions").value;
+>>>>>>> 9e41d99e8cd94a83bd4e739174c748ab41359717
             //productRow.WAREHOUSE_ID = this.warehouseSelection();
             //alert(this.createDealForm.get("storesOptions").value);
             //alert(productRow.WAREHOUSE_ID.toString());

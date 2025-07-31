@@ -11,6 +11,7 @@ import { BitrixProducts } from 'src/app/demo/models/bitrixproducts';
 import { BitrixStoreProduct } from 'src/app/demo/models/BitrixStoreProduct';
 import { BitrixStores } from 'src/app/demo/models/BitrixStores';
 import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
+import { DealHeaderObject } from 'src/app/demo/models/DealHeaderObject';
 import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { environment } from 'src/environments/environment';
 import { json } from 'stream/consumers';
@@ -42,6 +43,11 @@ export class BitrixStockService {
     private getDealHeaderUrl = `${environment.apiUrl}crm.deal.get.json?id=`;
     private getDealProductRowsUrl = `${environment.apiUrl}crm.deal.productrows.get.json?id=`;
     
+    headers = new HttpHeaders()
+        .set('Content-Type', 'application/json');;
+    httpOptions = {
+        headers: this.headers
+    };
     
     loadBitrixStock() {
         let rowdata: any;
@@ -105,12 +111,12 @@ export class BitrixStockService {
   
 
       createDealHeader(dealHeader: DealHeaderModel) {
-        const headers = new HttpHeaders({
-          'Content-Type': 'application/json'
-        });
-        const data = JSON.stringify(dealHeader);
+        let dealObject = new DealHeaderObject;
+        dealObject.fields = dealHeader;
+        var data = JSON.stringify(dealObject);
+        console.log(data);
         return this.http.post<any>(`${this.createDealHeaderUrl}`,
-          data).pipe(
+          data, this.httpOptions ).pipe(
             catchError(error => {
               console.error('Error during POST request:', error);
               throw error; // Re-throw the error or handle it as needed
@@ -119,12 +125,10 @@ export class BitrixStockService {
     }
 
     createDealProductRows(dealProductRows: DealProductsRows) {
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json'
-      });
-      const data = JSON.stringify(dealProductRows);
+      var data = JSON.stringify(dealProductRows);
+      console.log(data);
       return this.http.post<any>(`${this.createDealProductRowUrl}`,
-        dealProductRows).pipe(
+        data,this.httpOptions).pipe(
           catchError(error => {
             console.error('Error during POST request:', error);
             throw error; // Re-throw the error or handle it as needed
