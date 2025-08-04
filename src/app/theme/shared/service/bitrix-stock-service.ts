@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { error } from 'console';
 import { tap } from 'lodash';
-import { catchError, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
@@ -37,13 +37,14 @@ export class BitrixStockService {
     private bitrixCustomersUrl = `${environment.bitrixStockUrl}/customerlist`;
     private bitrixStoresUrl = `${environment.bitrixStockUrl}/storelist`;
     private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
+    private bitrixApiUrl = `${environment.bitrixStockUrl}/bitrixapiurl`;
 
-    private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
-    private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
-    private getDealHeaderUrl = `${environment.apiUrl}crm.deal.get.json?id=`;
-    private getDealProductRowsUrl = `${environment.apiUrl}crm.deal.productrows.get.json?id=`;
-    private updateDealHeaderUrl = `${environment.apiUrl}crm.deal.update.json?id=`;
-    private updateDealProductsUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
+    private createDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.add.json`;
+    private createDealProductRowUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.set.json`;
+    private getDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.get.json?id=`;
+    private getDealProductRowsUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.get.json?id=`;
+    private updateDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.update.json?id=`;
+    private updateDealProductsUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.set.json`;
     private myheaderURL: string ='';
     
     headers = new HttpHeaders()   
