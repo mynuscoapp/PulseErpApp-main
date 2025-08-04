@@ -42,8 +42,11 @@ export class BitrixStockService {
     private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
     private getDealHeaderUrl = `${environment.apiUrl}crm.deal.get.json?id=`;
     private getDealProductRowsUrl = `${environment.apiUrl}crm.deal.productrows.get.json?id=`;
+    private updateDealHeaderUrl = `${environment.apiUrl}crm.deal.update.json?id=`;
+    private updateDealProductsUrl = `${environment.apiUrl}crm.deal.productrows.update.json?id=`;
+    private myheaderURL: string ='';
     
-    headers = new HttpHeaders()
+    headers = new HttpHeaders()   
         .set('Content-Type', 'application/json');;
     httpOptions = {
         headers: this.headers
@@ -146,16 +149,49 @@ export class BitrixStockService {
 
   }
  
-   
+  
+  // getProductDetails(dealId: number) {
+  //   let rowdata: any;
+  //   if (this.getDealProductRowsUrl.length > 0) {
+  //     console.log(this.getDealProductRowsUrl +dealId.toString());
+  //     return this.http.get(this.getDealProductRowsUrl +dealId.toString());
 
-  getProductDetails(dealId: number) {
-    let rowdata: any;
-    if (this.getDealProductRowsUrl.length > 0) {
-      console.log(this.getDealProductRowsUrl +dealId.toString());
-      return this.http.get(this.getDealProductRowsUrl +dealId.toString());
+  //   }
+  //   return rowdata;
+  // }
 
-    }
-    return rowdata;
+  getProductDetails(dealHeader: DealHeaderModel){
+        console.log(this.getDealProductRowsUrl+dealHeader.ID.toString());
+        return this.http.get(this.getDealProductRowsUrl + dealHeader.ID.toString());
+    
   }
 
+  updateDealHeader(dealID: number, dealHeader: DealHeaderModel){
+    let dealObject = new DealHeaderObject;
+        dealObject.fields = dealHeader;
+        var data = JSON.stringify(dealObject);
+        console.log(data);
+        //alert(typeof dealID);
+        return this.http.post<any>(`${this.updateDealHeaderUrl}${dealID}`,
+          data, this.httpOptions ).pipe(
+            catchError(error => {
+              console.error('Error during POST request:', error);
+              throw error; // Re-throw the error or handle it as needed
+            })
+          );
+  }
+  
+
+  updateDealProductRows(dealID:number, dealProductRows: DealProductsRows, dealHeader:DealHeaderModel) {
+      var data = JSON.stringify(dealProductRows);
+      console.log(data);
+      alert(JSON.stringify(dealProductRows));
+      return this.http.post<any>(`${this.updateDealProductsUrl}${dealID}`,
+        JSON.stringify(dealProductRows),this.httpOptions).pipe(
+          catchError(error => {
+            console.error('Error during POST request:', error);
+            throw error; // Re-throw the error or handle it as needed
+          })
+        );
+  }
 }

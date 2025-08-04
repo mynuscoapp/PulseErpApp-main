@@ -6,14 +6,10 @@ export class DealProductList{
     ORIGINAL_PRODUCT_NAME: string;
     PRODUCT_DESCRIPTION: string;
     PRICE: number;
-<<<<<<< HEAD
-    PRODUCT_NAME: string;
-=======
     PRICE_EXCLUSIVE: number;
     PRICE_NETTO: number;
     PRICE_BRUTTO: number;
     PRICE_ACCOUNT: string;
->>>>>>> 9e41d99e8cd94a83bd4e739174c748ab41359717
     QUANTITY: number;
     DISCOUNT_TYPE_ID: number;
     DISCOUNT_RATE: number;
