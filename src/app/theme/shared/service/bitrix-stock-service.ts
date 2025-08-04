@@ -143,7 +143,12 @@ export class BitrixStockService {
     let rowdata: any;
     if (dealNumber.length > 0) {
       console.log(this.getDealHeaderUrl + dealNumber.toString());
-      return this.http.get(this.getDealHeaderUrl + dealNumber.toString());
+      return this.http.get(this.getDealHeaderUrl + dealNumber.toString()).pipe(
+        catchError(error => {
+          console.error('Error during POST request : ', error);
+          throw error;
+        })
+      );
     }
     return rowdata;
 
@@ -181,12 +186,11 @@ export class BitrixStockService {
   }
   
 
-  updateDealProductRows(dealID:number, dealProductRows: DealProductsRows, dealHeader:DealHeaderModel) {
+  updateDealProductRows(dealProductRows: DealProductsRows) {
       var data = JSON.stringify(dealProductRows);
       console.log(data);
-      alert(JSON.stringify(dealProductRows));
       return this.http.post<any>(this.updateDealProductsUrl,
-        JSON.stringify(dealProductRows),this.httpOptions).pipe(
+        data,this.httpOptions).pipe(
           catchError(error => {
             console.error('Error during POST request:', error);
             throw error; // Re-throw the error or handle it as needed

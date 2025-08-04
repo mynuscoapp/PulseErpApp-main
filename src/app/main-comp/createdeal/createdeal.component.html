@@ -70,9 +70,8 @@
    
             </div>
         </div>
-        
         <div class="col-sm-12">
-            <label id="errorMsg" name="errorMsg" *ngIf="errorDisplayMsg" style="font-weight: bold;background-color: red; color: white;">{{errorDisplayMsg}}</label>
+            <label id="errorMsg" name="errorMsg" *ngIf="errorDisplayMsg" style="font-weight: bold;background-color: red; color: white;">{{ errorDisplayMsg }}</label>
         </div>
         
         <div class="col-sm-12" >
@@ -92,9 +91,11 @@
       <div class="form-group">
         <button type="button" class="btn btn-primary col-sm-1.5" (click)="onresetForm()">Reset</button>
         <input class = "form-group" type="text" id = "updateDealnum" formControlName="updateDealnum" size="20" placeholder="Search Deal#" style="border-radius:1rem; border: 1px solid #28a745; width: 150px; height: 30px; padding-left:20px;">
-        <button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> {{ isDealFetched ? 'Update Deal' : 'Fetch Deal' }}</button>
+        <!--<button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> {{ isDealFetched ? 'Update Deal' : 'Fetch Deal' }}</button>-->
+        <button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> Fetch Deal</button>
+        <button type="button" class="btn btn-primary col-sm-1.5" [disabled] = "updatDealDisable" (click)="onUpdateDealData()"> Update Deal</button>
         <button type="button" class="btn btn-primary" (click)="onExport()">Export</button>
-        <label for="listcount" formControlName="listcount" style="font-size: 15px;text-align:left;padding-left:700px;" class="col-sm-1">{{ numberOfRows }}</label>
+        <label for="listcount" formControlName="listcount" style="font-size: 12px;text-align:left;padding-left:700px;" class="col-sm-1">{{ numberOfRows }}</label>
       </div>
       </form>
     </div>

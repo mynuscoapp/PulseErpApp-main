@@ -33,6 +33,7 @@ export class CreatedealComponent {
   @ViewChild('agGrid') agGrid!: AgGridAngular;
   createDealForm: FormGroup;
   isLoading: boolean = true;
+  updatDealDisable:boolean = true;
   productNamesList: any = [];
   productsList: BitrixProducts[] = []
   rowData: BitrixProducts[] = [];
@@ -60,7 +61,7 @@ export class CreatedealComponent {
   listcount: number = 0;
   numberOfRows:string ="";
   isDealFetched:boolean = false;
-  isCustomerDiabled:boolean = false;
+  isCustomerDiabled:boolean = true;
   fetchDealId: number;
 
   errorDisplayMsg: string;
@@ -281,27 +282,47 @@ export class CreatedealComponent {
     }
 
     onDeleteProductRowClick() {
-      const selectedData = this.agGrid.api.getSelectedRows();
-     
-      const res = this.agGrid.api.applyTransaction({ remove: selectedData });
-      console.log(res.remove);
       let filterList : BitrixProducts[];
-      res.remove.forEach( x => {
-        console.log(x);
-        filterList = this.rowData.filter((item: any) => !item.productName.includes(x.data["productName"]));
-        
-        //this.finalTotal = this.finalTotal - this.rowData[x].total.value;
-      });
-      console.log(filterList);
-       this.rowData = filterList;
-       this.GetTotals();
-      this.agGrid.api.setGridOption('rowData', this.rowData);
+      const selectedData = this.agGrid.api.getSelectedRows();
+      if(selectedData.length === 0){
+        alert("No rows selected");
+        return;
+      }
 
+      this.rowData = this.rowData.filter(
+        row => !selectedData.some(sel => sel.productName === row.productName && sel.id === row.id)
+      );
+      
+      //alert("selectedData = " +selectedData.length);
+        const res = this.agGrid.api.applyTransaction({ remove: selectedData });
+         console.log(res.remove);
+         res.remove.forEach( x => {
+          console.log(x);
+          filterList = this.rowData.filter((item: any) => !item.productName.includes(x.data["productName"]));        
+          //this.rowData = this.rowData.filter((item: any) => !item.productName.includes(x.data["productName"]));        
+          //this.finalTotal = this.finalTotal - this.rowData[x].total.value;
+      });
+      console.log(filterList);     
+      
+     
+       this.rowData = filterList;
+       
+      this.agGrid.api.setGridOption('rowData', this.rowData);
+      this.GetTotals();
+      this.listcount = this.rowData.length;
+      this.numberOfRows = this.listcount.toString() + " Products";
     }
 
  
     onCellValueChanged(event: any) {
-      this.isLoading = false;
+      var fetchDealNum = this.createDealForm.get("updateDealnum").value;
+          if( fetchDealNum == ""){
+            this.isLoading = false;
+          }
+          else
+          {
+            this.isLoading = true;
+          }
       // Access the changed row data and column details
       console.log('Cell value changed:', event.data, event.colDef.field, event.newValue);
       this.storeId = this.createDealForm.get('storesOptions').value;
@@ -327,8 +348,9 @@ export class CreatedealComponent {
           console.log(filterRow.VAT_INCLUDED);
           this.rowData[rowId] = { ...this.rowData[rowId], ...filterRow };
           this.agGrid.api.setGridOption('rowData', this.rowData);
-          this.isLoading = true;
           
+          this.listcount = this.rowData.length;
+          this.numberOfRows = this.listcount.toString() + " Products";   
       } 
       else if ( event.colDef.field === 'quantity') {
         const rowId = event.rowIndex;
@@ -415,39 +437,44 @@ export class CreatedealComponent {
     this.customerSelect = false;
     this.isCustomerInvalid = false;
     this.errorDisplayMsg = '';
-    this.isLoading = false;
+    this.isLoading = true;
     this.isDealFetched = false;
+    this.numberOfRows = '';
+    console.log("Reset Button clicked!");
     //this.createDealForm.get(" pipelineOptions").setValue('0');
     //this.createDealForm.get("customersOptions").setValue('0');
     //this.createDealForm.get("storesOptions").setValue('0');
   }
 
+
   onDealAction(){
     var updatedealnumber:string = '';
     updatedealnumber = this.createDealForm.get('updateDealnum').value;
-    if(!this.isDealFetched){
+
       if(updatedealnumber !=""){
-        alert("Fetching Data");
+       // alert("Fetching Data");
+       this.isLoading = true;
         this.onUpdateDeal();
-        this.isDealFetched = true;
-        this.isLoading = false;
+        this.isDealFetched = true;    
+        this.updatDealDisable = false;
       }
       else{
         alert("Please enter the deal number to be fetched");
       }
-    }
-    else
-    {
-      this.updateDealRows();
+   
+  }
+
+  onUpdateDealData(){
+    this.updateDealRows();
       this.isDealFetched = false;
-    }
+
   }
 
 
  onUpdateDeal(){
     const updatedealnumber = this.createDealForm.get('updateDealnum').value.toString();
     console.log(updatedealnumber);
-    alert(updatedealnumber);    
+   // alert(updatedealnumber);    
 
     this.rowData = [];
 
@@ -460,6 +487,7 @@ export class CreatedealComponent {
       this.dealNum = "Deal ID : " + this.dealHeader.ID.toString();
       this.createDealForm.get("dealName").setValue(this.dealHeader.TITLE);
       this.createDealForm.get("customersOptions").setValue(this.dealHeader.COMPANY_ID);
+      //alert("Company Id : " +this.dealHeader.COMPANY_ID);
       this.getProductDetailsForUpdate(this.dealHeader);   
       this.fetchDealId = this.dealHeader.ID;
       }
@@ -536,18 +564,17 @@ export class CreatedealComponent {
       response => {
         console.log('POST request successful:', response);
         const deal_id = response.result;
-        alert("Deal id = " + deal_id);
+        //alert("Deal id = " + deal_id);
         console.log(deal_id);
-        this.dealNum = "  Deal ID : " + deal_id.toString();
+        this.dealNum = "  Deal ID : " + this.fetchDealId.toString();
 
         // Process the response data here
         let dealProducts = new DealProductsRows;
         dealProducts.id = this.fetchDealId;
-       // alert("Deal Id Type =" + typeof deal_id);
         let dealProductList = this.GetProductRowsList(this.fetchDealId);
         dealProducts.rows = dealProductList;
         console.log(dealProducts);
-        this.bitrixstockservice.updateDealProductRows(this.fetchDealId,dealProducts, dealHeader).subscribe(
+        this.bitrixstockservice.updateDealProductRows(dealProducts).subscribe(
           response => {
             console.log('POST request successful:', response);
             this.agGrid.api.setGridOption('rowData', this.rowData);
