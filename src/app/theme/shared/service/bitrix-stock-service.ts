@@ -12,6 +12,7 @@ import { BitrixStoreProduct } from 'src/app/demo/models/BitrixStoreProduct';
 import { BitrixStores } from 'src/app/demo/models/BitrixStores';
 import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
 import { DealHeaderObject } from 'src/app/demo/models/DealHeaderObject';
+import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
 import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { environment } from 'src/environments/environment';
 import { json } from 'stream/consumers';
@@ -43,7 +44,7 @@ export class BitrixStockService {
     private createDealProductRowUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.set.json`;
     private getDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.get.json?id=`;
     private getDealProductRowsUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.get.json?id=`;
-    private updateDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.update.json?id=`;
+    private updateDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.update.json`;
     private updateDealProductsUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.set.json`;
     private myheaderURL: string ='';
     
@@ -172,12 +173,11 @@ export class BitrixStockService {
     
   }
 
-  updateDealHeader(dealID: number, dealHeader: DealHeaderModel){
-    let dealObject = new DealHeaderObject;
-        var data = JSON.stringify(dealObject);
+  updateDealHeader(dealID: number, dealHeader: DealHeaderUpdateModel){
+   
+        var data = JSON.stringify(dealHeader);
         console.log(data);
-        //alert(typeof dealID);
-        return this.http.post<any>(this.updateDealHeaderUrl +dealID,
+        return this.http.post<any>(this.updateDealHeaderUrl,
           data, this.httpOptions ).pipe(
             catchError(error => {
               console.error('Error during POST request:', error);

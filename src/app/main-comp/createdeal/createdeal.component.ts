@@ -19,6 +19,7 @@ import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
+import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
 
 @Component({
   selector: 'app-createdeal',
@@ -560,7 +561,10 @@ export class CreatedealComponent {
 
     dealHeader.COMMENTS = 'This deal was updated automatically via the Angular application.';
     console.log(dealHeader);
-    this.bitrixstockservice.updateDealHeader(this.fetchDealId, dealHeader).subscribe(
+    let dealUpdateModel = new DealHeaderUpdateModel;
+    dealUpdateModel.id = this.fetchDealId;
+    dealUpdateModel.fields = dealHeader;
+    this.bitrixstockservice.updateDealHeader(this.fetchDealId, dealUpdateModel).subscribe(
       response => {
         console.log('POST request successful:', response);
         const deal_id = response.result;
