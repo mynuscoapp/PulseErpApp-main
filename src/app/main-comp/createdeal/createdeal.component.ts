@@ -542,7 +542,7 @@ export class CreatedealComponent {
 
         // Process the response data here
         let dealProducts = new DealProductsRows;
-        dealProducts.id = deal_id;
+        dealProducts.id = this.fetchDealId;
        // alert("Deal Id Type =" + typeof deal_id);
         let dealProductList = this.GetProductRowsList(this.fetchDealId);
         dealProducts.rows = dealProductList;
