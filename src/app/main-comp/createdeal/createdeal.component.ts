@@ -457,7 +457,7 @@ export class CreatedealComponent {
        
     if (this.dealHeader) {
       console.log(this.dealHeader);
-      this.dealNum = "Deal ID" + this.dealHeader.ID.toString();
+      this.dealNum = "Deal ID : " + this.dealHeader.ID.toString();
       this.createDealForm.get("dealName").setValue(this.dealHeader.TITLE);
       this.createDealForm.get("customersOptions").setValue(this.dealHeader.COMPANY_ID);
       this.getProductDetailsForUpdate(this.dealHeader);   
