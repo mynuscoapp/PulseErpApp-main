@@ -4,6 +4,7 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 
 // project import
 import { SpinnerComponent } from './theme/shared/components/spinner/spinner.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +14,9 @@ import { SpinnerComponent } from './theme/shared/components/spinner/spinner.comp
 })
 export class AppComponent implements OnInit {
   private router = inject(Router);
-
+  private bitrixApiUrl = `${environment.bitrixStockUrl}/bitrixapiurl`;
   title = 'datta-able';
+  http: any;
 
   // life cycle hook
   ngOnInit() {
@@ -24,5 +26,11 @@ export class AppComponent implements OnInit {
       }
       window.scrollTo(0, 0);
     });
+  }
+
+  getBitrixApiUrl() {
+    this.http.get(this.bitrixApiUrl).subscribe(data => {
+      environment.apiUrl = data;
+    })
   }
 }
