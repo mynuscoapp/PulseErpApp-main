@@ -11,7 +11,7 @@ export interface NavigationItem {
   external?: boolean;
   target?: boolean;
   breadcrumbs?: boolean;
-
+  
   children?: NavigationItem[];
 }
 export const NavigationItems: NavigationItem[] = [
@@ -87,6 +87,7 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/createdeal',
         icon: 'feather icon-home',
+        
         classes: 'nav-item'
       }
     ]

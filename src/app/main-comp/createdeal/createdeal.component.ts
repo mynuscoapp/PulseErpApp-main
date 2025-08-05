@@ -317,7 +317,7 @@ export class CreatedealComponent {
  
     onCellValueChanged(event: any) {
       var fetchDealNum = this.createDealForm.get("updateDealnum").value;
-          if( fetchDealNum == ""){
+          if( fetchDealNum == "" || fetchDealNum == null){
             this.isLoading = false;
           }
           else
@@ -355,8 +355,16 @@ export class CreatedealComponent {
       } 
       else if ( event.colDef.field === 'quantity') {
         const rowId = event.rowIndex;
+       let productTotalPrice = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
        
+       
+       if(isNaN(productTotalPrice)){
+        this.rowData[rowId].total = 0;
+       }
+       else
+       {
         this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
+       }
         this.agGrid.api.setGridOption('rowData', this.rowData);
         
         //---------------Calling function to calculate Subtotal value and display it ---------------
@@ -364,7 +372,14 @@ export class CreatedealComponent {
         } else if( event.colDef.field === 'discount'){
         const rowId = event.rowIndex;
         var calDisc = this.rowData[rowId].total - (this.rowData[rowId].total * (this.rowData[rowId].discount / 100))
+        
+        if(isNaN(calDisc)){
+        this.rowData[rowId].total = 0;
+       }
+       else
+       {
         this.rowData[rowId].total = calDisc
+       }
         this.agGrid.api.setGridOption('rowData', this.rowData);
         this.GetTotals();
         
@@ -395,7 +410,6 @@ export class CreatedealComponent {
     this.calGST = gstTotal.toFixed(2).toString();
     this.finalTotal = subTotal.toFixed(2).toString();
     //this.ftotal = subTotal.toFixed(2).toString();
-  
     this.ftotal = totalcost.toFixed(2).toString();
   }
 
@@ -517,7 +531,8 @@ export class CreatedealComponent {
     let rowsList: BitrixProducts[] = [];
     for (let i = 0; i < data.length; i++) {
           let productRow = new BitrixProducts;
-         var filterRow = this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0].PREVIEW_PICTURE;
+          //console.log(data[i].PRODUCT_NAME); //To cross- check the product name that is loaded.
+          var filterRow = this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0].PREVIEW_PICTURE;
            
           productRow.productName = data[i].PRODUCT_NAME;
           productRow.PREVIEW_PICTURE= this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0].PREVIEW_PICTURE;
@@ -534,7 +549,13 @@ export class CreatedealComponent {
           
           productRow.stock = stockAvail.overallQuantity;
           productRow.reserved = stockAvail.overallreserved;
-          productRow.total = productRow.RRP * productRow.quantity;
+          let productTotalPrice = productRow.RRP * productRow.quantity;
+          if (isNaN(productTotalPrice)){
+            productRow.total = 0;
+          }
+          else{
+            productRow.total = productRow.RRP * productRow.quantity;
+          }
 
           this.rowData.push(productRow);
         }
