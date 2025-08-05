@@ -15,7 +15,7 @@ export function initializeApp(configService: ConfigService) {
        // Store the fetched config globally or in a service
        // For example, you can assign it to a global object or a dedicated service property
        (window as any).appConfig = config;
-       console.log((window as any).appConfig[0].API_URL);
+       //console.log((window as any).appConfig[0].API_URL);
      });
    }
 

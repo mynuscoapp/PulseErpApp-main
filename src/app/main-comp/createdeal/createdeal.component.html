@@ -9,7 +9,7 @@
              <input class="form-group" type="text" id="dealName" formControlName="dealName" name="dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
                 </div>
                 <div class="col-sm-4" class="form-group">
-                    <label for="dealId" formControlName ="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" > {{dealNum}}</label>
+                    <label id="dealId" formControlName ="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" ngDefaultControl> {{dealNum}}</label>
                </div>
              </div>
             <p></p>
@@ -95,7 +95,7 @@
         <button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> Fetch Deal</button>
         <button type="button" class="btn btn-primary col-sm-1.5" [disabled] = "updatDealDisable" (click)="onUpdateDealData()"> Update Deal</button>
         <button type="button" class="btn btn-primary" (click)="onExport()">Export</button>
-        <label for="listcount" formControlName="listcount" style="font-size: 12px;text-align:left;padding-left:700px;" class="col-sm-1">{{ numberOfRows }}</label>
+        <label id="listcount" formControlName="listcount" style="font-size: 12px;text-align:left;padding-left:700px;" class="col-sm-1" ngDefaultControl>{{ numberOfRows }}</label>
       </div>
       </form>
     </div>
