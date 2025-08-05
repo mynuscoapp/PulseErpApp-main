@@ -1,5 +1,6 @@
+
 <div class="row" style="height: calc(100% - 5px);">
-    <div class="col-sm-12" style="background: radial-gradient(circle at top left, #efefe8, #8fcde8)">
+    <div class="col-sm-12" style="background: radial-gradient(circle at top left, #efeee8, #8fcde8)">
       <form [formGroup]="createDealForm" (ngSubmit)="onSubmit()">
         <div class="col-sm-12">
 
@@ -9,7 +10,7 @@
              <input class="form-group" type="text" id="dealName" formControlName="dealName" name="dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
                 </div>
                 <div class="col-sm-4" class="form-group">
-                    <label for="dealId" formControlName ="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" > {{dealNum}}</label>
+                    <label for="dealId" id = "dealId" formControlName ="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" > {{dealNum}}</label>
                </div>
              </div>
             <p></p>
@@ -20,8 +21,7 @@
                         <select matNativeControl formControlName="pipelineOptions" required (change)="warehouseSet()"
                             style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
                             <option disabled value="">Select Pipeline</option>
-                            <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>
-                            
+                            <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>                         
                         </select>
                     
                 </div>
@@ -64,7 +64,7 @@
                 <input type="text" id="gst" name="stotal" size="10" disabled><br><br>-->
                 
                 <label for="finaltotal" style="font-size: 15px;" class="col-sm-1">Total :</label>
-                <label for="finaltotal" style="font-size: 15px; text-align: left;" class="col-sm-1">{{ftotal}}</label>
+                <label for="finaltotal" id = "ftotal" style="font-size: 15px; text-align: left;" class="col-sm-1">{{ftotal}}</label>
                 <!--<input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>-->
                 <button type="submit" [disabled]="isLoading" class="btn btn-primary col-sm-1" (click)="validateCustomer()">Create</button>
    
@@ -95,7 +95,7 @@
         <button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> Fetch Deal</button>
         <button type="button" class="btn btn-primary col-sm-1.5" [disabled] = "updatDealDisable" (click)="onUpdateDealData()"> Update Deal</button>
         <button type="button" class="btn btn-primary" (click)="onExport()">Export</button>
-        <label for="listcount" formControlName="listcount" style="font-size: 12px;text-align:left;padding-left:700px;" class="col-sm-1">{{ numberOfRows }}</label>
+        <label for="listcount" id = "listcount" formControlName="listcount" style="font-size: 12px;text-align:left;padding-left:700px;" class="col-sm-1">{{ numberOfRows }}</label>
       </div>
       </form>
     </div>
