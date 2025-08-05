@@ -76,7 +76,9 @@ export class CreatedealComponent {
         customersOptions: ['', [Validators.required]],
         storesOptions: ['', [Validators.required]],
         dealName: ['', [Validators.required]],
-        updateDealnum: ['']
+        updateDealnum: [''],
+        dealId: [''],
+        listcount: ['']
         // FromDate: ['', [Validators.required]],
         // ToDate: ['', [Validators.required]],
         // selectedOption: ['', [Validators.required]]
@@ -531,11 +533,9 @@ export class CreatedealComponent {
     let rowsList: BitrixProducts[] = [];
     for (let i = 0; i < data.length; i++) {
           let productRow = new BitrixProducts;
-          //console.log(data[i].PRODUCT_NAME); //To cross- check the product name that is loaded.
-          var filterRow = this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0].PREVIEW_PICTURE;
            
           productRow.productName = data[i].PRODUCT_NAME;
-          productRow.PREVIEW_PICTURE= this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0].PREVIEW_PICTURE;
+          productRow.PREVIEW_PICTURE= this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0] ? this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0].PREVIEW_PICTURE : '';
           productRow.id = data[i].PRODUCT_ID;
           productRow.RRP = data[i].PRICE;
           productRow.quantity = data[i].QUANTITY;
