@@ -148,6 +148,9 @@ export class BitrixStockService {
       return this.http.get(this.getDealHeaderUrl + dealNumber.toString()).pipe(
         catchError(error => {
           console.error('Error during POST request : ', error);
+          if(error.status === 400){
+                alert("Unable to fetch this deal");
+              }
           throw error;
         })
       );
@@ -181,6 +184,7 @@ export class BitrixStockService {
           data, this.httpOptions ).pipe(
             catchError(error => {
               console.error('Error during POST request:', error);
+              
               throw error; // Re-throw the error or handle it as needed
             })
           );
