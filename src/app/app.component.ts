@@ -4,6 +4,8 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 
 // project import
 import { SpinnerComponent } from './theme/shared/components/spinner/spinner.component';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -12,10 +14,11 @@ import { SpinnerComponent } from './theme/shared/components/spinner/spinner.comp
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  constructor (private http: HttpClient){
+    
+  }
   private router = inject(Router);
-
   title = 'datta-able';
-
   // life cycle hook
   ngOnInit() {
     this.router.events.subscribe((evt) => {
@@ -25,4 +28,6 @@ export class AppComponent implements OnInit {
       window.scrollTo(0, 0);
     });
   }
+
+  
 }

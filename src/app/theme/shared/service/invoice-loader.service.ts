@@ -14,12 +14,12 @@ export class InvoiceLoaderService {
   }
 
 
-  private invoiceDownladUrl = `${environment.apiUrl}crm.item.get.json?entityTypeId=31&id=`;
-  private productRowUrl = `${environment.apiUrl}crm.productrow.list.json?FILTER[OWNER_TYPE]=SI&FILTER[OWNER_ID]=`;
-  private companyDetailsUrl = `${environment.apiUrl}crm.company.get.json?id=`;
-  private companyAddressDetailsUrl = `${environment.apiUrl}crm.address.list.json?FILTER[ENTITY_TYPE_ID]=8&FILTER[ANCHOR_ID]=`;
-  private productHSNCodeUrl = `${environment.apiUrl}catalog.product.get.json?id=`;
-  private buyToShipToGSTUrl = `${environment.apiUrl}crm.requisite.list.json?`
+  private invoiceDownladUrl = `${(window as any).appConfig[0].API_URL}crm.item.get.json?entityTypeId=31&id=`;
+  private productRowUrl = `${(window as any).appConfig[0].API_URL}crm.productrow.list.json?FILTER[OWNER_TYPE]=SI&FILTER[OWNER_ID]=`;
+  private companyDetailsUrl = `${(window as any).appConfig[0].API_URL}crm.company.get.json?id=`;
+  private companyAddressDetailsUrl = `${(window as any).appConfig[0].API_URL}crm.address.list.json?FILTER[ENTITY_TYPE_ID]=8&FILTER[ANCHOR_ID]=`;
+  private productHSNCodeUrl = `${(window as any).appConfig[0].API_URL}catalog.product.get.json?id=`;
+  private buyToShipToGSTUrl = `${(window as any).appConfig[0].API_URL}crm.requisite.list.json?`
 
 
   loadInvoiceHeader(invoiceNumber: string) {

@@ -1,5 +1,6 @@
+
 <div class="row" style="height: calc(100% - 5px);">
-    <div class="col-sm-12" style="background: radial-gradient(circle at top left, #efefe8, #8fcde8)">
+    <div class="col-sm-12" style="background: radial-gradient(circle at top left, #efeee8, #8fcde8)">
       <form [formGroup]="createDealForm" (ngSubmit)="onSubmit()">
         <div class="col-sm-12">
 
@@ -8,8 +9,8 @@
 
              <input class="form-group" type="text" id="dealName" formControlName="dealName" name="dealName" placeholder="Enter Deal Name" style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
                 </div>
-                <div class="col-sm-4">
-                    <label for="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" > {{dealNum}}</label>
+                <div class="col-sm-4" class="form-group">
+                    <label id="dealId" formControlName ="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" ngDefaultControl> {{dealNum}}</label>
                </div>
              </div>
             <p></p>
@@ -18,20 +19,19 @@
 
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                         <select matNativeControl formControlName="pipelineOptions" required (change)="warehouseSet()"
-                        style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
+                            style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
                             <option disabled value="">Select Pipeline</option>
-                            <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>
-                            
+                            <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>                         
                         </select>
                     
                 </div>
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                     <!--  <label>Customer*</label>-->
                 
-                        <select matNativeControl formControlName="customersOptions" required [(ngModel)]="selectedCustomer"
+                        <select matNativeControl formControlName="customersOptions" required [(ngModel)]="selectedCustomer" 
                          style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue">
                             <!--[(ngModel)] = "selectedCustomer" [ngClass]="{'invalid-select':isCustomerInvalid()}"-->
-                            <option disabled value="">Select Customer</option>
+                            <option [disabled]="isCustomerDiabled" value="">Select Customer</option>
                             <option *ngFor="let item of bitrixCustomers" [value]="item.id">{{ item.name }}</option>
                            
                         </select>
@@ -55,24 +55,23 @@
                 <!--class="col-sm-18"-->
                 <button type="button" class="btn btn-primary col-sm-1.5" (click)="onAddProductRoe()">Add Product</button>
                 <button type="button" class="btn btn-primary  col-sm-1.5" (click)="onDeleteProductRowClick()">Remove Product</button>
-                <label for="subtotal" style="font-size: 20px;" class="col-sm-1.5">Subtotal :</label>
-                <label for="subtotal" style="font-size: 20px; align-content: left;" class="col-sm-1">{{finalTotal}}</label>
-                <!--<input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>-->
+                <!--<label for="subtotal" style="font-size: 15px;" class="col-sm-1.5">Subtotal :</label>
+                <label for="subtotal" style="font-size: 15px; align-content: left;" class="col-sm-1">{{finalTotal}}</label>
+                <input type="text" id="subtotal" name="subtotal" size="10" disabled><br><br>
 
-                <label for="gst" style="font-size: 20px;" class="col-sm-1">GST :</label>
-                <label for="gst" style="font-size: 20px; text-align: left;" class="col-sm-1">{{calGST}}</label>
-                <!--<input type="text" id="gst" name="stotal" size="10" disabled><br><br>-->
+                <label for="gst" style="font-size: 15px;" class="col-sm-1">GST :</label>
+                <label for="gst" style="font-size: 15px; text-align: left;" class="col-sm-1">{{calGST}}</label>
+                <input type="text" id="gst" name="stotal" size="10" disabled><br><br>-->
                 
-                <label for="finaltotal" style="font-size: 20px;" class="col-sm-1">Total :</label>
-                <label for="finaltotal" style="font-size: 20px; text-align: left;" class="col-sm-1">{{ftotal}}</label>
+                <label for="finaltotal" style="font-size: 15px;" class="col-sm-1">Total :</label>
+                <label for="finaltotal" id = "ftotal" style="font-size: 15px; text-align: left;" class="col-sm-1">{{ftotal}}</label>
                 <!--<input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>-->
                 <button type="submit" [disabled]="isLoading" class="btn btn-primary col-sm-1" (click)="validateCustomer()">Create</button>
    
             </div>
         </div>
-        
         <div class="col-sm-12">
-            <label id="errorMsg" name="errorMsg" *ngIf="errorDisplayMsg" style="font-weight: bold;background-color: red; color: white;">{{errorDisplayMsg}}</label>
+            <label id="errorMsg" name="errorMsg" *ngIf="errorDisplayMsg" style="font-weight: bold;background-color: red; color: white;">{{ errorDisplayMsg }}</label>
         </div>
         
         <div class="col-sm-12" >
@@ -88,8 +87,15 @@
             <!-- [rowData]="productRowData"
                 [columnDefs]="colDefs" -->
       </div>
-      <div>
-        <button type="button" class="btn btn-primary col-sm-1.5" (click)="resetForm()">Reset</button>
+
+      <div class="form-group">
+        <button type="button" class="btn btn-primary col-sm-1.5" (click)="onresetForm()">Reset</button>
+        <input class = "form-group" type="text" id = "updateDealnum" formControlName="updateDealnum" size="20" placeholder="Search Deal#" style="border-radius:1rem; border: 1px solid #28a745; width: 150px; height: 30px; padding-left:20px;">
+        <!--<button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> {{ isDealFetched ? 'Update Deal' : 'Fetch Deal' }}</button>-->
+        <button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> Fetch Deal</button>
+        <button type="button" class="btn btn-primary col-sm-1.5" [disabled] = "updatDealDisable" (click)="onUpdateDealData()"> Update Deal</button>
+        <button type="button" class="btn btn-primary" (click)="onExport()">Export</button>
+        <label id="listcount" formControlName="listcount" style="font-size: 12px;text-align:left;padding-left:700px;" class="col-sm-1" ngDefaultControl>{{ numberOfRows }}</label>
       </div>
       </form>
     </div>

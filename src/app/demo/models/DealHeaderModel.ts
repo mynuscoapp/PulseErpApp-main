@@ -1,4 +1,5 @@
 export class DealHeaderModel{
+    ID: number;
     TITLE: string;
     NAME: string;
     TYPE_ID: string;

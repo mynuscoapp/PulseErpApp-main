@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
 import { LoginService } from 'src/app/theme/shared/service/login-service';
 
 @Component({
@@ -26,6 +27,7 @@ export default class AuthSigninComponent {
   
   ngOnInit(): void {
     sessionStorage.setItem('isLogged', 'false');
+    
   }
 
   onSubmit(): void {

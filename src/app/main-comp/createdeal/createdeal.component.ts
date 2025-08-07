@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
@@ -18,10 +19,11 @@ import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
+import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
 
 @Component({
   selector: 'app-createdeal',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, AgGridAngular ],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, AgGridAngular],
   templateUrl: './createdeal.component.html',
   styleUrl: './createdeal.component.scss'
 })
@@ -30,14 +32,17 @@ import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 
 export class CreatedealComponent {
   @ViewChild('agGrid') agGrid!: AgGridAngular;
-    createDealForm: FormGroup;
-  isLoading: boolean = false;
+  createDealForm: FormGroup;
+  isLoading: boolean = true;
+  updatDealDisable:boolean = true;
   productNamesList: any = [];
   productsList: BitrixProducts[] = []
   rowData: BitrixProducts[] = [];
   rowSelection: RowSelectionOptions | "single" | "multiple" = {
     mode: "multiRow",
   };
+  
+  dealHeader: DealHeaderModel;
   bitrixOverAllStock: BitrixOverallStock[];
   colDefs: ColDef[] ;
   gridOptions: GridOptions;
@@ -53,12 +58,17 @@ export class CreatedealComponent {
   customerSelect: boolean = false;
   dealNum: string;
   isCustomerInvalid:boolean = false;
-
+  startPage!: string
+  listcount: number = 0;
+  numberOfRows:string ="";
+  isDealFetched:boolean = false;
+  isCustomerDiabled:boolean = true;
+  fetchDealId: number;
 
   errorDisplayMsg: string;
 
   
-   constructor(private formBuilder: FormBuilder,  private bitrixstockservice: BitrixStockService) {
+   constructor(private formBuilder: FormBuilder,  private bitrixstockservice: BitrixStockService, private http: HttpClient) {
         
       this.createDealForm = this.formBuilder.group({
         
@@ -66,6 +76,9 @@ export class CreatedealComponent {
         customersOptions: ['', [Validators.required]],
         storesOptions: ['', [Validators.required]],
         dealName: ['', [Validators.required]],
+        updateDealnum: [''],
+        dealId: [''],
+        listcount: ['']
         // FromDate: ['', [Validators.required]],
         // ToDate: ['', [Validators.required]],
         // selectedOption: ['', [Validators.required]]
@@ -100,8 +113,7 @@ export class CreatedealComponent {
     {
         this.errorDisplayMsg  = 'Please enter quantity!';
         return;
-    }
-     
+    }   
     let dealHeader = new DealHeaderModel;
     dealHeader.TITLE = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = "SALE";
@@ -116,11 +128,8 @@ export class CreatedealComponent {
       response => {
         console.log('POST request successful:', response);
         const deal_id = response.result;
-
         console.log(deal_id);
         this.dealNum = "  Deal ID : " + deal_id.toString();
-
-        //console.log(deal_id);
 
         // Process the response data here
         let dealProducts = new DealProductsRows;
@@ -155,6 +164,8 @@ export class CreatedealComponent {
 
       return hasQuantity;
   }
+
+      
     GetProductRowsList(dealId: number) {
       let rowsList: DealProductList[] = [];
       for(let i=0; i< this.rowData.length; i++) {
@@ -176,14 +187,14 @@ export class CreatedealComponent {
             //productRow.WAREHOUSE_ID = this.warehouseSelection();
             //alert(this.createDealForm.get("storesOptions").value);
             //alert(productRow.WAREHOUSE_ID.toString());
-           rowsList.push(productRow);
+            console.log(productRow);
+            rowsList.push(productRow);
           } else {
             this.onFlashOneCell(i, 'quantity');
           }
         }
       }
-      return rowsList;
-
+      return rowsList; 
     }
 
     onFlashOneCell(rowIndex: number, colName: string) {
@@ -200,7 +211,6 @@ export class CreatedealComponent {
         this.bitrixstockservice.bitrixProductList = data;
         console.log(this.productNamesList);
         this.createColumnsDefinition();
-        
       });
 
       this.bitrixstockservice.loadBitrixPipline().subscribe((data: any) => {
@@ -245,8 +255,7 @@ export class CreatedealComponent {
           allowTyping: true,
           filterList: true,
           highlightMatch: true,
-          valueListMaxHeight: 220,
-          
+          valueListMaxHeight: 220,        
         },
         cellStyle: {border: '1px solid #c1c6c7ff' }
       },
@@ -269,36 +278,57 @@ export class CreatedealComponent {
           cellStyle: {backgroundColor: '#ecf1f2ff', border: '1px solid #c1c6c7ff' } }
        ];
       }
+
     onAddProductRoe(){
       this.rowData.push(new BitrixProducts);
       this.agGrid.api.setGridOption('rowData', this.rowData);
     }
 
     onDeleteProductRowClick() {
-      const selectedData = this.agGrid.api.getSelectedRows();
-     
-      const res = this.agGrid.api.applyTransaction({ remove: selectedData });
-      console.log(res.remove);
       let filterList : BitrixProducts[];
-      res.remove.forEach( x => {
-        console.log(x);
-        filterList = this.rowData.filter((item: any) => !item.productName.includes(x.data["productName"]));
-        
-        //this.finalTotal = this.finalTotal - this.rowData[x].total.value;
-      });
-      console.log(filterList);
-       this.rowData = filterList;
-       this.GetTotals();
-      this.agGrid.api.setGridOption('rowData', this.rowData);
+      const selectedData = this.agGrid.api.getSelectedRows();
+      if(selectedData.length === 0){
+        alert("No rows selected");
+        return;
+      }
 
+      this.rowData = this.rowData.filter(
+        row => !selectedData.some(sel => sel.productName === row.productName && sel.id === row.id)
+      );
+      
+      //alert("selectedData = " +selectedData.length);
+        const res = this.agGrid.api.applyTransaction({ remove: selectedData });
+         console.log(res.remove);
+         res.remove.forEach( x => {
+          console.log(x);
+          filterList = this.rowData.filter((item: any) => !item.productName.includes(x.data["productName"]));        
+          //this.rowData = this.rowData.filter((item: any) => !item.productName.includes(x.data["productName"]));        
+          //this.finalTotal = this.finalTotal - this.rowData[x].total.value;
+      });
+      console.log(filterList);     
+      
+     
+       this.rowData = filterList;
+       
+      this.agGrid.api.setGridOption('rowData', this.rowData);
+      this.GetTotals();
+      this.listcount = this.rowData.length;
+      this.numberOfRows = this.listcount.toString() + " Products";
     }
 
  
     onCellValueChanged(event: any) {
-      
+      var fetchDealNum = this.createDealForm.get("updateDealnum").value;
+          if( fetchDealNum == "" || fetchDealNum == null){
+            this.isLoading = false;
+          }
+          else
+          {
+            this.isLoading = true;
+          }
       // Access the changed row data and column details
       console.log('Cell value changed:', event.data, event.colDef.field, event.newValue);
-      this.storeId = this.createDealForm.get('storesOptions')?.value;
+      this.storeId = this.createDealForm.get('storesOptions').value;
       // Perform actions based on the new value
       if (event.colDef.field === 'productName') {
           const rowId = event.rowIndex;
@@ -308,7 +338,6 @@ export class CreatedealComponent {
             return;
           }
           var filterRow = this.productsList.filter(x => x.productName == event.newValue)[0];
-          
           console.log(this.storeId);
           console.log(filterRow);
           console.log(event.newValue);
@@ -323,12 +352,21 @@ export class CreatedealComponent {
           this.rowData[rowId] = { ...this.rowData[rowId], ...filterRow };
           this.agGrid.api.setGridOption('rowData', this.rowData);
           
-          
+          this.listcount = this.rowData.length;
+          this.numberOfRows = this.listcount.toString() + " Products";   
       } 
       else if ( event.colDef.field === 'quantity') {
         const rowId = event.rowIndex;
+       let productTotalPrice = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
        
+       
+       if(isNaN(productTotalPrice)){
+        this.rowData[rowId].total = 0;
+       }
+       else
+       {
         this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
+       }
         this.agGrid.api.setGridOption('rowData', this.rowData);
         
         //---------------Calling function to calculate Subtotal value and display it ---------------
@@ -336,12 +374,21 @@ export class CreatedealComponent {
         } else if( event.colDef.field === 'discount'){
         const rowId = event.rowIndex;
         var calDisc = this.rowData[rowId].total - (this.rowData[rowId].total * (this.rowData[rowId].discount / 100))
+        
+        if(isNaN(calDisc)){
+        this.rowData[rowId].total = 0;
+       }
+       else
+       {
         this.rowData[rowId].total = calDisc
+       }
         this.agGrid.api.setGridOption('rowData', this.rowData);
         this.GetTotals();
+        
       }
 
     }
+
 
   private GetTotals() {
     var totalcost:number = 0, i:number = 0;
@@ -365,9 +412,10 @@ export class CreatedealComponent {
     this.calGST = gstTotal.toFixed(2).toString();
     this.finalTotal = subTotal.toFixed(2).toString();
     //this.ftotal = subTotal.toFixed(2).toString();
-  
     this.ftotal = totalcost.toFixed(2).toString();
   }
+
+
   warehouseSet(){
     if(this.createDealForm.get("pipelineOptions").value == "0"){
     this.createDealForm.get("storesOptions").setValue(1); 
@@ -394,9 +442,8 @@ export class CreatedealComponent {
 }
 
  
-  resetForm(){
+  onresetForm(){
     this.createDealForm.reset();
-    
     this.rowData = [];
     this.rowData.push(new BitrixProducts);
     this.agGrid.api.setGridOption('rowData', this.rowData);
@@ -407,13 +454,189 @@ export class CreatedealComponent {
     this.customerSelect = false;
     this.isCustomerInvalid = false;
     this.errorDisplayMsg = '';
+    this.isLoading = true;
+    this.isDealFetched = false;
+    this.numberOfRows = '';
+    console.log("Reset Button clicked!");
     //this.createDealForm.get(" pipelineOptions").setValue('0');
     //this.createDealForm.get("customersOptions").setValue('0');
     //this.createDealForm.get("storesOptions").setValue('0');
   }
+
+
+  onDealAction(){
+    var updatedealnumber:string = '';
+    updatedealnumber = this.createDealForm.get('updateDealnum').value;
+
+      if(updatedealnumber !=""){
+       // alert("Fetching Data");
+       this.isLoading = true;
+        this.onUpdateDeal();
+        this.isDealFetched = true;    
+        this.updatDealDisable = false;
+      }
+      else{
+        alert("Please enter the deal number to be fetched");
+      }
+   
+  }
+
+  onUpdateDealData(){
+    this.updateDealRows();
+      this.isDealFetched = false;
+
+  }
+
+
+ onUpdateDeal(){
+    const updatedealnumber = this.createDealForm.get('updateDealnum').value.toString();
+    console.log(updatedealnumber);
+   // alert(updatedealnumber);    
+
+    this.rowData = [];
+
+    this.bitrixstockservice.loadDealHeader(updatedealnumber).subscribe((data: any) => {    
+    console.log(data.result);  
+    this.dealHeader = data.result;
+       
+    if (this.dealHeader) {
+      console.log(this.dealHeader);
+      this.dealNum = "Deal ID : " + this.dealHeader.ID.toString();
+      this.createDealForm.get("dealName").setValue(this.dealHeader.TITLE);
+      this.createDealForm.get("customersOptions").setValue(this.dealHeader.COMPANY_ID);
+      //alert("Company Id : " +this.dealHeader.COMPANY_ID);
+      this.getProductDetailsForUpdate(this.dealHeader);   
+      this.fetchDealId = this.dealHeader.ID;
+      }
+  });
+  }
+  
+  getProductDetailsForUpdate(dealHeader: DealHeaderModel) {
+    this.bitrixstockservice.getProductDetails(dealHeader).subscribe((data: any) => {
+      console.log(data);
+      console.log(data.result);
+      if(data){
+        this.GetProductRowsForUpdate(data.result);
+        
+       this.agGrid.api.setGridOption('rowData', this.rowData);
+       this.listcount = this.rowData.length;
+       this.numberOfRows = this.listcount.toString() + " Products";
+       
+      }
+    }
+    , error => {
+      console.error('Error fetching product details:', error);
+  });
 }
 
- 
+  private GetProductRowsForUpdate(data: DealProductList[]) {
+    let rowsList: BitrixProducts[] = [];
+    for (let i = 0; i < data.length; i++) {
+          let productRow = new BitrixProducts;
+           
+          productRow.productName = data[i].PRODUCT_NAME;
+          productRow.PREVIEW_PICTURE= this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0] ? this.bitrixstockservice.bitrixProductList.filter(x => x.id == data[i].PRODUCT_ID)[0].PREVIEW_PICTURE : '';
+          productRow.id = data[i].PRODUCT_ID;
+          productRow.RRP = data[i].PRICE;
+          productRow.quantity = data[i].QUANTITY;
+          productRow.discount = data[i].DISCOUNT_RATE;
+          productRow.VAT_INCLUDED = data[i].TAX_INCLUDED;
+          productRow.tax_rate = data[i].TAX_RATE;
+          
+          var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == data[i].PRODUCT_ID)[0];
+          console.log(stockAvail.overallQuantity);
+          console.log(stockAvail);
+          
+          productRow.stock = stockAvail.overallQuantity;
+          productRow.reserved = stockAvail.overallreserved;
+          let productTotalPrice = productRow.RRP * productRow.quantity;
+          if (isNaN(productTotalPrice)){
+            productRow.total = 0;
+          }
+          else{
+            productRow.total = productRow.RRP * productRow.quantity;
+          }
 
- 
-  
+          this.rowData.push(productRow);
+        }
+        console.log(this.rowData); 
+        this.GetTotals();
+        //this.isCustomerDiabled = true;
+  }
+
+  updateDealRows(){
+   this.errorDisplayMsg = '';
+    if (!this.IsQuantityEntered())
+    {
+        this.errorDisplayMsg  = 'Please enter quantity!';
+        return;
+    }   
+    let dealHeader = new DealHeaderModel;
+    dealHeader.TITLE = this.createDealForm.get("dealName").value;
+    dealHeader.TYPE_ID = "SALE";
+    dealHeader.COMPANY_ID =  this.createDealForm.get("customersOptions").value;
+    //dealHeader.CATEGORY_ID = 
+    dealHeader.OPPORTUNITY = +this.ftotal;
+    dealHeader.ASSIGNED_BY_ID = '1';
+    //dealHeader.STAGE_ID = 'NEW';
+
+    dealHeader.COMMENTS = 'This deal was updated automatically via the Angular application.';
+    console.log(dealHeader);
+    let dealUpdateModel = new DealHeaderUpdateModel;
+    dealUpdateModel.id = this.fetchDealId;
+    dealUpdateModel.fields = dealHeader;
+    this.bitrixstockservice.updateDealHeader(this.fetchDealId, dealUpdateModel).subscribe(
+      response => {
+        console.log('POST request successful:', response);
+        const deal_id = response.result;
+        //alert("Deal id = " + deal_id);
+        console.log(deal_id);
+        this.dealNum = "  Deal ID : " + this.fetchDealId.toString();
+
+        // Process the response data here
+        let dealProducts = new DealProductsRows;
+        dealProducts.id = this.fetchDealId;
+        let dealProductList = this.GetProductRowsList(this.fetchDealId);
+        dealProducts.rows = dealProductList;
+        console.log(dealProducts);
+        this.bitrixstockservice.updateDealProductRows(dealProducts).subscribe(
+          response => {
+            console.log('POST request successful:', response);
+            this.agGrid.api.setGridOption('rowData', this.rowData);
+            alert('Deal Updated Successfully');
+            
+          },
+          error => {
+            alert('Error Updating deal : '+ (error?.message || JSON.stringify(error)));
+          }
+        );
+      },
+      error => {
+        alert('Error Updating deal products :'+ (error?.message || JSON.stringify(error)));
+      }
+    );
+   //this.isCustomerDiabled = true;
+    //alert("Customer Disabled");
+  }
+
+  onExport(): void {
+    this.agGrid.api.exportDataAsExcel();
+  }
+
+  // loadMoreUpdateProducts(pageNumber: number, totalPages: number,dealNumber: number) {
+  //   this.bitrixstockservice.getProductDetails(dealNumber).subscribe((data: any) => {
+  //     for (let i = 0; i < data.result.length; i++)
+  //       this.rowData!.push(data.result[i]);
+  //     if (data.next)
+  //       this.startPage = data.next;
+  //       console.log(data.result);
+  //       console.log(this.rowData!);
+  //     if (!data.next) {
+  //       this.GetProductRowsForUpdate(data);
+  //     } else {
+  //       pageNumber++;
+  //       this.loadMoreUpdateProducts(pageNumber, totalPages, dealNumber);
+  //     }
+  //   });
+  // }
+}

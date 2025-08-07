@@ -1,8 +1,9 @@
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { error } from 'console';
 import { tap } from 'lodash';
-import { catchError, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
@@ -11,6 +12,7 @@ import { BitrixStoreProduct } from 'src/app/demo/models/BitrixStoreProduct';
 import { BitrixStores } from 'src/app/demo/models/BitrixStores';
 import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
 import { DealHeaderObject } from 'src/app/demo/models/DealHeaderObject';
+import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
 import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
 import { environment } from 'src/environments/environment';
 import { json } from 'stream/consumers';
@@ -20,6 +22,23 @@ import { json } from 'stream/consumers';
 })
 export class BitrixStockService {
   constructor(private http: HttpClient) {
+}
+   
+    bitrixStockList: BitrixStoreProduct[];
+    bitrixProductList: BitrixProducts[];
+    bitrixPipeLine: BitrixPipeline[];
+    bitrixCustomers: BitrixCustomers[];
+    bitrixStores: BitrixStores[];
+    bitrixOverAllStock: BitrixOverallStock[];
+
+    
+    private bitrixStockUrl = `${environment.bitrixStockUrl}/bitrixstock`;
+    private bitrixProductsUrl = `${environment.bitrixStockUrl}/productslist`;
+    private bitrixPipelineUrl = `${environment.bitrixStockUrl}/pipelinelist`;
+    private bitrixCustomersUrl = `${environment.bitrixStockUrl}/customerlist`;
+    private bitrixStoresUrl = `${environment.bitrixStockUrl}/storelist`;
+    private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
+    private bitrixApiUrl = `${environment.bitrixStockUrl}/bitrixapiurl`;
   }
 
   bitrixStockList: BitrixStoreProduct[];
@@ -38,6 +57,29 @@ export class BitrixStockService {
   private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
   private bitrixPulseUsersUrl = `${environment.bitrixStockUrl}/pulseusers`;
 
+    private createDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.add.json`;
+    private createDealProductRowUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.set.json`;
+    private getDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.get.json?id=`;
+    private getDealProductRowsUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.get.json?id=`;
+    private updateDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.update.json`;
+    private updateDealProductsUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.set.json`;
+    private myheaderURL: string ='';
+    
+    headers = new HttpHeaders()   
+        .set('Content-Type', 'application/json');;
+    httpOptions = {
+        headers: this.headers
+    };
+    
+    loadBitrixStock() {
+        let rowdata: any;
+        if (this.bitrixStockUrl.length > 0 && !this.bitrixStockList) {
+          return this.http.get(this.bitrixStockUrl);
+        } else {
+          return of(this.bitrixStockList);
+        }
+        return rowdata;
+      }
   private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
   private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
 
@@ -151,6 +193,68 @@ export class BitrixStockService {
           throw error; // Re-throw the error or handle it as needed
         })
       );
+  }
+
+  loadDealHeader(dealNumber: string) {
+    let rowdata: any;
+    if (dealNumber.length > 0) {
+      console.log(this.getDealHeaderUrl + dealNumber.toString());
+      return this.http.get(this.getDealHeaderUrl + dealNumber.toString()).pipe(
+        catchError(error => {
+          console.error('Error during POST request : ', error);
+          if(error.status === 400){
+                alert("Unable to fetch this deal");
+              }
+          throw error;
+        })
+      );
+    }
+    return rowdata;
+
+  }
+ 
+  
+  // getProductDetails(dealId: number) {
+  //   let rowdata: any;
+  //   if (this.getDealProductRowsUrl.length > 0) {
+  //     console.log(this.getDealProductRowsUrl +dealId.toString());
+  //     return this.http.get(this.getDealProductRowsUrl +dealId.toString());
+
+  //   }
+  //   return rowdata;
+  // }
+
+  getProductDetails(dealHeader: DealHeaderModel){
+        console.log(this.getDealProductRowsUrl+dealHeader.ID.toString());
+        return this.http.get(this.getDealProductRowsUrl + dealHeader.ID.toString());
+    
+  }
+
+  updateDealHeader(dealID: number, dealHeader: DealHeaderUpdateModel){
+   
+        var data = JSON.stringify(dealHeader);
+        console.log(data);
+        return this.http.post<any>(this.updateDealHeaderUrl,
+          data, this.httpOptions ).pipe(
+            catchError(error => {
+              console.error('Error during POST request:', error);
+              
+              throw error; // Re-throw the error or handle it as needed
+            })
+          );
+  }
+  
+
+  updateDealProductRows(dealProductRows: DealProductsRows) {
+      var data = JSON.stringify(dealProductRows);
+      console.log(data);
+      return this.http.post<any>(this.updateDealProductsUrl,
+        data,this.httpOptions).pipe(
+          catchError(error => {
+            console.error('Error during POST request:', error);
+            throw error; // Re-throw the error or handle it as needed
+          })
+        );
   }
   
 }
