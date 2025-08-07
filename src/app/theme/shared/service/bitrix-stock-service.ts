@@ -119,7 +119,7 @@ export class BitrixStockService {
         let dealObject = new DealHeaderObject;
         dealObject.fields = dealHeader;
         var data = JSON.stringify(dealObject);
-        console.log(data);
+        //console.log(data);
         return this.http.post<any>(`${this.createDealHeaderUrl}`,
           data, this.httpOptions ).pipe(
             catchError(error => {
@@ -131,7 +131,7 @@ export class BitrixStockService {
 
     createDealProductRows(dealProductRows: DealProductsRows) {
       var data = JSON.stringify(dealProductRows);
-      console.log(data);
+      //console.log(data);
       return this.http.post<any>(`${this.createDealProductRowUrl}`,
         data,this.httpOptions).pipe(
           catchError(error => {
@@ -144,12 +144,12 @@ export class BitrixStockService {
   loadDealHeader(dealNumber: string) {
     let rowdata: any;
     if (dealNumber.length > 0) {
-      console.log(this.getDealHeaderUrl + dealNumber.toString());
+      //console.log(this.getDealHeaderUrl + dealNumber.toString());
       return this.http.get(this.getDealHeaderUrl + dealNumber.toString()).pipe(
         catchError(error => {
           console.error('Error during POST request : ', error);
           if(error.status === 400){
-                alert("Unable to fetch this deal");
+                alert("This Deal doesn't exists/ Check Invoice");
               }
           throw error;
         })
@@ -159,19 +159,9 @@ export class BitrixStockService {
 
   }
  
-  
-  // getProductDetails(dealId: number) {
-  //   let rowdata: any;
-  //   if (this.getDealProductRowsUrl.length > 0) {
-  //     console.log(this.getDealProductRowsUrl +dealId.toString());
-  //     return this.http.get(this.getDealProductRowsUrl +dealId.toString());
-
-  //   }
-  //   return rowdata;
-  // }
 
   getProductDetails(dealHeader: DealHeaderModel){
-        console.log(this.getDealProductRowsUrl+dealHeader.ID.toString());
+        //console.log(this.getDealProductRowsUrl+dealHeader.ID.toString());
         return this.http.get(this.getDealProductRowsUrl + dealHeader.ID.toString());
     
   }
@@ -179,7 +169,7 @@ export class BitrixStockService {
   updateDealHeader(dealID: number, dealHeader: DealHeaderUpdateModel){
    
         var data = JSON.stringify(dealHeader);
-        console.log(data);
+        //console.log(data);
         return this.http.post<any>(this.updateDealHeaderUrl,
           data, this.httpOptions ).pipe(
             catchError(error => {
@@ -193,7 +183,7 @@ export class BitrixStockService {
 
   updateDealProductRows(dealProductRows: DealProductsRows) {
       var data = JSON.stringify(dealProductRows);
-      console.log(data);
+      //console.log(data);
       return this.http.post<any>(this.updateDealProductsUrl,
         data,this.httpOptions).pipe(
           catchError(error => {

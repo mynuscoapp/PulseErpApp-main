@@ -87,7 +87,6 @@ export const NavigationItems: NavigationItem[] = [
         type: 'item',
         url: '/createdeal',
         icon: 'feather icon-home',
-        
         classes: 'nav-item'
       }
     ]
