@@ -565,9 +565,10 @@ export class CreatedealComponent {
       var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == data[i].PRODUCT_ID)[0];
       //console.log(stockAvail.overallQuantity);
       //console.log(stockAvail);
-
-      productRow.stock = stockAvail.overallQuantity;
-      productRow.reserved = stockAvail.overallreserved;
+      if(stockAvail) {
+        productRow.stock = stockAvail.overallQuantity;
+        productRow.reserved = stockAvail.overallreserved;
+      }
       
        this.productTotalPrice = productRow.RRP * productRow.quantity;
       if (isNaN(this.productTotalPrice)) {

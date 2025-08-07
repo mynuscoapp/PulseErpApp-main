@@ -23,7 +23,7 @@ export class LoginService {
 
   private bitrixLoginUrl = `${environment.bitrixStockUrl}/login`;
   private bitrixVerifyEmailUrl = `${environment.bitrixStockUrl}/verify-email`;
-  private bitrixUpdatePasswordUrl = `${environment.bitrixStockUrl}/update-password`;
+    private bitrixUpdatePasswordUrl = `${environment.bitrixStockUrl}/reset-password`;
 
   
 
@@ -48,7 +48,7 @@ export class LoginService {
     return this.http.post<{ exists: boolean }>(this.bitrixVerifyEmailUrl, { email });
   }
 
-  updatePassword(email: string, newPassword: string): Observable<{ success: boolean; message: string }> {
+  updatePassword(email: string,newPassword: string): Observable<{ success: boolean; message: string }> {
     return this.http.post<{ success: boolean; message: string }>(this.bitrixUpdatePasswordUrl, {
       email,
       newPassword,
