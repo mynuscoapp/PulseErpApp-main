@@ -29,6 +29,7 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'feather icon-home',
         classes: 'nav-item'
       }
+     
     ]
   },
   {
@@ -72,10 +73,10 @@ export const NavigationItems: NavigationItem[] = [
         ]
       }
     ],
-    
+
   },
   {
-    
+
     id: 'ui-element',
     title: 'Operations',
     type: 'group',
@@ -88,6 +89,14 @@ export const NavigationItems: NavigationItem[] = [
         url: '/createdeal',
         icon: 'feather icon-home',
         classes: 'nav-item'
+      },
+      {
+        id: 'pulseusers',
+        title: 'Users',
+        type: 'item',
+        url: '/pulseusers',
+        icon: 'feather icon-user',
+        classes: 'nav-item' // Added attributes for additional context
       }
     ]
   }

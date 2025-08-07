@@ -1,0 +1,71 @@
+<div class="row" style="height: calc(100% - 5px); background: radial-gradient(circle at top left, #efefe8, #8fcde8)">
+    <div class="col-sm-12">
+        <form [formGroup]="bitrixstockForm">
+            <div class="col-sm-12">
+                <div class="col-sm-12 child inline-block-child">
+                    <div class="col-sm-8 child inline-block-child">
+                        <button type="button" class="btn btn-primary" (click)="onExport()">Export</button>
+                        <button type="button" class="btn btn-secondary" (click)="toggleEdit()">
+                        {{ isEditMode ? 'Update' : 'Edit' }}
+                        </button>
+
+                        <!-- pulseusers.component.html -->
+                        <button (click)="toggleAddForm()">Add User</button>
+
+                        <div *ngIf="showAddUserForm" class="form-container">
+                            <form [formGroup]="addUserForm" (ngSubmit)="submitAddUser()">
+                          <input formControlName="FirstName" placeholder="First Name" [class.invalid]="addUserForm.get('FirstName')?.invalid && addUserForm.get('FirstName')?.touched" />
+                          <div *ngIf="addUserForm.get('FirstName')?.invalid && addUserForm.get('FirstName')?.touched" class="error">First Name is required</div>
+
+                          <input formControlName="LastName" placeholder="Last Name" [class.invalid]="addUserForm.get('LastName')?.invalid && addUserForm.get('LastName')?.touched" />
+                          <div *ngIf="addUserForm.get('LastName')?.invalid && addUserForm.get('LastName')?.touched" class="error">Last Name is required</div>
+
+                          <input formControlName="Email" placeholder="Email" [class.invalid]="addUserForm.get('Email')?.invalid && addUserForm.get('Email')?.touched" />
+                          <div *ngIf="addUserForm.get('Email')?.invalid && addUserForm.get('Email')?.touched" class="error">
+                            <span *ngIf="addUserForm.get('Email')?.errors?.['required']">Email is required</span>
+                            <span *ngIf="addUserForm.get('Email')?.errors?.['email']">Invalid email</span>
+                          </div>
+                        
+                          <input formControlName="Mobile" placeholder="Mobile" [class.invalid]="addUserForm.get('Mobile')?.invalid && addUserForm.get('Mobile')?.touched" />
+                          <div *ngIf="addUserForm.get('Mobile')?.invalid && addUserForm.get('Mobile')?.touched" class="error">
+                            <span *ngIf="addUserForm.get('Mobile')?.errors?.['required']">Mobile is required</span>
+                            <span *ngIf="addUserForm.get('Mobile')?.errors?.['pattern']">Invalid mobile number</span>
+                          </div>
+                        
+                          <input formControlName="Department" placeholder="Department" [class.invalid]="addUserForm.get('Department')?.invalid && addUserForm.get('Department')?.touched" />
+                          <div *ngIf="addUserForm.get('Department')?.invalid && addUserForm.get('Department')?.touched" class="error">Department is required</div>
+                        
+                          <input formControlName="Position" placeholder="Position" [class.invalid]="addUserForm.get('Position')?.invalid && addUserForm.get('Position')?.touched" />
+                          <div *ngIf="addUserForm.get('Position')?.invalid && addUserForm.get('Position')?.touched" class="error">Position is required</div>
+                        
+                          <input formControlName="Date_of_birth" type="date" placeholder="DOB" [class.invalid]="addUserForm.get('Date_of_birth')?.invalid && addUserForm.get('Date_of_birth')?.touched" />
+                          <div *ngIf="addUserForm.get('Date_of_birth')?.invalid && addUserForm.get('Date_of_birth')?.touched" class="error">Date of Birth is required</div>
+                        
+                          <select formControlName="Gender" [class.invalid]="addUserForm.get('Gender')?.invalid && addUserForm.get('Gender')?.touched">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                          </select>
+                          <div *ngIf="addUserForm.get('Gender')?.invalid && addUserForm.get('Gender')?.touched" class="error">Gender is required</div>
+                        
+                          <button type="submit" [disabled]="addUserForm.invalid">Submit</button>
+                          <button type="button" (click)="closeAddForm()">Cancel</button>
+                        </form>
+                        
+                        <style>
+                          .error { color: red; font-size: 12px; }
+                          .invalid { border: 1px solid red; }
+                        </style>
+                        </div>
+
+
+                    </div> 
+                    
+                </div>
+                <ag-grid-angular #agGrid style="width: 100%; height: 350px;" class="ag-theme-alpine"
+                    [rowData]="usersData" [columnDefs]="colDefs" (cellValueChanged)="onCellValueChanged($event)" nFirstDataRendered="onFirstDataRendered" />
+
+            </div>
+        </form>
+    </div>
+</div>

@@ -20,115 +20,137 @@ import { json } from 'stream/consumers';
 })
 export class BitrixStockService {
   constructor(private http: HttpClient) {
-}
-   
-    bitrixStockList: BitrixStoreProduct[];
-    bitrixProductList: BitrixProducts[];
-    bitrixPipeLine: BitrixPipeline[];
-    bitrixCustomers: BitrixCustomers[];
-    bitrixStores: BitrixStores[];
-    bitrixOverAllStock: BitrixOverallStock[];
-
-    private bitrixStockUrl = `${environment.bitrixStockUrl}/bitrixstock`;
-    private bitrixProductsUrl = `${environment.bitrixStockUrl}/productslist`;
-    private bitrixPipelineUrl = `${environment.bitrixStockUrl}/pipelinelist`;
-    private bitrixCustomersUrl = `${environment.bitrixStockUrl}/customerlist`;
-    private bitrixStoresUrl = `${environment.bitrixStockUrl}/storelist`;
-    private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
-
-    private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
-    private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
-    
-    headers = new HttpHeaders()
-        .set('Content-Type', 'application/json');;
-    httpOptions = {
-        headers: this.headers
-    };
-    
-    loadBitrixStock() {
-        let rowdata: any;
-        if (this.bitrixStockUrl.length > 0 && !this.bitrixStockList) {
-          return this.http.get(this.bitrixStockUrl);
-        } else {
-          return of(this.bitrixStockList);
-        }
-        return rowdata;
-      }
-
-      loadBitrixOverallStock() {
-        let rowdata: any;
-        if (this.bitrixOveralStoresUrl.length > 0 && !this.bitrixOverAllStock) {
-          return this.http.get(this.bitrixOveralStoresUrl);
-        } else {
-          return of(this.bitrixOverAllStock);
-        }
-        return rowdata;
-      }
-
-      loadBitrixProducts() {
-        let rowdata: any;
-        if (this.bitrixProductsUrl.length > 0 && !this.bitrixProductList) {
-          return this.http.get(this.bitrixProductsUrl);
-        } else {
-          return of(this.bitrixProductList);
-        }
-        return rowdata;
-      }
-
-      loadBitrixPipline() {
-        let rowdata: any;
-        if (this.bitrixPipelineUrl.length > 0 && !this.bitrixPipeLine) {
-          return this.http.get(this.bitrixPipelineUrl); 
-        } else {
-          return of(this.bitrixPipeLine);
-        }
-        return rowdata;
-      }
-
-      loadBitrixCustomers() {
-        let rowdata: any;
-        if (this.bitrixCustomersUrl.length > 0 && !this.bitrixCustomers) {
-          return this.http.get(this.bitrixCustomersUrl);
-        } else {
-          return of(this.bitrixCustomers);
-        }
-        return rowdata;
-      }
-
-      loadBitrixStoress() {
-        let rowdata: any;
-        if (this.bitrixStoresUrl.length > 0 && !this.bitrixStores) {
-          return this.http.get(this.bitrixStoresUrl);
-        } else{
-          return of(this.bitrixStores);
-        }
-        return rowdata;
-      }
-  
-
-      createDealHeader(dealHeader: DealHeaderModel) {
-        let dealObject = new DealHeaderObject;
-        dealObject.fields = dealHeader;
-        var data = JSON.stringify(dealObject);
-        console.log(data);
-        return this.http.post<any>(`${this.createDealHeaderUrl}`,
-          data, this.httpOptions ).pipe(
-            catchError(error => {
-              console.error('Error during POST request:', error);
-              throw error; // Re-throw the error or handle it as needed
-            })
-          );
-    }
-
-    createDealProductRows(dealProductRows: DealProductsRows) {
-      var data = JSON.stringify(dealProductRows);
-      console.log(data);
-      return this.http.post<any>(`${this.createDealProductRowUrl}`,
-        data,this.httpOptions).pipe(
-          catchError(error => {
-            console.error('Error during POST request:', error);
-            throw error; // Re-throw the error or handle it as needed
-          })
-        );
   }
+
+  bitrixStockList: BitrixStoreProduct[];
+  bitrixProductList: BitrixProducts[];
+  bitrixPipeLine: BitrixPipeline[];
+  bitrixCustomers: BitrixCustomers[];
+  bitrixStores: BitrixStores[];
+  bitrixOverAllStock: BitrixOverallStock[];
+  bitrixPulseUsers: any[];
+
+  private bitrixStockUrl = `${environment.bitrixStockUrl}/bitrixstock`;
+  private bitrixProductsUrl = `${environment.bitrixStockUrl}/productslist`;
+  private bitrixPipelineUrl = `${environment.bitrixStockUrl}/pipelinelist`;
+  private bitrixCustomersUrl = `${environment.bitrixStockUrl}/customerlist`;
+  private bitrixStoresUrl = `${environment.bitrixStockUrl}/storelist`;
+  private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
+  private bitrixPulseUsersUrl = `${environment.bitrixStockUrl}/pulseusers`;
+
+  private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
+  private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
+
+  headers = new HttpHeaders()
+    .set('Content-Type', 'application/json');;
+  httpOptions = {
+    headers: this.headers
+  };
+
+  loadBitrixStock() {
+    let rowdata: any;
+    if (this.bitrixStockUrl.length > 0 && !this.bitrixStockList) {
+      return this.http.get(this.bitrixStockUrl);
+    } else {
+      return of(this.bitrixStockList);
+    }
+    return rowdata;
+  }
+
+  loadBitrixOverallStock() {
+    let rowdata: any;
+    if (this.bitrixOveralStoresUrl.length > 0 && !this.bitrixOverAllStock) {
+      return this.http.get(this.bitrixOveralStoresUrl);
+    } else {
+      return of(this.bitrixOverAllStock);
+    }
+    return rowdata;
+  }
+
+  loadBitrixProducts() {
+    let rowdata: any;
+    if (this.bitrixProductsUrl.length > 0 && !this.bitrixProductList) {
+      return this.http.get(this.bitrixProductsUrl);
+    } else {
+      return of(this.bitrixProductList);
+    }
+    return rowdata;
+  }
+
+  loadBitrixPipline() {
+    let rowdata: any;
+    if (this.bitrixPipelineUrl.length > 0 && !this.bitrixPipeLine) {
+      return this.http.get(this.bitrixPipelineUrl);
+    } else {
+      return of(this.bitrixPipeLine);
+    }
+    return rowdata;
+  }
+
+  loadBitrixCustomers() {
+    let rowdata: any;
+    if (this.bitrixCustomersUrl.length > 0 && !this.bitrixCustomers) {
+      return this.http.get(this.bitrixCustomersUrl);
+    } else {
+      return of(this.bitrixCustomers);
+    }
+    return rowdata;
+  }
+
+  loadBitrixStoress() {
+    let rowdata: any;
+    if (this.bitrixStoresUrl.length > 0 && !this.bitrixStores) {
+      return this.http.get(this.bitrixStoresUrl);
+    } else {
+      return of(this.bitrixStores);
+    }
+    return rowdata;
+  }
+
+  loadBitrixPulseUsers() {
+    let rowdata: any;
+    if (this.bitrixPulseUsersUrl.length > 0 && !this.bitrixPulseUsers) {
+      return this.http.get(this.bitrixPulseUsersUrl);
+    } else {
+      return of(this.bitrixPulseUsers);
+    }
+    return rowdata;
+  }
+
+  updatePulseUser(user: any) {
+    // Adjust the URL and payload as needed for your backend API
+    return this.http.put(`${this.bitrixPulseUsersUrl}/${user.ID}`, user, this.httpOptions);
+  }
+
+  addPulseUser(user: any) {
+    return this.http.post(this.bitrixPulseUsersUrl, user, this.httpOptions);
+  }
+
+
+  createDealHeader(dealHeader: DealHeaderModel) {
+    let dealObject = new DealHeaderObject;
+    dealObject.fields = dealHeader;
+    var data = JSON.stringify(dealObject);
+    console.log(data);
+    return this.http.post<any>(`${this.createDealHeaderUrl}`,
+      data, this.httpOptions).pipe(
+        catchError(error => {
+          console.error('Error during POST request:', error);
+          throw error; // Re-throw the error or handle it as needed
+        })
+      );
+  }
+
+  createDealProductRows(dealProductRows: DealProductsRows) {
+    var data = JSON.stringify(dealProductRows);
+    console.log(data);
+    return this.http.post<any>(`${this.createDealProductRowUrl}`,
+      data, this.httpOptions).pipe(
+        catchError(error => {
+          console.error('Error during POST request:', error);
+          throw error; // Re-throw the error or handle it as needed
+        })
+      );
+  }
+  
 }

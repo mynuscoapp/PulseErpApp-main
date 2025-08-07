@@ -13,6 +13,13 @@ const routes: Routes = [
     component: AuthSigninComponent
   },
   {
+    path: 'authentication',
+    loadChildren: () =>
+      import('./demo/pages/authentication/authentication.module').then(
+        (m) => m.AuthenticationModule
+      )
+  },
+  {
     path: '',
     component: AdminComponent,
     children: [
@@ -24,6 +31,10 @@ const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./demo/dashboard/dashboard.component').then((c) => c.DashboardComponent)
+      },
+      {
+        path: 'pulseusers',
+        loadComponent: () => import('./main-comp/pulseusers/pulseusers.component').then((c) => c.PulseusersComponent)
       },
       {
         path: 'basic',
@@ -64,11 +75,11 @@ const routes: Routes = [
 
     ]
   },
-  
+
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

@@ -12,6 +12,10 @@ const routes: Routes = [
       {
         path: 'signup',
         loadComponent: () => import('./auth-signup/auth-signup.component')
+      },
+      {
+        path: 'reset-password',
+        loadComponent: () => import('./reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
       }
     ]
   }
