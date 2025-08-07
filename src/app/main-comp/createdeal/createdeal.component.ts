@@ -519,6 +519,9 @@ export class CreatedealComponent {
         //alert("Company Id : " +this.dealHeader.COMPANY_ID);
         this.getProductDetailsForUpdate(this.dealHeader);
         this.fetchDealId = this.dealHeader.ID;
+        this.createDealForm.get("pipelineOptions").setValue(0);
+      this.createDealForm.get("storesOptions").setValue(1);
+
       }
     });
   }
