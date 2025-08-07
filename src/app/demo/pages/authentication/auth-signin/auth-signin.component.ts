@@ -29,24 +29,22 @@ export default class AuthSigninComponent implements OnInit {
     
   }
 
-  onSubmit(): void {
-  if (this.loginForm.invalid) {
-    alert('Please enter a valid email and password.');
-    return;
-  }
-  const { email, password } = this.loginForm.value;
-  this.loginService.login(email, password).subscribe({
-    next: () => {
-      // If backend returns success
-      this.loginService.setLogedIn();
-      sessionStorage.setItem('isLogged', 'true');
-      this.router.navigate(['stockinfo']);
-    },
-    error: () => {
-      // If backend returns error (invalid credentials)
-      alert('Invalid email or password.');
-      sessionStorage.setItem('isLogged', 'false');
+   onSubmit(): void {
+    if (this.loginForm.invalid) {
+      alert('Please enter a valid email and password.');
+      return;
     }
-  });
-}
+    const { email, password } = this.loginForm.value;
+    this.loginService.login(email, password).subscribe({
+      next: () => {
+        this.loginService.setLogedIn();
+        sessionStorage.setItem('isLogged', 'true');
+        this.router.navigate(['dashboard']);
+      },
+      error: () => {
+        alert('Invalid email or password.');
+        sessionStorage.setItem('isLogged', 'false');
+      }
+    });
+  }
 }
