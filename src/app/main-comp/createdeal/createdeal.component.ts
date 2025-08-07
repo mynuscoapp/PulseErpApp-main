@@ -469,6 +469,7 @@ export class CreatedealComponent {
     this.isLoading = true;
     this.isDealFetched = false;
     this.numberOfRows = '';
+    this.updatDealDisable = true;
     //console.log("Reset Button clicked!");
     //this.createDealForm.get(" pipelineOptions").setValue('0');
     //this.createDealForm.get("customersOptions").setValue('0');
@@ -494,8 +495,10 @@ export class CreatedealComponent {
   }
 
   onUpdateDealData() {
+    this.updatDealDisable = true;
     this.updateDealRows();
     this.isDealFetched = false;
+    this.updatDealDisable = false;
 
   }
 
