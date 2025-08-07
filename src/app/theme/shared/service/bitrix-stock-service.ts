@@ -137,9 +137,9 @@ export class BitrixStockService {
 
 
       createDealHeader(dealHeader: DealHeaderModel) {
-        let dealObject = new DealHeaderObject;
+        const dealObject = new DealHeaderObject;
         dealObject.fields = dealHeader;
-        var data = JSON.stringify(dealObject);
+        const data = JSON.stringify(dealObject);
         //console.log(data);
         return this.http.post<any>(`${this.createDealHeaderUrl}`,
           data, this.httpOptions ).pipe(
