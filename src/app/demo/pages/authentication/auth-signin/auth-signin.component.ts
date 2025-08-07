@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
 import { LoginService } from 'src/app/theme/shared/service/login-service';
 
 @Component({
@@ -13,7 +12,7 @@ import { LoginService } from 'src/app/theme/shared/service/login-service';
   templateUrl: './auth-signin.component.html',
   styleUrls: ['./auth-signin.component.scss']
 })
-export default class AuthSigninComponent {
+export default class AuthSigninComponent implements OnInit {
   loginForm: FormGroup;
   logoUrl: string = '';
 
@@ -37,13 +36,13 @@ export default class AuthSigninComponent {
   }
   const { email, password } = this.loginForm.value;
   this.loginService.login(email, password).subscribe({
-    next: (res) => {
+    next: () => {
       // If backend returns success
       this.loginService.setLogedIn();
       sessionStorage.setItem('isLogged', 'true');
       this.router.navigate(['stockinfo']);
     },
-    error: (err) => {
+    error: () => {
       // If backend returns error (invalid credentials)
       alert('Invalid email or password.');
       sessionStorage.setItem('isLogged', 'false');

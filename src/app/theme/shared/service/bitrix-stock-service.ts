@@ -1,9 +1,7 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { error } from 'console';
-import { tap } from 'lodash';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, of } from 'rxjs';
 import { BitrixCustomers } from 'src/app/demo/models/BitrixCustomers';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { BitrixPipeline } from 'src/app/demo/models/BitrixPipeline';
@@ -14,8 +12,8 @@ import { DealHeaderModel } from 'src/app/demo/models/DealHeaderModel';
 import { DealHeaderObject } from 'src/app/demo/models/DealHeaderObject';
 import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
 import { DealProductsRows } from 'src/app/demo/models/DealProductsRows';
+import { BitrixPulseUsers } from 'src/app/demo/models/BitrixPulseUsers';
 import { environment } from 'src/environments/environment';
-import { json } from 'stream/consumers';
 
 @Injectable({
   providedIn: 'root',
@@ -24,12 +22,13 @@ export class BitrixStockService {
   constructor(private http: HttpClient) {
 }
    
-    bitrixStockList: BitrixStoreProduct[];
-    bitrixProductList: BitrixProducts[];
-    bitrixPipeLine: BitrixPipeline[];
-    bitrixCustomers: BitrixCustomers[];
-    bitrixStores: BitrixStores[];
-    bitrixOverAllStock: BitrixOverallStock[];
+  bitrixStockList: BitrixStoreProduct[];
+  bitrixProductList: BitrixProducts[];
+  bitrixPipeLine: BitrixPipeline[];
+  bitrixCustomers: BitrixCustomers[];
+  bitrixStores: BitrixStores[];
+  bitrixOverAllStock: BitrixOverallStock[];
+  bitrixPulseUsers: BitrixPulseUsers[];
 
     
     private bitrixStockUrl = `${environment.bitrixStockUrl}/bitrixstock`;
@@ -39,23 +38,8 @@ export class BitrixStockService {
     private bitrixStoresUrl = `${environment.bitrixStockUrl}/storelist`;
     private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
     private bitrixApiUrl = `${environment.bitrixStockUrl}/bitrixapiurl`;
-  }
-
-  bitrixStockList: BitrixStoreProduct[];
-  bitrixProductList: BitrixProducts[];
-  bitrixPipeLine: BitrixPipeline[];
-  bitrixCustomers: BitrixCustomers[];
-  bitrixStores: BitrixStores[];
-  bitrixOverAllStock: BitrixOverallStock[];
-  bitrixPulseUsers: any[];
-
-  private bitrixStockUrl = `${environment.bitrixStockUrl}/bitrixstock`;
-  private bitrixProductsUrl = `${environment.bitrixStockUrl}/productslist`;
-  private bitrixPipelineUrl = `${environment.bitrixStockUrl}/pipelinelist`;
-  private bitrixCustomersUrl = `${environment.bitrixStockUrl}/customerlist`;
-  private bitrixStoresUrl = `${environment.bitrixStockUrl}/storelist`;
-  private bitrixOveralStoresUrl = `${environment.bitrixStockUrl}/overallstock`;
-  private bitrixPulseUsersUrl = `${environment.bitrixStockUrl}/pulseusers`;
+  
+    private bitrixPulseUsersUrl = `${environment.bitrixStockUrl}/pulseusers`;
 
     private createDealHeaderUrl = `${(window as any).appConfig[0].API_URL}crm.deal.add.json`;
     private createDealProductRowUrl = `${(window as any).appConfig[0].API_URL}crm.deal.productrows.set.json`;
@@ -71,24 +55,7 @@ export class BitrixStockService {
         headers: this.headers
     };
     
-    loadBitrixStock() {
-        let rowdata: any;
-        if (this.bitrixStockUrl.length > 0 && !this.bitrixStockList) {
-          return this.http.get(this.bitrixStockUrl);
-        } else {
-          return of(this.bitrixStockList);
-        }
-        return rowdata;
-      }
-  private createDealHeaderUrl = `${environment.apiUrl}crm.deal.add.json`;
-  private createDealProductRowUrl = `${environment.apiUrl}crm.deal.productrows.set.json`;
-
-  headers = new HttpHeaders()
-    .set('Content-Type', 'application/json');;
-  httpOptions = {
-    headers: this.headers
-  };
-
+  
   loadBitrixStock() {
     let rowdata: any;
     if (this.bitrixStockUrl.length > 0 && !this.bitrixStockList) {
@@ -170,9 +137,9 @@ export class BitrixStockService {
 
 
   createDealHeader(dealHeader: DealHeaderModel) {
-    let dealObject = new DealHeaderObject;
+    const dealObject = new DealHeaderObject;
     dealObject.fields = dealHeader;
-    var data = JSON.stringify(dealObject);
+    const data = JSON.stringify(dealObject);
     console.log(data);
     return this.http.post<any>(`${this.createDealHeaderUrl}`,
       data, this.httpOptions).pipe(
@@ -184,7 +151,7 @@ export class BitrixStockService {
   }
 
   createDealProductRows(dealProductRows: DealProductsRows) {
-    var data = JSON.stringify(dealProductRows);
+    const data = JSON.stringify(dealProductRows);
     console.log(data);
     return this.http.post<any>(`${this.createDealProductRowUrl}`,
       data, this.httpOptions).pipe(
@@ -232,7 +199,7 @@ export class BitrixStockService {
 
   updateDealHeader(dealID: number, dealHeader: DealHeaderUpdateModel){
    
-        var data = JSON.stringify(dealHeader);
+        const data = JSON.stringify(dealHeader);
         console.log(data);
         return this.http.post<any>(this.updateDealHeaderUrl,
           data, this.httpOptions ).pipe(
@@ -246,7 +213,7 @@ export class BitrixStockService {
   
 
   updateDealProductRows(dealProductRows: DealProductsRows) {
-      var data = JSON.stringify(dealProductRows);
+      const data = JSON.stringify(dealProductRows);
       console.log(data);
       return this.http.post<any>(this.updateDealProductsUrl,
         data,this.httpOptions).pipe(

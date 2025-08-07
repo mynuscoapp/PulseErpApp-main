@@ -36,6 +36,7 @@ export default [{
             prefix: "app",
             style: "kebab-case",
         }],
+        "@typescript-eslint/no-explicit-any": "off",
     },
 }, ...compat.extends("plugin:@angular-eslint/template/recommended").map(config => ({
     ...config,
