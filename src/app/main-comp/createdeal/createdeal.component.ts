@@ -175,9 +175,10 @@ export class CreatedealComponent {
           productRow.PRODUCT_NAME = this.rowData[i].productName;
           productRow.ORIGINAL_PRODUCT_NAME = this.rowData[i].productName;
           productRow.PRODUCT_DESCRIPTION = this.rowData[i].productName;
+          productRow.DISCOUNT_TYPE_ID = 2;
           productRow.PRICE = this.rowData[i].RRP;
           productRow.QUANTITY = this.rowData[i].quantity;
-          productRow.DISCOUNT_RATE = this.rowData[i].discount;
+          productRow.DISCOUNT_RATE = this.rowData[i].discount.toString();
           productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
           productRow.TAX_RATE = this.rowData[i].tax_rate;
           productRow.OWNER_TYPE = 'D';
@@ -551,7 +552,7 @@ export class CreatedealComponent {
       productRow.id = data[i].PRODUCT_ID;
       productRow.RRP = data[i].PRICE;
       productRow.quantity = data[i].QUANTITY;
-      productRow.discount = data[i].DISCOUNT_RATE;
+      productRow.discount = +data[i].DISCOUNT_RATE;
       productRow.VAT_INCLUDED = data[i].TAX_INCLUDED;
       productRow.tax_rate = data[i].TAX_RATE;
 

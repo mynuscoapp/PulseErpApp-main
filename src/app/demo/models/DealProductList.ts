@@ -12,7 +12,7 @@ export class DealProductList{
     PRICE_ACCOUNT: string;
     QUANTITY: number;
     DISCOUNT_TYPE_ID: number;
-    DISCOUNT_RATE: number;
+    DISCOUNT_RATE: string;
     DISCOUNT_SUM: number;
     TAX_RATE: number;
     TAX_INCLUDED: string;
