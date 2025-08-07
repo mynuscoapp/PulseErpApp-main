@@ -1,6 +1,5 @@
-
 <div class="row" style="height: calc(100% - 5px);">
-    <div class="col-sm-12" style="background: radial-gradient(circle at top left, #efeee8, #8fcde8)">
+    <div class="col-sm-12" style="background: radial-gradient(circle at top left, #f8f2e6, #6fc4db)" >
       <form [formGroup]="createDealForm" (ngSubmit)="onSubmit()">
         <div class="col-sm-12">
 
@@ -15,7 +14,8 @@
              </div>
             <p></p>
             
-            <div class="col-sm-12" style="display: flex; border-radius: 1rem; border: 1px solid #28a745; background-color: #d2edee;">                            
+            <div class="col-sm-12" style="display: flex; border-radius: 1rem; border: 1px solid #28a745; 
+            background-color: #bff1f3;">                            
 
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                         <select matNativeControl formControlName="pipelineOptions" required (change)="warehouseSet()"

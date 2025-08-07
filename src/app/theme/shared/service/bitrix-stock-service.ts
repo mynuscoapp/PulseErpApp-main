@@ -136,41 +136,41 @@ export class BitrixStockService {
   }
 
 
-  createDealHeader(dealHeader: DealHeaderModel) {
-    const dealObject = new DealHeaderObject;
-    dealObject.fields = dealHeader;
-    const data = JSON.stringify(dealObject);
-    console.log(data);
-    return this.http.post<any>(`${this.createDealHeaderUrl}`,
-      data, this.httpOptions).pipe(
-        catchError(error => {
-          console.error('Error during POST request:', error);
-          throw error; // Re-throw the error or handle it as needed
-        })
-      );
-  }
+      createDealHeader(dealHeader: DealHeaderModel) {
+        let dealObject = new DealHeaderObject;
+        dealObject.fields = dealHeader;
+        var data = JSON.stringify(dealObject);
+        //console.log(data);
+        return this.http.post<any>(`${this.createDealHeaderUrl}`,
+          data, this.httpOptions ).pipe(
+            catchError(error => {
+              console.error('Error during POST request:', error);
+              throw error; // Re-throw the error or handle it as needed
+            })
+          );
+    }
 
-  createDealProductRows(dealProductRows: DealProductsRows) {
-    const data = JSON.stringify(dealProductRows);
-    console.log(data);
-    return this.http.post<any>(`${this.createDealProductRowUrl}`,
-      data, this.httpOptions).pipe(
-        catchError(error => {
-          console.error('Error during POST request:', error);
-          throw error; // Re-throw the error or handle it as needed
-        })
-      );
+    createDealProductRows(dealProductRows: DealProductsRows) {
+      var data = JSON.stringify(dealProductRows);
+      //console.log(data);
+      return this.http.post<any>(`${this.createDealProductRowUrl}`,
+        data,this.httpOptions).pipe(
+          catchError(error => {
+            console.error('Error during POST request:', error);
+            throw error; // Re-throw the error or handle it as needed
+          })
+        );
   }
 
   loadDealHeader(dealNumber: string) {
     let rowdata: any;
     if (dealNumber.length > 0) {
-      console.log(this.getDealHeaderUrl + dealNumber.toString());
+      //console.log(this.getDealHeaderUrl + dealNumber.toString());
       return this.http.get(this.getDealHeaderUrl + dealNumber.toString()).pipe(
         catchError(error => {
           console.error('Error during POST request : ', error);
           if(error.status === 400){
-                alert("Unable to fetch this deal");
+                alert("This Deal doesn't exists/ Check Invoice");
               }
           throw error;
         })
@@ -180,27 +180,17 @@ export class BitrixStockService {
 
   }
  
-  
-  // getProductDetails(dealId: number) {
-  //   let rowdata: any;
-  //   if (this.getDealProductRowsUrl.length > 0) {
-  //     console.log(this.getDealProductRowsUrl +dealId.toString());
-  //     return this.http.get(this.getDealProductRowsUrl +dealId.toString());
-
-  //   }
-  //   return rowdata;
-  // }
 
   getProductDetails(dealHeader: DealHeaderModel){
-        console.log(this.getDealProductRowsUrl+dealHeader.ID.toString());
+        //console.log(this.getDealProductRowsUrl+dealHeader.ID.toString());
         return this.http.get(this.getDealProductRowsUrl + dealHeader.ID.toString());
     
   }
 
   updateDealHeader(dealID: number, dealHeader: DealHeaderUpdateModel){
    
-        const data = JSON.stringify(dealHeader);
-        console.log(data);
+        var data = JSON.stringify(dealHeader);
+        //console.log(data);
         return this.http.post<any>(this.updateDealHeaderUrl,
           data, this.httpOptions ).pipe(
             catchError(error => {
@@ -213,8 +203,8 @@ export class BitrixStockService {
   
 
   updateDealProductRows(dealProductRows: DealProductsRows) {
-      const data = JSON.stringify(dealProductRows);
-      console.log(data);
+      var data = JSON.stringify(dealProductRows);
+      //console.log(data);
       return this.http.post<any>(this.updateDealProductsUrl,
         data,this.httpOptions).pipe(
           catchError(error => {
