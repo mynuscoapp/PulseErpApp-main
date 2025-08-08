@@ -6,6 +6,7 @@ import { AdminComponent } from './theme/layout/admin/admin.component';
 import AuthSigninComponent from './demo/pages/authentication/auth-signin/auth-signin.component';
 import { BitrixstockComponent } from './main-comp/bitrixstock/bitrixstock.component';
 import { CreatedealComponent } from './main-comp/createdeal/createdeal.component';
+import { AuthGuard }  from './theme/shared/service/auth.guard';
 
 const routes: Routes = [
   {
@@ -22,6 +23,7 @@ const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',

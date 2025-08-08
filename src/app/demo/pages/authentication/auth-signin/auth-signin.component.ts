@@ -41,8 +41,14 @@ export default class AuthSigninComponent implements OnInit {
         sessionStorage.setItem('isLogged', 'true');
         this.router.navigate(['dashboard']);
       },
-      error: () => {
-        alert('Invalid email or password.');
+      error: (error) => {
+        if (error.status === 401) {
+          alert('Invalid email or password. Please try again.');
+        } else if (error.status === 403) {
+          alert('access denied. Please contact your administrator.');
+        } else {
+          alert('Server error. Please try again later.');
+        }
         sessionStorage.setItem('isLogged', 'false');
       }
     });
