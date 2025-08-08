@@ -393,7 +393,7 @@ export class CreatedealComponent {
       else {
         this.rowData[rowId].total = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
       }
-      this.agGrid.api.setGridOption('rowData', this.rowData);
+      event.node.setData(this.rowData[rowId]);
 
       //---------------Calling function to calculate Subtotal value and display it ---------------
       this.GetTotals();
