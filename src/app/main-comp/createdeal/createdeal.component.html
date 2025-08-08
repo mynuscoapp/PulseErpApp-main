@@ -12,7 +12,6 @@
                     <label id="dealId" formControlName ="dealId" style="font-size: 15px; font-weight: bolder; align-items: center;" ngDefaultControl> {{dealNum}}</label>
                </div>
              </div>
-            <p></p>
             
             <div class="col-sm-12" style="display: flex; border-radius: 1rem; border: 1px solid #28a745; 
             background-color: #bff1f3;">                            
@@ -27,14 +26,17 @@
                 </div>
                 <div class="form-group" class="col-sm-4" style="margin: 15px;">
                     <!--  <label>Customer*</label>-->
-                
-                        <select matNativeControl formControlName="customersOptions" required [(ngModel)]="selectedCustomer" 
-                         style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue">
-                            <!--[(ngModel)] = "selectedCustomer" [ngClass]="{'invalid-select':isCustomerInvalid()}"-->
+                       <select class="selectpicker" 
+                       formControlName="customersOptions" 
+                       data-live-search ="true"
+                       required 
+                       [(ngModel)]="selectedCustomer" 
+                       style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue">
+                       <!--[ngClass]="{'invalid-select':isCustomerInvalid()}">-->
                             <option [disabled]="isCustomerDiabled" value="">Select Customer</option>
-                            <option *ngFor="let item of bitrixCustomers" [value]="item.id">{{ item.name }}</option>
-                           
+                           <option *ngFor="let item of bitrixCustomers" [value]="item.id" data-tokens="item.name">{{ item.name }} </option>
                         </select>
+                        
                     
                 </div>
                 <div class="form-group" class="col-sm-3" style="margin: 10px;">
@@ -68,15 +70,15 @@
                 <!--<input type="text" id="finaltotal" name="finaltotal" size="10" disabled><br><br>-->
                 <button type="submit" [disabled]="isLoading" class="btn btn-primary col-sm-1" (click)="validateCustomer()">Create</button>
    
+                </div>
             </div>
-        </div>
         <div class="col-sm-12">
             <label id="errorMsg" name="errorMsg" *ngIf="errorDisplayMsg" style="font-weight: bold;background-color: red; color: white;">{{ errorDisplayMsg }}</label>
         </div>
         
         <div class="col-sm-12" >
             <ag-grid-angular #agGrid style="width: 100%; height: 385px; "
-                (cellValueChanged)="onCellValueChanged($event)"
+                (cellValueChanged)="onGridValueChanged($event)"
                 class="ag-theme-alpine"
                 [columnDefs]="colDefs"
                 [rowData]="rowData"

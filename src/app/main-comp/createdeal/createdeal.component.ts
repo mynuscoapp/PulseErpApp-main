@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,FormControl} from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { values } from 'lodash';
+import { add, values } from 'lodash';
 import { BitrixProducts } from 'src/app/demo/models/bitrixproducts';
 import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
 import { environment } from 'src/environments/environment';
@@ -21,13 +21,13 @@ import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
 
+
 @Component({
   selector: 'app-createdeal',
   imports: [FormsModule, ReactiveFormsModule, CommonModule, AgGridAngular],
   templateUrl: './createdeal.component.html',
   styleUrl: './createdeal.component.scss'
 })
-
 
 
 export class CreatedealComponent {
@@ -41,6 +41,7 @@ export class CreatedealComponent {
   rowSelection: RowSelectionOptions | "single" | "multiple" = {
     mode: "multiRow",
   };
+  
 
   dealHeader: DealHeaderModel;
   bitrixOverAllStock: BitrixOverallStock[];
@@ -66,7 +67,7 @@ export class CreatedealComponent {
   fetchDealId: number;
    productTotalPrice:number =0;
   errorDisplayMsg: string;
-
+  $: any;
 
   constructor(private formBuilder: FormBuilder, private bitrixstockservice: BitrixStockService, private http: HttpClient) {
 
@@ -74,6 +75,7 @@ export class CreatedealComponent {
 
       pipelineOptions: ['', [Validators.required]],
       customersOptions: ['', [Validators.required]],
+      //customersOptions: new FormControl<number | null>(null,Validators.required),
       storesOptions: ['', [Validators.required]],
       dealName: ['', [Validators.required]],
       updateDealnum: [''],
@@ -348,6 +350,7 @@ export class CreatedealComponent {
     // Perform actions based on the new value
     if (event.colDef.field === 'productName') {
       const rowId = event.rowIndex;
+      
       if (this.rowData.filter(x => x.productName == event.newValue).length > 1) {
         alert('Product already added!');
         event.node.setDataValue("productName", "");
@@ -366,7 +369,17 @@ export class CreatedealComponent {
       filterRow.reserved = stockAvail.overallreserved;
       //console.log(filterRow.VAT_INCLUDED);
       this.rowData[rowId] = { ...this.rowData[rowId], ...filterRow };
-      this.agGrid.api.setGridOption('rowData', this.rowData);
+      
+      //const updatedGridRow = {...this.rowData[rowId], ...filterRow};
+      //this.rowData=[
+       // ...this.rowData.slice(0,rowId),updatedGridRow,
+        //...this.rowData.slice(rowId + 1)
+      //];
+      
+     //event.rowNode.applyTransaction({update : [{prod }]}); 
+     //this.agGrid.api.refreshCells(); 
+    this.agGrid.api.setGridOption('rowData', this.rowData);
+      //this.agGrid.api.applyTransaction(transaction);
 
       this.listcount = this.rowData.length;
       this.numberOfRows = this.listcount.toString() + " Products";
@@ -374,8 +387,6 @@ export class CreatedealComponent {
     else if (event.colDef.field === 'quantity') {
       const rowId = event.rowIndex;
       let productTotalPrice = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
-
-
       if (isNaN(productTotalPrice)) {
         this.rowData[rowId].total = 0;
       }
@@ -396,11 +407,11 @@ export class CreatedealComponent {
       else {
         this.rowData[rowId].total = calDisc
       }
+      const updatedRow = {...this.rowData[rowId],...filterRow};
+      this.agGrid.api.applyTransaction({update: [updatedRow]});
       this.agGrid.api.setGridOption('rowData', this.rowData);
       this.GetTotals();
-
     }
-
   }
 
 
@@ -650,4 +661,81 @@ export class CreatedealComponent {
 
   }
 
+
+
+  onGridValueChanged(event: any) {
+    var fetchDealNum = this.createDealForm.get("updateDealnum").value;
+    if (fetchDealNum == "" || fetchDealNum == null) {
+      this.isLoading = false;
+    }
+    else {
+      this.isLoading = true;
+    }
+    // Access the changed row data and column details
+    //console.log('Cell value changed:', event.data, event.colDef.field, event.newValue);
+    this.storeId = this.createDealForm.get('storesOptions').value;
+    
+    // Perform actions based on the new value
+    if (event.colDef.field === 'productName') {
+      const rowId = event.rowIndex;
+      const productName = event.newValue;
+      if (this.rowData.filter(x => x.productName.trim() == event.newValue).length > 1) {
+        alert('Product already added!');
+        event.node.setDataValue("productName", "");
+        return;
+      }
+      var filterRow = this.productsList.filter(x => x.productName == event.newValue)[0];
+      //console.log(this.storeId);
+      //console.log(filterRow);
+      //console.log(event.newValue);
+      var stockAvail = this.bitrixOverAllStock.filter(x => x.productId == filterRow.id)[0];
+      //console.log(stockAvail.overallQuantity);
+      //console.log(stockAvail);
+      filterRow.quantity = 0;
+      filterRow.total = 0;
+      filterRow.stock = stockAvail.overallQuantity;
+      filterRow.reserved = stockAvail.overallreserved;
+      //console.log(filterRow.VAT_INCLUDED);
+      this.rowData[rowId] = { ...this.rowData[rowId], ...filterRow };
+      
+      const updatedGridRow = {...this.rowData[rowId],...filterRow};
+      //this.agGrid.api.setGridOption('rowData', this.rowData);
+      this.agGrid.api.applyTransaction({update:[updatedGridRow]});
+      
+      this.rowData[rowId] = updatedGridRow;
+      
+      this.listcount = this.rowData.length;
+      this.numberOfRows = this.listcount.toString() + " Products";
+    }
+    else if (event.colDef.field === 'quantity') {
+      const rowId = event.rowIndex;
+     let productTotalPrice = this.rowData[rowId].quantity * this.rowData[rowId].RRP;
+     if(isNaN(productTotalPrice)){
+      filterRow.total=0;
+     }
+     else
+     {
+      filterRow.total = productTotalPrice;
+     }
+     const updatedGridRow ={...this.rowData, ...filterRow};
+      this.agGrid.api.applyTransaction({update: [updatedGridRow]});
+      this.rowData[rowId] = updatedGridRow;
+      //---------------Calling function to calculate Subtotal value and display it ---------------
+      this.GetTotals();
+    } else if (event.colDef.field === 'discount') {
+      const rowId = event.rowIndex;
+      const currentRow = this.rowData[rowId];
+      var calDisc = this.rowData[rowId].total - (this.rowData[rowId].total * (this.rowData[rowId].discount / 100));
+
+      if(!isNaN(calDisc)){
+      filterRow.total = calDisc;
+      }
+      const updatedGridRow = {...currentRow,...filterRow};
+
+      //const updatedRow = {...this.rowData[rowId],...filterRow};
+      this.agGrid.api.applyTransaction({update: [updatedGridRow]});
+      //this.agGrid.api.setGridOption('rowData', this.rowData);
+      this.GetTotals();
+    }
+  }
 }
