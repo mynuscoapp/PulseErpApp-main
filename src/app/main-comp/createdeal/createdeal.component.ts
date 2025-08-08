@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { values } from 'lodash';
+import { update, values } from 'lodash';
 import { BitrixProducts } from 'src/app/demo/models/bitrixproducts';
 import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
 import { environment } from 'src/environments/environment';
@@ -366,7 +366,7 @@ export class CreatedealComponent {
       filterRow.reserved = stockAvail.overallreserved;
       //console.log(filterRow.VAT_INCLUDED);
       this.rowData[rowId] = { ...this.rowData[rowId], ...filterRow };
-      this.agGrid.api.setGridOption('rowData', this.rowData);
+      event.node.setData(this.rowData[rowId]);
 
       this.listcount = this.rowData.length;
       this.numberOfRows = this.listcount.toString() + " Products";
