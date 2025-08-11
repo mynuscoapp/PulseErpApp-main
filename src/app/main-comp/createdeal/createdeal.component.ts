@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,FormControl} from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { add, values } from 'lodash';
+import { add, size, values } from 'lodash';
 import { BitrixProducts } from 'src/app/demo/models/bitrixproducts';
 import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
 import { environment } from 'src/environments/environment';
@@ -20,7 +20,10 @@ import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
+//import * as $ from 'jquery';
+//import * as $ from 'jquery';
 
+declare var $: any;
 
 @Component({
   selector: 'app-createdeal',
@@ -185,7 +188,7 @@ export class CreatedealComponent {
           productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
           productRow.TAX_RATE = this.rowData[i].tax_rate;
           productRow.OWNER_TYPE = 'D';
-          productRow.STORE_ID = this.createDealForm.get("storesOptions").value;
+          productRow.STORE_ID = this.createDealForm.get("storesOptions").value.toString();
           //productRow.WAREHOUSE_ID = this.warehouseSelection();
           //alert(this.createDealForm.get("storesOptions").value);
           //alert(productRow.WAREHOUSE_ID.toString());
@@ -205,8 +208,11 @@ export class CreatedealComponent {
     // pick 'c' column
     this.agGrid.api.flashCells({ rowNodes: [rowNode], columns: [colName], flashDuration: 10000, flashDelay: 10000 });
   }
+
+
   ngOnInit() {
     this.rowData.push(new BitrixProducts);
+    //$('.selectpicker').selectpicker();
     this.bitrixstockservice.loadBitrixProducts().subscribe((data: any) => {
       this.productNamesList = data.map(x => x.productName);
       this.productsList = data;
@@ -224,7 +230,10 @@ export class CreatedealComponent {
     this.bitrixstockservice.loadBitrixCustomers().subscribe((data: any) => {
       this.bitrixCustomers = data;
       this.bitrixstockservice.bitrixCustomers = data;
-      //console.log(data);
+      //$('.selectpicker').selectpicker();
+      setTimeout(() => {
+        $('.selectpicker').selectpicker();
+      }, 0); 
     });
 
     this.bitrixstockservice.loadBitrixStoress().subscribe((data: any) => {
@@ -247,7 +256,10 @@ export class CreatedealComponent {
   }
 
   ngAfterViewInit() {
-
+    // Initialize Bootstrap Selectpicker after view is initialized
+    //$('.selectpicker').selectpicker();
+    // If you're setting the value programmatically after initialization, refresh the selectpicker
+    //$('.selectpicker').selectpicker('refresh');
   }
 
   createColumnsDefinition() {
