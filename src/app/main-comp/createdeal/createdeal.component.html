@@ -30,9 +30,10 @@
                        formControlName="customersOptions"
                        id="customersOptions"
                        data-live-search="true"
-                       required 
+                       required
+                       (change)="onCustomersChange($event)"
                        style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue" placeholder="Select Customer">
-                            <!-- <option [value]="">Select Customer</option> -->
+                            <option [value]="0">Select Customer</option>
                            <option *ngFor="let item of bitrixCustomers" [value]="item.id">{{ item.name }} </option>
                         </select>
                 </div>

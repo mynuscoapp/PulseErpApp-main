@@ -71,6 +71,7 @@ export class CreatedealComponent {
    productTotalPrice:number =0;
   errorDisplayMsg: string;
   $: any;
+  customerSelected: string;
 
 
   constructor(private formBuilder: FormBuilder, private bitrixstockservice: BitrixStockService, private http: HttpClient) {
@@ -121,7 +122,7 @@ export class CreatedealComponent {
     let dealHeader = new DealHeaderModel;
     dealHeader.TITLE = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = "SALE";
-    dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
+    dealHeader.COMPANY_ID = this.customerSelected;
     //dealHeader.CATEGORY_ID = 
     dealHeader.OPPORTUNITY = +this.ftotal;
     dealHeader.ASSIGNED_BY_ID = '1';
@@ -184,7 +185,7 @@ export class CreatedealComponent {
           productRow.DISCOUNT_TYPE_ID = 2;
           productRow.PRICE = this.rowData[i].RRP;
           productRow.QUANTITY = this.rowData[i].quantity;
-          productRow.DISCOUNT_RATE = this.rowData[i].discount.toString();
+          productRow.DISCOUNT_RATE = this.rowData[i].discount;
           productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
           productRow.TAX_RATE = this.rowData[i].tax_rate;
           productRow.OWNER_TYPE = 'D';
@@ -233,6 +234,7 @@ export class CreatedealComponent {
       //$('.selectpicker').selectpicker();
       setTimeout(() => {
         $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('val',  '0');
       }, 0); 
     });
 
@@ -476,7 +478,7 @@ export class CreatedealComponent {
 
 
   validateCustomer() {
-    if (this.createDealForm.get("customersOptions").value === "") {
+    if (this.customerSelected === "") {
       this.customerSelect = false;
     }
     else {
@@ -501,6 +503,7 @@ export class CreatedealComponent {
     this.isDealFetched = false;
     this.numberOfRows = '';
     this.updatDealDisable = true;
+    $('.selectpicker').selectpicker('val',  '0');
     //console.log("Reset Button clicked!");
     //this.createDealForm.get(" pipelineOptions").setValue('0');
     //this.createDealForm.get("customersOptions").setValue('0');
@@ -550,7 +553,8 @@ export class CreatedealComponent {
         console.log(this.dealHeader.ID.toString());
         this.dealNum = "Deal ID : " + this.dealHeader.ID.toString();
         this.createDealForm.get("dealName").setValue(this.dealHeader.TITLE);
-        this.createDealForm.get("customersOptions").setValue(this.dealHeader.COMPANY_ID);
+        //this.createDealForm.get("customersOptions").setValue(this.dealHeader.COMPANY_ID);
+        $('.selectpicker').selectpicker('val', this.dealHeader.COMPANY_ID);
         //alert("Company Id : " +this.dealHeader.COMPANY_ID);
         this.getProductDetailsForUpdate(this.dealHeader);
         this.fetchDealId = this.dealHeader.ID;
@@ -626,7 +630,7 @@ export class CreatedealComponent {
     let dealHeader = new DealHeaderModel;
     dealHeader.TITLE = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = "SALE";
-    dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
+    dealHeader.COMPANY_ID = this.customerSelected;
     //dealHeader.CATEGORY_ID = 
     dealHeader.OPPORTUNITY = +this.ftotal;
     dealHeader.ASSIGNED_BY_ID = '1';
@@ -757,4 +761,9 @@ export class CreatedealComponent {
     this.GetTotals();
   }
  }
+
+ onCustomersChange(event: any) {
+  this.customerSelected = event.target.value;
+  // Do something with selectedValue
+}
 }
