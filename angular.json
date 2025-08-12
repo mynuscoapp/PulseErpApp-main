@@ -35,10 +35,10 @@
               "node_modules/bootstrap/scss/bootstrap.scss",
               "src/styles.scss",
               "node_modules/ag-grid-enterprise/styles/ag-grid.css",
-              "node_modules/ag-grid-enterprise/styles/ag-theme-alpine.css"
+              "node_modules/ag-grid-enterprise/styles/ag-theme-alpine.css"   
             ],
             "scripts": [
-              "node_modules/apexcharts/dist/apexcharts.min.js"
+              "node_modules/apexcharts/dist/apexcharts.min.js"      
             ]
           },
           "configurations": {

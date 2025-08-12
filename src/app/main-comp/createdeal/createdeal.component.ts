@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA, ViewChild, AfterViewInit,AfterViewChecked } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,FormControl} from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { update, values } from 'lodash';
@@ -20,7 +20,7 @@ import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
-
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-createdeal',
@@ -30,7 +30,8 @@ import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel
 })
 
 
-export class CreatedealComponent {
+//export class CreatedealComponent implements AfterViewInit, AfterViewChecked{
+ export class CreatedealComponent{
   @ViewChild('agGrid') agGrid!: AgGridAngular;
   createDealForm: FormGroup;
   isLoading: boolean = true;
@@ -39,7 +40,7 @@ export class CreatedealComponent {
   productsList: BitrixProducts[] = []
   rowData: BitrixProducts[] = [];
   rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "multiRow",
+  mode: "multiRow",
   };
   
 
@@ -63,11 +64,11 @@ export class CreatedealComponent {
   listcount: number = 0;
   numberOfRows: string = "";
   isDealFetched: boolean = false;
-  isCustomerDiabled: boolean = true;
+  isCustomerDisabled: boolean = true;
   fetchDealId: number;
    productTotalPrice:number =0;
   errorDisplayMsg: string;
-  $: any;
+   $: any;
 
 
   constructor(private formBuilder: FormBuilder, private bitrixstockservice: BitrixStockService, private http: HttpClient) {
@@ -87,7 +88,7 @@ export class CreatedealComponent {
       // selectedOption: ['', [Validators.required]]
     });
 
-    this.gridOptions = <GridOptions>{
+      this.gridOptions = <GridOptions>{
       singleClickEdit: true,
       rowHeight: 50,
       onGridReady: function (params) {
@@ -205,6 +206,7 @@ export class CreatedealComponent {
     // pick 'c' column
     this.agGrid.api.flashCells({ rowNodes: [rowNode], columns: [colName], flashDuration: 10000, flashDelay: 10000 });
   }
+
   ngOnInit() {
     this.rowData.push(new BitrixProducts);
     this.bitrixstockservice.loadBitrixProducts().subscribe((data: any) => {
@@ -224,6 +226,7 @@ export class CreatedealComponent {
     this.bitrixstockservice.loadBitrixCustomers().subscribe((data: any) => {
       this.bitrixCustomers = data;
       this.bitrixstockservice.bitrixCustomers = data;
+      //setTimeout(() => {this.$('.selectpicker').selectpicker('refresh')});
       //console.log(data);
     });
 
@@ -248,6 +251,12 @@ export class CreatedealComponent {
 
   ngAfterViewInit() {
 
+    this.$('.selectpicker').selectpicker();
+
+  }
+
+  ngAfterViewChecked(){
+    this.$('.selectpicker').selectpicker('refresh');
   }
 
   createColumnsDefinition() {

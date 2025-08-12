@@ -26,6 +26,7 @@
     "@angular/platform-browser-dynamic": "19.0.5",
     "@angular/router": "19.0.5",
     "@ng-bootstrap/ng-bootstrap": "18.0.0",
+    "@ng-select/ng-select": "^20.1.0",
     "@popperjs/core": "2.11.8",
     "ag-grid-angular": "^32.2.1",
     "ag-grid-enterprise": "^32.2.1",
