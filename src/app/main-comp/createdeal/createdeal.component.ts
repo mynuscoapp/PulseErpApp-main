@@ -183,7 +183,8 @@ declare var $: any;
           productRow.PRODUCT_NAME = this.rowData[i].productName;
           productRow.ORIGINAL_PRODUCT_NAME = this.rowData[i].productName;
           productRow.PRODUCT_DESCRIPTION = this.rowData[i].productName;
-          productRow.DISCOUNT_TYPE_ID = 2;
+          if (this.rowData[i].discount > 0)
+            productRow.DISCOUNT_TYPE_ID = 2;
           productRow.PRICE = this.rowData[i].RRP;
           productRow.QUANTITY = this.rowData[i].quantity;
           productRow.DISCOUNT_RATE = this.rowData[i].discount;
