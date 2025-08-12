@@ -71,9 +71,17 @@ export const NavigationItems: NavigationItem[] = [
             url: '/stockinfo'
           }
         ]
+      },
+      {
+        id: 'basic',
+        title: 'Amazon Payments',
+        type: 'item',
+        url: '/amazonpayments',
+        icon: 'feather icon-user',
+        classes: 'nav-item'
       }
-    ],
-
+  
+    ]
   },
   {
 

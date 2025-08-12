@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, NO_ERRORS_SCHEMA, ViewChild } from '@angular/core';
+import { Component, NO_ERRORS_SCHEMA, ViewChild, AfterViewInit,AfterViewChecked } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators,FormControl} from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { add, size, values } from 'lodash';
@@ -33,7 +33,8 @@ declare var $: any;
 })
 
 
-export class CreatedealComponent {
+//export class CreatedealComponent implements AfterViewInit, AfterViewChecked{
+ export class CreatedealComponent{
   @ViewChild('agGrid') agGrid!: AgGridAngular;
   createDealForm: FormGroup;
   isLoading: boolean = true;
@@ -42,7 +43,7 @@ export class CreatedealComponent {
   productsList: BitrixProducts[] = []
   rowData: BitrixProducts[] = [];
   rowSelection: RowSelectionOptions | "single" | "multiple" = {
-    mode: "multiRow",
+  mode: "multiRow",
   };
   
 
@@ -66,7 +67,7 @@ export class CreatedealComponent {
   listcount: number = 0;
   numberOfRows: string = "";
   isDealFetched: boolean = false;
-  isCustomerDiabled: boolean = true;
+  isCustomerDisabled: boolean = true;
   fetchDealId: number;
    productTotalPrice:number =0;
   errorDisplayMsg: string;
@@ -91,7 +92,7 @@ export class CreatedealComponent {
       // selectedOption: ['', [Validators.required]]
     });
 
-    this.gridOptions = <GridOptions>{
+      this.gridOptions = <GridOptions>{
       singleClickEdit: true,
       rowHeight: 50,
       onGridReady: function (params) {
