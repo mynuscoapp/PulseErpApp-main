@@ -1,56 +1,48 @@
-<div class="row" style="height: calc(100% - 5px);">
-    <div class="col-sm-12" style="background: radial-gradient(circle at top left, #f8f2e6, #6fc4db)">
-        <form [formGroup]="createDealForm" (ngSubmit)="onSubmit()">
-            <div class="col-sm-12">
-
-                <div class="col-sm-12" style="display:flex; padding-top:10px;padding-left: 25px;">
-                    <div class="col-sm-4">
-
-                        <input class="form-group" type="text" id="dealName" formControlName="dealName" name="dealName"
-                            placeholder="Enter Deal Name"
-                            style="border-radius:1rem; border: 1px solid #28a745; width: 200px; height: 30px; ">
-                    </div>
-                    <div class="col-sm-4" class="form-group">
-                        <label id="dealId" formControlName="dealId"
-                            style="font-size: 15px; font-weight: bolder; align-items: center;" ngDefaultControl>
-                            {{dealNum}}</label>
-                    </div>
+<div class="row">
+    <div class="col-sm-12">
+      <app-card>
+           <form [formGroup]="createDealForm" (ngSubmit)="onSubmit()">
+            <div class="col-sm-8" style="display: flex;">
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="dealName" formControlName="dealName" name="dealName"
+                        placeholder="Enter Deal Name">
                 </div>
-
-                <div class="col-sm-12" style="display: flex; border-radius: 1rem; border: 1px solid #28a745; 
-            background-color: #bff1f3;">
-
-                    <div class="form-group" class="col-sm-4" style="margin: 15px;">
-                        <select class="selectpicker" formControlName="pipelineOptions" required (change)="warehouseSet()">
-                            <option disabled value="0" style="color: black;">Select Pipeline</option>
-                            <option *ngFor="let item of bitrixPipelineList" [value]="item.id" style="color: black;">{{ item.name }} </option>
-                        </select>
-                    
+                <div class="col-sm-4" style="align-content: center;">
+                    <label id="dealId" class="form-control" formControlName="dealId"  placeholder="Generated Deal Nameber"
+                    ngDefaultControl>
+                        {{dealNum}}</label>
                 </div>
-                <div class="form-group" class="col-sm-4" style="margin: 15px;">
+            </div>
+            <div class="col-sm-12" style="display: flex;border-color: black;">
+
+                <div class="form-group" class="col-sm-4">
+                    <select class="selectpicker" formControlName="pipelineOptions" (change)="warehouseSet()">
+                        <option disabled value="-1" style="color: black;">Select Pipeline</option>
+                        <option *ngFor="let item of bitrixPipelineList" [value]="item.id" style="color: black;">{{
+                            item.name }} </option>
+                    </select>
+
+                </div>
+                <div class="form-group" class="col-sm-4">
                     <!--  <label>Customer*</label>-->
-                       <select class="selectpicker" 
-                       formControlName="customersOptions"
-                       id="customersOptions"
-                       data-live-search="true"
-                       required
-                       (change)="onCustomersChange($event)"
-                       [(ngModel)]="bitrixCustomers"
-                       placeholder="Select Customer">
-                            <option disabled [value]="0" style="color: black;">Select Customer</option>
-                           <option *ngFor="let item of bitrixCustomers" [value]="item.id" style="color: black;">{{ item.name }} </option>
-                        </select>
+                    <select class="selectpicker" formControlName="customersOptions" id="customersOptions"
+                        data-live-search="true" required (change)="onCustomersChange($event)"
+                        placeholder="Select Customer">
+                        <option disabled [value]="0" style="color: black;">Select Customer</option>
+                        <option *ngFor="let item of bitrixCustomers" [value]="item.id" style="color: black;">{{
+                            item.name }} </option>
+                    </select>
                 </div>
-                <div class="form-group" class="col-sm-3" style="margin: 10px;">
+                <div class="form-group" class="col-sm-3">
                     <!--<label>Stores*</label>-->
-                <!--LABELS REMOVED & ADDED DISABLED VALUE, BORDER-RADIUS -->
-                <!-- <select matNativeControl formControlName="storesOptions" required (change)="warehouseCheck()" -->
-                
-                    <select class="selectpicker" formControlName="storesOptions" required>
-                            <option disabled value="0" style="color: black;">Select Warehouse</option>
-                            <option *ngFor="let item of bitrixStores" [value]="item.id" style="color: black;">{{ item.name }}</option>
-                        </select>
-                    </div>
+                    <!--LABELS REMOVED & ADDED DISABLED VALUE, BORDER-RADIUS -->
+                    <!-- <select matNativeControl formControlName="storesOptions" required (change)="warehouseCheck()" -->
+
+                    <select class="selectpicker" formControlName="storesOptions" required (change)="onStoreChange($event)">
+                        <option disabled value="0" style="color: black;">Select Warehouse</option>
+                        <option *ngFor="let item of bitrixStores" [value]="item.id" style="color: black;">{{ item.name
+                            }}</option>
+                    </select>
                 </div>
             </div>
             <div class="col-sm-12">
@@ -90,20 +82,20 @@
                 [columnDefs]="colDefs" -->
             </div>
 
-            <div class="form-group">
+            <div class="form-group col-sm-12">
                 <button type="button" class="btn btn-primary col-sm-1.5" (click)="onresetForm()">Reset</button>
-                <input class="form-group" type="text" id="updateDealnum" formControlName="updateDealnum" size="20"
-                    placeholder="Search Deal#"
-                    style="border-radius:1rem; border: 1px solid #28a745; width: 150px; height: 30px; padding-left:20px;">
+                <input class="col-sm-1.5" type="text" id="updateDealnum" formControlName="updateDealnum" size="20"
+                    placeholder="Search Deal#">
                 <!--<button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> {{ isDealFetched ? 'Update Deal' : 'Fetch Deal' }}</button>-->
-                <button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()"> Fetch Deal</button>
+                <button type="button" class="btn btn-primary col-sm-1.5" (click)="onDealAction()">Fetch Deal</button>
                 <button type="button" class="btn btn-primary col-sm-1.5" [disabled]="updatDealDisable"
                     (click)="onUpdateDealData()"> Update Deal</button>
                 <button type="button" class="btn btn-primary" (click)="onExport()">Export</button>
                 <label id="listcount" formControlName="listcount"
-                    style="font-size: 12px;text-align:left;padding-left:700px;" class="col-sm-1" ngDefaultControl>{{
+                     class="col-sm-1" ngDefaultControl>{{
                     numberOfRows }}</label>
             </div>
         </form>
-    </div>
+    </app-card>
+</div>
 </div>
