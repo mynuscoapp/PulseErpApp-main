@@ -1,0 +1,40 @@
+/* Container for form controls */
+.form-controls {
+  gap: 12px; /* Space between each control */
+}
+/* Inputs & selects styled like ag-Grid filter fields */
+.form-controls select,
+.form-controls input[type="date"],
+.form-controls input[type="text"] {
+  height: 32px;
+  padding: 0 8px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  background-color: rgb(250, 237, 237);
+  transition: border-color 0.2s ease;
+}
+
+.form-controls select:focus,
+.form-controls input:focus {
+  border-color: #1890ff; /* ag-Grid blue */
+}
+
+/* Submit button in ag-Grid style */
+.form-controls button {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.form-controls button:hover {
+  background-color: #0f70d1;
+}
