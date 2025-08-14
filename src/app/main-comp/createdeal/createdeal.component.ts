@@ -71,7 +71,8 @@ declare var $: any;
   fetchDealId: number;
    productTotalPrice:number =0;
   errorDisplayMsg: string;
-   $: any;
+  $: any;
+  customerSelected: string;
 
 
   constructor(private formBuilder: FormBuilder, private bitrixstockservice: BitrixStockService, private http: HttpClient) {
@@ -122,7 +123,7 @@ declare var $: any;
     let dealHeader = new DealHeaderModel;
     dealHeader.TITLE = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = "SALE";
-    dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
+    dealHeader.COMPANY_ID = this.customerSelected;
     //dealHeader.CATEGORY_ID = 
     dealHeader.OPPORTUNITY = +this.ftotal;
     dealHeader.ASSIGNED_BY_ID = '1';
@@ -182,10 +183,11 @@ declare var $: any;
           productRow.PRODUCT_NAME = this.rowData[i].productName;
           productRow.ORIGINAL_PRODUCT_NAME = this.rowData[i].productName;
           productRow.PRODUCT_DESCRIPTION = this.rowData[i].productName;
-          productRow.DISCOUNT_TYPE_ID = 2;
+          if (this.rowData[i].discount > 0)
+            productRow.DISCOUNT_TYPE_ID = 2;
           productRow.PRICE = this.rowData[i].RRP;
           productRow.QUANTITY = this.rowData[i].quantity;
-          productRow.DISCOUNT_RATE = this.rowData[i].discount.toString();
+          productRow.DISCOUNT_RATE = this.rowData[i].discount;
           productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
           productRow.TAX_RATE = this.rowData[i].tax_rate;
           productRow.OWNER_TYPE = 'D';
@@ -234,6 +236,7 @@ declare var $: any;
       //$('.selectpicker').selectpicker();
       setTimeout(() => {
         $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('val',  '0');
       }, 0); 
     });
 
@@ -477,7 +480,7 @@ declare var $: any;
 
 
   validateCustomer() {
-    if (this.createDealForm.get("customersOptions").value === "") {
+    if (this.customerSelected === "") {
       this.customerSelect = false;
     }
     else {
@@ -502,6 +505,7 @@ declare var $: any;
     this.isDealFetched = false;
     this.numberOfRows = '';
     this.updatDealDisable = true;
+    $('.selectpicker').selectpicker('val',  '0');
     //console.log("Reset Button clicked!");
     //this.createDealForm.get(" pipelineOptions").setValue('0');
     //this.createDealForm.get("customersOptions").setValue('0');
@@ -551,7 +555,8 @@ declare var $: any;
         console.log(this.dealHeader.ID.toString());
         this.dealNum = "Deal ID : " + this.dealHeader.ID.toString();
         this.createDealForm.get("dealName").setValue(this.dealHeader.TITLE);
-        this.createDealForm.get("customersOptions").setValue(this.dealHeader.COMPANY_ID);
+        //this.createDealForm.get("customersOptions").setValue(this.dealHeader.COMPANY_ID);
+        $('.selectpicker').selectpicker('val', this.dealHeader.COMPANY_ID);
         //alert("Company Id : " +this.dealHeader.COMPANY_ID);
         this.getProductDetailsForUpdate(this.dealHeader);
         this.fetchDealId = this.dealHeader.ID;
@@ -627,7 +632,7 @@ declare var $: any;
     let dealHeader = new DealHeaderModel;
     dealHeader.TITLE = this.createDealForm.get("dealName").value;
     dealHeader.TYPE_ID = "SALE";
-    dealHeader.COMPANY_ID = this.createDealForm.get("customersOptions").value;
+    dealHeader.COMPANY_ID = this.customerSelected;
     //dealHeader.CATEGORY_ID = 
     dealHeader.OPPORTUNITY = +this.ftotal;
     dealHeader.ASSIGNED_BY_ID = '1';
@@ -758,4 +763,9 @@ declare var $: any;
     this.GetTotals();
   }
  }
+
+ onCustomersChange(event: any) {
+  this.customerSelected = event.target.value;
+  // Do something with selectedValue
+}
 }

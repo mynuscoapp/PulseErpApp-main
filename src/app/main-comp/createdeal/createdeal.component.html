@@ -21,10 +21,9 @@
             background-color: #bff1f3;">
 
                     <div class="form-group" class="col-sm-4" style="margin: 15px;">
-                        <select matNativeControl formControlName="pipelineOptions" required (change)="warehouseSet()"
-                            style="width: 200px; height: 40px; margin: 10px; border-radius:1rem; border:2px solid cornflowerblue">
-                            <option disabled value="">Select Pipeline</option>
-                            <option *ngFor="let item of bitrixPipelineList" [value]="item.id">{{ item.name }} </option>
+                        <select class="selectpicker" formControlName="pipelineOptions" required (change)="warehouseSet()">
+                            <option disabled value="0" style="color: black;">Select Pipeline</option>
+                            <option *ngFor="let item of bitrixPipelineList" [value]="item.id" style="color: black;">{{ item.name }} </option>
                         </select>
                     
                 </div>
@@ -34,10 +33,12 @@
                        formControlName="customersOptions"
                        id="customersOptions"
                        data-live-search="true"
-                       required 
-                       style="width: 200px; height: 40px; margin: 10px;flex-wrap:wrap; border-radius:1rem;border:2px solid cornflowerblue" placeholder="Select Customer">
-                            <!-- <option [value]="">Select Customer</option> -->
-                           <option *ngFor="let item of bitrixCustomers" [value]="item.id">{{ item.name }} </option>
+                       required
+                       (change)="onCustomersChange($event)"
+                       [(ngModel)]="bitrixCustomers"
+                       placeholder="Select Customer">
+                            <option disabled [value]="0" style="color: black;">Select Customer</option>
+                           <option *ngFor="let item of bitrixCustomers" [value]="item.id" style="color: black;">{{ item.name }} </option>
                         </select>
                 </div>
                 <div class="form-group" class="col-sm-3" style="margin: 10px;">
@@ -45,10 +46,9 @@
                 <!--LABELS REMOVED & ADDED DISABLED VALUE, BORDER-RADIUS -->
                 <!-- <select matNativeControl formControlName="storesOptions" required (change)="warehouseCheck()" -->
                 
-                    <select matNativeControl formControlName="storesOptions" required   
-                        style="width: 200px; height: 40px; margin: 10px;border-radius:1rem; border:2px solid cornflowerblue">
-                            <option disabled value="">Select Warehouse</option>
-                            <option *ngFor="let item of bitrixStores" [value]="item.id">{{ item.name }}</option>
+                    <select class="selectpicker" formControlName="storesOptions" required>
+                            <option disabled value="0" style="color: black;">Select Warehouse</option>
+                            <option *ngFor="let item of bitrixStores" [value]="item.id" style="color: black;">{{ item.name }}</option>
                         </select>
                     </div>
                 </div>
