@@ -2,7 +2,7 @@
     <div class="col-sm-12">
         <app-card>
             <form [formGroup]="aznpaymentsform">
-                <div class="col-sm-12" style="display: flex;margin: 0px;">
+                <div class="col-sm-12" style="display: flex;">
                     <div class="col-sm-2">
                         <input formControlName="startdateparam" type="date" [(ngModel)]="startdateparam"
                             placeholder="Start Date" />
@@ -44,7 +44,7 @@
                     </div>
 
                 </div>
-                <div class="col-sm-8" style="display: flex;margin: 0px;">
+                <div class="col-sm-8" style="display: flex;">
                     <div class="col-sm-4">
                         <button type="button" class="btn btn-primary" (click)="loadPayments()">Submit</button>
 
