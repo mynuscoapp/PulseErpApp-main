@@ -8,10 +8,11 @@ import { aznPayment } from 'src/app/theme/shared/service/azn-payments-service';
 import { AmazonPayments } from 'src/app/demo/models/AmazonPayments';
 import { groupBy } from 'lodash';
 import { HttpParams } from '@angular/common/http';
+import { SharedModule } from 'src/app/theme/shared/shared.module';
 
 @Component({
   selector: 'app-amazonpayments',
-  imports: [FormsModule, ReactiveFormsModule, AgGridAngular],
+  imports: [FormsModule, ReactiveFormsModule, AgGridAngular, SharedModule],
   standalone: true,
   templateUrl: './amazonpayments.component.html',
   styleUrl: './amazonpayments.component.scss'
@@ -90,4 +91,14 @@ loadPayments(){
   ngOnInit() {
       
     }
+  
+    onExport(): void {
+      if (this.rowData.length > 1) {
+        this.agGrid.api.exportDataAsExcel();
+      }
+      else {
+        alert("No Data to export");
+      }
+  
   }
+}
