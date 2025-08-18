@@ -45,15 +45,15 @@ declare var $: any;
   productNamesList: any = [];
   productsList: BitrixProducts[] = []
   rowData: BitrixProducts[] = [];
-  rowSelection: RowSelectionOptions | "single" | "multiple" = {
+  rowSelection: any | "single" | "multiple" = {
   mode: "multiRow",
   };
   
 
   dealHeader: DealHeaderModel;
   bitrixOverAllStock: BitrixOverallStock[];
-  colDefs: ColDef[];
-  gridOptions: GridOptions;
+  colDefs: any[];
+  gridOptions: any;
   bitrixPipelineList: BitrixPipeline[];
   bitrixCustomers: BitrixCustomers[];
   bitrixStores: BitrixStores[];
