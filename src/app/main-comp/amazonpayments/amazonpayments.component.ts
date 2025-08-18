@@ -3,15 +3,21 @@ import { CommonModule,DatePipe } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-enterprise';
+import { ColDef, Column } from 'ag-grid-community';
 import { aznPayment } from 'src/app/theme/shared/service/azn-payments-service';
 import { AmazonPayments } from 'src/app/demo/models/AmazonPayments';
 import { groupBy } from 'lodash';
 import { HttpParams } from '@angular/common/http';
+import { AgChartOptions, PixelSize } from 'ag-charts-community';
+import { AgCharts } from 'ag-charts-angular'; 
+import { AgChartsModule } from 'ag-charts-angular';
+import { GridApi, GridReadyEvent} from 'ag-grid-community';
+import { labelSpecifier } from 'ag-charts-community/dist/types/src/chart/label';
+
 
 @Component({
   selector: 'app-amazonpayments',
-  imports: [FormsModule, ReactiveFormsModule, AgGridAngular],
+  imports: [FormsModule, ReactiveFormsModule, AgGridAngular,AgCharts,AgChartsModule],
   standalone: true,
   templateUrl: './amazonpayments.component.html',
   styleUrl: './amazonpayments.component.scss'
@@ -20,6 +26,8 @@ import { HttpParams } from '@angular/common/http';
 
 export class AmazonpaymentsComponent {
   @ViewChild('agGrid') agGrid!: AgGridAngular;
+  gridApi!: GridApi;
+  columnApi!: any;
   aznpaymentsform:FormGroup;
   rowData: AmazonPayments[] = [];
 
@@ -36,6 +44,20 @@ export class AmazonpaymentsComponent {
     { headerName:'Misc',field: 'misc_ex_gst', sortable: true, filter: true,width:150 }
   ];
 
+  chartOptions: AgChartOptions = {
+    height: 1000 as PixelSize,
+    data: [],
+    series: [
+      { type: 'bar',direction:'vertical', xKey: 'period_day', yKey: 'total_orders', yName: 'Total Orders' },
+      { type: 'bar',direction:'vertical', xKey: 'period_day', yKey: 'refund_orders', yName: 'Refund Orders' }
+    ],
+    
+    legend: { position: 'right' }
+  };
+
+ numericColumns: string[] = [];
+  selectedColumns: string[] = [];
+  gridOptions: any;
 startdateparam: Date;
 enddateparam: Date;
 intervals:string;
@@ -56,22 +78,15 @@ constructor(private formBuilder: FormBuilder, private datePipe: DatePipe,private
 
 loadPayments(){
     const params = this.aznpaymentsform.value;
-// const params = new HttpParams()
-// .set('startdateparam',this.aznpaymentsform.get("startdateparam").value)
-// .set('enddateparam', this.aznpaymentsform.get("enddateparam").value)
-// .set('intervals',this.aznpaymentsform.get("intervals").value)
-// .set('groupby',this.aznpaymentsform.get("groupby").value)
-// .set('filterby', this.aznpaymentsform.get("filterby").value)
-// .set('filtervalue',this.aznpaymentsform.get("filtervalue").value);
-
-  console.log("Params = ", params);
+    console.log("Params = ", params);
     console.log(JSON.stringify(params));
     console.log('Calling getPayments()...');
 
     this.aznPayment.getPayments(params).subscribe({ next: data => {
       console.log("Inside subscribe, data = ",data);
       this.rowData = data as AmazonPayments[];
-      console.log(data);
+     // this.updateChart();
+      //console.log(data);
      },
 
      error: (err) => {
@@ -80,14 +95,74 @@ loadPayments(){
      },
 
      complete: ()=>{
-      console.log("Request completed");
+      //console.log("Request completed");
+      this.loadCharts();
      }
-    });
-
-   
+    }); 
   }
+
+
+  loadCharts(data?:any){
+    const rawData = data || this.rowData;
+    
+    // Group by month
+    const grouped = groupBy(rawData, row =>
+      this.datePipe.transform(row.period_day, 'MMM-yyyy')
+      );
+
+      const chartData = Object.keys(grouped).map(period_day => {
+        const items = grouped[period_day];
+        return {
+          period_day, 
+          total_orders: items.reduce((sum, i) => sum + i.total_orders, 0),
+          refund_orders: items.reduce((sum, i) => sum + i.refund_orders, 0)
+        };
+      });
+
+    this.chartOptions = {...this.chartOptions, data: chartData,
+    };
+    //console.log(chartData);
+  }
+
 
   ngOnInit() {
-      
-    }
-  }
+     this.numericColumns = this.colDefs
+    .map(col => col.field!)
+    .filter(f => ['total_orders','refund_orders','revenue_ex_gst','cogs_ex_gst',
+                  'commissions_ex_gst','shipping_easy_shipex_gst','marketingex_gst','misc_ex_gst'].includes(f));
+    
+   }
+
+
+// updateChart() {
+//   const grouped = groupBy(this.rowData, row =>
+//     this.datePipe.transform(row.period_day, 'MMM-yyyy')
+//   );
+//   //console.log("rowData = " + this.rowData);
+
+//   const chartData = Object.keys(grouped).map(period_day => {
+//     const items = grouped[period_day];
+//     const obj: any = { period_day };
+//     this.selectedColumns.forEach(col => {
+//       obj[col] = items.reduce((sum, i) => sum + (i[col] || 0), 0);
+//       console.log("col " + col);
+//     });
+//     return obj;
+//   });
+
+//   const series = this.selectedColumns.map(col => ({
+//     type: 'bar',       
+//     xKey: 'period_day',
+//     yKey: col,
+//     yName: col
+//   }));
+//   console.log("series = " + series);
+
+//   this.chartOptions = {...this.chartOptions,
+//     data: chartData,
+//     legend: { position: 'right' }
+//   };
+// }
+
+
+}
