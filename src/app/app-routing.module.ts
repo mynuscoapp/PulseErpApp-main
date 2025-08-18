@@ -7,6 +7,7 @@ import AuthSigninComponent from './demo/pages/authentication/auth-signin/auth-si
 import { BitrixstockComponent } from './main-comp/bitrixstock/bitrixstock.component';
 import { CreatedealComponent } from './main-comp/createdeal/createdeal.component';
 import { AuthGuard }  from './theme/shared/service/auth.guard';
+import { AmazonpaymentsuploadComponent } from './main-comp/amazonpaymentsupload/amazonpaymentsupload.component';
 
 const routes: Routes = [
   {
@@ -77,6 +78,10 @@ const routes: Routes = [
       {
         path: 'amazonpayments',
         loadComponent: () => import('./main-comp/amazonpayments/amazonpayments.component').then((c) => c.AmazonpaymentsComponent)
+      },
+      {
+        path: 'amazonpaymentsupload',
+        component: AmazonpaymentsuploadComponent
       }
     ]
   },

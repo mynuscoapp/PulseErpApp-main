@@ -5,12 +5,13 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { AgGridAngular } from 'ag-grid-angular';
 import { error,} from 'console';
 import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
+import { SharedModule } from 'src/app/theme/shared/shared.module';
 
 
 
 @Component({
   selector: 'app-pulseusers',
-  imports: [FormsModule, ReactiveFormsModule, AgGridAngular, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, AgGridAngular, CommonModule, SharedModule],
   standalone: true,
   templateUrl: './pulseusers.component.html',
   styleUrl: './pulseusers.component.scss'

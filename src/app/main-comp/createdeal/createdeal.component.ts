@@ -20,6 +20,8 @@ import { DealProductList } from 'src/app/demo/models/DealProductList';
 import { error } from 'console';
 import { BitrixOverallStock } from 'src/app/demo/models/BitrixOverallStock';
 import { DealHeaderUpdateModel } from 'src/app/demo/models/DealHeaderUpdateModel';
+import BasicElementsComponent from 'src/app/demo/pages/form-elements/basic-elements/basic-elements.component';
+import { SharedModule } from 'src/app/theme/shared/shared.module';
 //import * as $ from 'jquery';
 //import * as $ from 'jquery';
 
@@ -27,7 +29,8 @@ declare var $: any;
 
 @Component({
   selector: 'app-createdeal',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, AgGridAngular],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, AgGridAngular, SharedModule],
+  providers: [SharedModule],
   templateUrl: './createdeal.component.html',
   styleUrl: './createdeal.component.scss'
 })
@@ -73,13 +76,14 @@ declare var $: any;
   errorDisplayMsg: string;
   $: any;
   customerSelected: string;
+  storeSelected: string;
 
 
   constructor(private formBuilder: FormBuilder, private bitrixstockservice: BitrixStockService, private http: HttpClient) {
 
     this.createDealForm = this.formBuilder.group({
 
-      pipelineOptions: ['', [Validators.required]],
+      pipelineOptions: ['', []],
       customersOptions: ['', [Validators.required]],
       //customersOptions: new FormControl<number | null>(null,Validators.required),
       storesOptions: ['', [Validators.required]],
@@ -118,6 +122,11 @@ declare var $: any;
     this.errorDisplayMsg = '';
     if (!this.IsQuantityEntered()) {
       this.errorDisplayMsg = 'Please enter quantity!';
+      return;
+    }
+    if(!this.createDealForm.valid)
+    {
+      this.errorDisplayMsg = 'Mandatory fields not selected';
       return;
     }
     let dealHeader = new DealHeaderModel;
@@ -191,7 +200,7 @@ declare var $: any;
           productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
           productRow.TAX_RATE = this.rowData[i].tax_rate;
           productRow.OWNER_TYPE = 'D';
-          productRow.STORE_ID = this.createDealForm.get("storesOptions").value.toString();
+          productRow.STORE_ID = this.storeSelected;
           //productRow.WAREHOUSE_ID = this.warehouseSelection();
           //alert(this.createDealForm.get("storesOptions").value);
           //alert(productRow.WAREHOUSE_ID.toString());
@@ -370,7 +379,7 @@ declare var $: any;
     }
     // Access the changed row data and column details
     //console.log('Cell value changed:', event.data, event.colDef.field, event.newValue);
-    this.storeId = this.createDealForm.get('storesOptions').value;
+    this.storeId = +this.storeSelected;
     // Perform actions based on the new value
     if (event.colDef.field === 'productName') {
       const rowId = event.rowIndex;
@@ -466,10 +475,12 @@ declare var $: any;
 
   warehouseSet() {
     if (this.createDealForm.get("pipelineOptions").value == "0") {
-      this.createDealForm.get("storesOptions").setValue(1);
+      //this.createDealForm.get("storesOptions").setValue(1);
+      $('#storesOptions').selectpicker('val',1);
     }
     if (this.createDealForm.get("pipelineOptions").value == "12") {
-      this.createDealForm.get("storesOptions").setValue(8);
+      //this.createDealForm.get("storesOptions").setValue(8);
+      $('#storesOptions').selectpicker('val',8);
     }
   }
 
@@ -480,7 +491,7 @@ declare var $: any;
 
 
   validateCustomer() {
-    if (this.customerSelected === "") {
+    if (this.customerSelected == "0") {
       this.customerSelect = false;
     }
     else {
@@ -492,6 +503,7 @@ declare var $: any;
   onresetForm() {
     this.createDealForm.reset();
     this.rowData = [];
+    this.storeSelected = '';
     this.rowData.push(new BitrixProducts);
     this.agGrid.api.setGridOption('rowData', this.rowData);
     this.finalTotal = '';
@@ -505,11 +517,14 @@ declare var $: any;
     this.isDealFetched = false;
     this.numberOfRows = '';
     this.updatDealDisable = true;
-    $('.selectpicker').selectpicker('val',  '0');
+    //$('.selectpicker').selectpicker('val',  '0');
     //console.log("Reset Button clicked!");
     //this.createDealForm.get(" pipelineOptions").setValue('0');
     //this.createDealForm.get("customersOptions").setValue('0');
     //this.createDealForm.get("storesOptions").setValue('0');
+    $('#customersOptions').selectpicker('val',0);
+    $('#pipelineOptions').selectpicker('val',0);
+    $('#storesOptions').selectpicker('val',0);
   }
 
 
@@ -541,7 +556,7 @@ declare var $: any;
 
   onUpdateDeal() {
     const updatedealnumber = this.createDealForm.get('updateDealnum').value.toString();
-    console.log(updatedealnumber);
+    //console.log(updatedealnumber);
     // alert(updatedealnumber);    
 
     this.rowData = [];
@@ -556,12 +571,16 @@ declare var $: any;
         this.dealNum = "Deal ID : " + this.dealHeader.ID.toString();
         this.createDealForm.get("dealName").setValue(this.dealHeader.TITLE);
         //this.createDealForm.get("customersOptions").setValue(this.dealHeader.COMPANY_ID);
-        $('.selectpicker').selectpicker('val', this.dealHeader.COMPANY_ID);
+        //$('.selectpicker').selectpicker('val', this.dealHeader.COMPANY_ID);
+        if (this.dealHeader.COMPANY_ID)
+          $('#customersOptions').selectpicker('val', this.dealHeader.COMPANY_ID);
         //alert("Company Id : " +this.dealHeader.COMPANY_ID);
         this.getProductDetailsForUpdate(this.dealHeader);
         this.fetchDealId = this.dealHeader.ID;
-        this.createDealForm.get("pipelineOptions").setValue(0);
-      this.createDealForm.get("storesOptions").setValue(1);
+        //this.createDealForm.get("pipelineOptions").setValue(0);
+        $('#pipelineOptions').selectpicker('val', 0);
+        $('#storesOptions').selectpicker('val', 1);
+      //this.createDealForm.get("storesOptions").setValue(1);
 
       }
     });
@@ -695,7 +714,7 @@ declare var $: any;
 
   console.log('Cell value changed:', event.data, event.colDef.field, event.newValue);
 
-  this.storeId = this.createDealForm.get('storesOptions').value;
+  this.storeId = +this.storeSelected;
   const rowId = event.rowIndex;
 
   // PRODUCT NAME CHANGE
@@ -766,6 +785,10 @@ declare var $: any;
 
  onCustomersChange(event: any) {
   this.customerSelected = event.target.value;
+  // Do something with selectedValue
+}
+onStoreChange(event: any) {
+  this.storeSelected = event.target.value;
   // Do something with selectedValue
 }
 }

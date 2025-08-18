@@ -77,7 +77,7 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Amazon Payments',
         type: 'item',
         url: '/amazonpayments',
-        icon: 'feather icon-user',
+        icon: 'feather icon-credit-card',
         classes: 'nav-item'
       }
   
@@ -107,7 +107,25 @@ export const NavigationItems: NavigationItem[] = [
         classes: 'nav-item' // Added attributes for additional context
       }
     ]
-  }
+  },
+  {
+
+    id: 'ui-element',
+    title: 'Uploads',
+    type: 'group',
+    icon: 'icon-ui',
+    children: [
+      {
+        id: 'amazonpaymentsupload',
+        title: 'Amazon Payments Upload', //Changed from Create Deal to Create Order on 17-7-2025
+        type: 'item',
+        url: '/amazonpaymentsupload',
+        icon: 'feather icon-home',
+        classes: 'nav-item'
+      }
+    ]
+  },
+
   // {
   //   id: 'ui-element',
   //   title: 'UI ELEMENT',
