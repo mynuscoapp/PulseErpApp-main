@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment'; // Adjust the import
 
 
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -47,6 +48,7 @@ export class LoginService {
   verifyEmail(email: string): Observable<{ exists: boolean }> {
     return this.http.post<{ exists: boolean }>(this.bitrixVerifyEmailUrl, { email });
   }
+  
 
   updatePassword(email: string,newPassword: string): Observable<{ success: boolean; message: string }> {
     return this.http.post<{ success: boolean; message: string }>(this.bitrixUpdatePasswordUrl, {

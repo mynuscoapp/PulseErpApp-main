@@ -13,9 +13,14 @@ const routes: Routes = [
         path: 'signup',
         loadComponent: () => import('./auth-signup/auth-signup.component')
       },
+    {
+  path: 'reset-password',
+  loadComponent: () => import('./reset-password/reset-password.component').then(m => m.default)
+      },
+      
       {
-        path: 'reset-password',
-        loadComponent: () => import('./reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
+        path: 'verify-code',
+        loadComponent: () => import('./auth-verify-code/auth-verify-code.component').then(m => m.AuthVerifyCodeComponent)
       }
     ]
   }
