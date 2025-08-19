@@ -96,6 +96,17 @@ export class AmazonpaymentsComponent {
 
   loadPayments() {
     const params = this.aznpaymentsform.value;
+    this.startdateparam = this.aznpaymentsform.get("startdateparam").value;
+    this.enddateparam = this.aznpaymentsform.get("enddateparam").value;
+    if ( this.startdateparam > this.enddateparam )
+    {
+      alert("Please select the Optimal Date Range");
+      return;
+    }
+    if(this.intervals === "" || this.groupby === "" || this.filterby === "" || this.filtervalue === "" ){
+      alert("Please selct all the values");
+      return;
+    }
     console.log("Params = ", params);
     console.log(JSON.stringify(params));
     console.log('Calling getPayments()...');
@@ -213,8 +224,6 @@ export class AmazonpaymentsComponent {
       data: chartData
     };
   }
-
-
 
 }
 
