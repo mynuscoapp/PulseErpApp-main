@@ -1,7 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ViewChild } from '@angular/core';
-import { CommonModule,DatePipe } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
@@ -10,21 +9,17 @@ import { AmazonPayments } from 'src/app/demo/models/AmazonPayments';
 import { groupBy } from 'lodash';
 import { HttpParams } from '@angular/common/http';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
-import { AgChartOptions, AgCharts, AgChartsEnterpriseModule, PixelSize,  } from 'ag-charts-enterprise';
+import { AgChartsEnterpriseModule, PixelSize  } from 'ag-charts-enterprise';
 import 'ag-charts-angular';
 import { ColDef, GridApi } from 'ag-grid-enterprise';
-import { AgChartOptions, PixelSize } from 'ag-charts-enterprise';
-import { AgCharts } from 'ag-charts-angular';
+import { AgChartOptions } from 'ag-charts-enterprise';
 import { AgChartsModule } from 'ag-charts-angular';
-import { GridApi, GridReadyEvent } from 'ag-grid-community';
-import { labelSpecifier } from 'ag-charts-community/dist/types/src/chart/label';
 import { GridOptions, ChartToolPanelName } from 'ag-grid-enterprise';
 
 
 @Component({
   selector: 'app-amazonpayments',
   imports: [FormsModule, ReactiveFormsModule, AgGridAngular, SharedModule, AgChartsModule ],
-  imports: [FormsModule, ReactiveFormsModule, AgGridAngular, AgCharts, AgChartsModule, SharedModule],
   standalone: true,
   templateUrl: './amazonpayments.component.html',
   styleUrl: './amazonpayments.component.scss'
