@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { AppRoutingModule } from 'src/app/app-routing.module';
+import { SharedModule } from '../theme/shared/shared.module';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
     ReactiveFormsModule,
     DatePipe,
     AgGridAngular,
-    RouterModule
-  ], providers: [provideHttpClient(withInterceptorsFromDi()), DatePipe]
+    RouterModule,
+    SharedModule,
+  ], providers: [provideHttpClient(withInterceptorsFromDi()), DatePipe, SharedModule]
 })
 export class MAinCompModule {}

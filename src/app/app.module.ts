@@ -6,9 +6,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InvoicedownloadComponent } from './main-comp/invoicedownload/invoicedownload.component';
 import { CreatedealComponent } from './main-comp/createdeal/createdeal.component';
-import { RichSelectModule } from 'ag-grid-enterprise';
+import { AgCharts, RichSelectModule } from 'ag-grid-enterprise';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ConfigService } from './theme/shared/service/ConfigService';
+import { AgChartsEnterpriseModule } from 'ag-charts-enterprise';
 
 export function initializeApp(configService: ConfigService) {
      return () => configService.getConfig().toPromise().then(config => {
@@ -25,7 +26,7 @@ export function initializeApp(configService: ConfigService) {
     exports:[DatePipe
          ], schemas: [CUSTOM_ELEMENTS_SCHEMA], 
     bootstrap: [], imports: [DatePipe, InvoicedownloadComponent, FormsModule,ReactiveFormsModule, CommonModule, BrowserModule, BrowserAnimationsModule,
-      CreatedealComponent, AgGridAngular ], providers: [ConfigService,
+      CreatedealComponent, AgGridAngular  ], providers: [ConfigService,
           {
             provide: APP_INITIALIZER,
             useFactory: initializeApp,

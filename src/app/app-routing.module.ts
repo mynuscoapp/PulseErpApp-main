@@ -80,16 +80,24 @@ const routes: Routes = [
       },
       {
         path: 'createdeal',
-        component: CreatedealComponent,
+        loadComponent:() => import('./main-comp/createdeal/createdeal.component').then((c) => c.CreatedealComponent)
       },
-
+      {
+        path: 'amazonpayments',
+        loadComponent: () => import('./main-comp/amazonpayments/amazonpayments.component').then((c) => c.AmazonpaymentsComponent)
+      },
+      {
+        path: 'amazonpaymentsupload',
+        component: AmazonpaymentsuploadComponent
+      }
     ]
   },
-
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
+
 export class AppRoutingModule { }
