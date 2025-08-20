@@ -5,16 +5,14 @@ import { WCOrderDownloadComponent } from './main-comp/wcorder-download-component
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import AuthSigninComponent from './demo/pages/authentication/auth-signin/auth-signin.component';
 import { BitrixstockComponent } from './main-comp/bitrixstock/bitrixstock.component';
-import { CreatedealComponent } from './main-comp/createdeal/createdeal.component';
+// import { CreatedealComponent } from './main-comp/createdeal/createdeal.component';
 import { AuthGuard } from './theme/shared/service/auth.guard';
-import { AuthForgotPasswordComponent } from './demo/pages/authentication/auth-forgot-password/auth-forgot-password.component';
 import { AuthVerifyCodeComponent } from './demo/pages/authentication/auth-verify-code/auth-verify-code.component';
 import ResetPasswordComponent from './demo/pages/authentication/reset-password/reset-password.component';
 
 
 const routes: Routes = [
    { path: '', component: AuthSigninComponent },
-  { path: 'forgot-password', component: AuthForgotPasswordComponent },
   { path: 'verify-code', component: AuthVerifyCodeComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   {
