@@ -20,7 +20,6 @@ import { GridApi, GridReadyEvent } from 'ag-grid-community';
 import { labelSpecifier } from 'ag-charts-community/dist/types/src/chart/label';
 import { GridOptions, ChartToolPanelName } from 'ag-grid-enterprise';
 
-
 @Component({
   selector: 'app-amazonpayments',
   imports: [FormsModule, ReactiveFormsModule, AgGridAngular, SharedModule, AgChartsModule ],

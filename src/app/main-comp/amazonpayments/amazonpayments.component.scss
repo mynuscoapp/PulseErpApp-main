@@ -38,3 +38,12 @@
 .form-controls button:hover {
   background-color: #0f70d1;
 }
+
+.form-controls label{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* space between controls */
+  align-items: center;
+  margin-bottom: 15px;
+}
+

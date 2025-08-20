@@ -3,6 +3,14 @@
         <app-card>
             <div class="form-controls">
                 <form [formGroup]="aznpaymentsform">
+                    <div class="form-controls">
+                        <label formControlName="lblstartdate">Start Date</label>
+                        <label formControlName="lblenddate">End Date</label>
+                        <label formControlName="lblinterval">Select Intervals</label>
+                        <label formControlName="lblgroupby">Group By</label>
+                        <label formControlName="lblfilterby">Filter By</label>
+                        <label formControlName="lblfiltervalue">Filter Value</label>
+                    </div>
                     <div>
                         <input formControlName="startdateparam" type="date" [(ngModel)]="startdateparam"
                             placeholder="Start Date" />
@@ -34,58 +42,14 @@
                         <button type="button" class="btn btn-primary col-sm-1.5"
                             (click)="loadPayments()">Submit</button>
                         
-                            <!--<button type="button" class="btn btn-primary col-sm-1.5" (click)="onExport()">
-                                Export</button>-->
+                            <button type="button" class="btn btn-primary col-sm-1.5" (click)="onExport()">
+                                Export</button>
                     </div>
                     <div>
                             <ag-grid-angular #agGrid style="width: 100%; height: 500px; " class="ag-theme-alpine"
                             [columnDefs]="colDefs" [rowData]="rowData" [gridOptions]="gridOptions"/>
                     </div>
-                </div>
-                <ag-grid-angular #agGrid style="width: 100%; height: 450px; " class="ag-theme-alpine"
-                    [columnDefs]="colDefs" [rowData]="rowData" />
-
-<div class="form-controls">
-    <form [formGroup]="aznpaymentsform">
-        <div>
-            <input formControlName="startdateparam" type="date" [(ngModel)]="startdateparam" placeholder="Start Date" />
-            <input formControlName="enddateparam" type="date" [(ngModel)]="enddateparam" placeholder="End Date" />
-            <select formControlName="intervals">
-                <option disabled value="">Select Intervals</option>
-                <option value="Summary">Summary</option>
-                <option value="Day">Daily</option>
-                <option value="Month">Monthly</option>
-                <option value="Weekly">Weekly</option>
-            </select>
-            <select formControlName="groupby">
-                <option disabled value="">Group By</option>
-                <option value="None">None</option>
-                <option value="Category">Category</option>
-                <option value="Product">Product</option>
-                <option value="SKU">SKU</option>
-            </select>
-            <select formControlName="filterby">
-                <option disabled value="">Filter By</option>
-                <option value="None">None</option>
-                <option value="Category">Category</option>
-                <option value="Product">Product</option>
-                <option value="SKU">SKU</option>
-            </select>
-            <input type="text" formControlName="filtervalue" placeholder="Enter Filter Value" />
-
-            <button type="button" class="btn btn-primary col-sm-1.5" (click)="loadPayments()">Submit</button>
-            <button type="button" class="btn btn-primary col-sm-1.5" (click)="loadCharts()">Load Chart</button>
-        </div>
-        <div>
-            <ag-grid-angular #agGrid style="width: 100%; height: 500px; " class="ag-theme-alpine" [columnDefs]="colDefs"
-                [rowData]="rowData" />
-        </div>
-
-            </form>
-        <!-- </app-card> -->
-    </div>
-    </form>
-    
+   
     <!--<div>
         <label>Select Columns for Chart:</label>
         <button type="button" class="btn btn-primary col-sm-1.5" (click)="updateChart()">Load Chart</button>
@@ -96,9 +60,10 @@
         </select>
            </div>-->
            <div>
-            <ag-charts style="width: 100%;" [options]="chartOptions" >
-
-        </ag-charts>
+            <ag-charts 
+            style="width: 100%;" 
+            [options]="chartOptions" >
+            </ag-charts>
 
 
            </div>
