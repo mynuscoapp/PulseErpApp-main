@@ -1,0 +1,32 @@
+<div class="auth-wrapper">
+  <div class="auth-content">
+    <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()">
+      <div class="auth-bg">
+        <span class="r"></span>
+        <span class="r s"></span>
+        <span class="r s"></span>
+        <span class="r"></span>
+      </div>
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="mb-4">
+            <i class="feather icon-shield auth-icon"></i>
+          </div>
+          <h3 class="mb-4">Verify Reset Code</h3>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Email" formControlName="email" required />
+          </div>
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Reset Code" formControlName="code" required />
+          </div>
+          <div *ngIf="submitted && verifyForm.invalid" class="text-danger mb-2">
+            Please enter a valid email and code.
+          </div>
+          <button class="btn btn-primary mb-4" [disabled]="verifyForm.invalid">Verify Code</button>
+          <div *ngIf="message" class="alert alert-success mt-2">{{ message }}</div>
+          <div *ngIf="error" class="alert alert-danger mt-2">{{ error }}</div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

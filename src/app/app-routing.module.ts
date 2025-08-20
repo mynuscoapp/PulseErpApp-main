@@ -5,11 +5,17 @@ import { WCOrderDownloadComponent } from './main-comp/wcorder-download-component
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import AuthSigninComponent from './demo/pages/authentication/auth-signin/auth-signin.component';
 import { BitrixstockComponent } from './main-comp/bitrixstock/bitrixstock.component';
-import { CreatedealComponent } from './main-comp/createdeal/createdeal.component';
-import { AuthGuard }  from './theme/shared/service/auth.guard';
+// import { CreatedealComponent } from './main-comp/createdeal/createdeal.component';
+import { AuthGuard } from './theme/shared/service/auth.guard';
+import { AuthVerifyCodeComponent } from './demo/pages/authentication/auth-verify-code/auth-verify-code.component';
+import ResetPasswordComponent from './demo/pages/authentication/reset-password/reset-password.component';
 import { AmazonpaymentsuploadComponent } from './main-comp/amazonpaymentsupload/amazonpaymentsupload.component';
 
+
 const routes: Routes = [
+   { path: '', component: AuthSigninComponent },
+  { path: 'verify-code', component: AuthVerifyCodeComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   {
     path: '',
     component: AuthSigninComponent
@@ -81,7 +87,7 @@ const routes: Routes = [
       },
       {
         path: 'amazonpaymentsupload',
-        component: AmazonpaymentsuploadComponent
+        component: AmazonpaymentsuploadComponent 
       }
     ]
   },

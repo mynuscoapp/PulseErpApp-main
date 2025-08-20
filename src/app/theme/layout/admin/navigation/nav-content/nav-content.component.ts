@@ -1,5 +1,5 @@
 // angular import
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output} from '@angular/core';
 import { Location } from '@angular/common';
 
 // project import
@@ -10,7 +10,7 @@ import { NavGroupComponent } from './nav-group/nav-group.component';
 
 @Component({
   selector: 'app-nav-content',
-  imports: [SharedModule, NavGroupComponent],
+  imports: [SharedModule, NavGroupComponent ],
   templateUrl: './nav-content.component.html',
   styleUrls: ['./nav-content.component.scss']
 })

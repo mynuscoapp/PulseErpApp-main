@@ -252,7 +252,10 @@ declare var $: any;
     this.bitrixstockservice.loadBitrixStoress().subscribe((data: any) => {
       this.bitrixStores = data;
       this.bitrixstockservice.bitrixStores = data;
-      //console.log(data);
+      setTimeout(() => {
+        $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker('val',  '0');
+      }, 0); 
     });
 
     this.bitrixstockservice.loadBitrixStock().subscribe((data: any) => {

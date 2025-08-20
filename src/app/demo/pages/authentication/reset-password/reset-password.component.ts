@@ -1,99 +1,106 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { NgIf } from '@angular/common';
 import { LoginService } from 'src/app/theme/shared/service/login-service';
-import { Router, RouterModule } from '@angular/router'; // Import Router for navigation
-// import { error } from 'console';
-
 
 @Component({
   selector: 'app-reset-password',
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  standalone: true,
+  imports: [ReactiveFormsModule, RouterModule, NgIf],
   templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.scss',
-  standalone: true
+  styleUrls: ['./reset-password.component.scss']
 })
-export class ResetPasswordComponent {
+export default class ResetPasswordComponent {
   resetForm: FormGroup;
-  message: string = '';
-  step: 'verify' | 'setPassword' = 'verify';
+  submitted = false;
+  step = 1; // 1=email, 2=verify, 3=new password
+  message = '';
+  error = '';
 
-  constructor(private formbuilder: FormBuilder, private loginService: LoginService, private router: Router) {
-    this.resetForm = this.formbuilder.group({
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router, private loginService: LoginService) {
+    this.resetForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: [''],
-      confirmPassword: ['']
+      resetCode: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', Validators.required]
     });
   }
 
-  onVerifyEmail() {
-    if (this.resetForm.invalid) {
-      this.message = 'Please enter a valid email.';
-      return;
-    }
+  // STEP 1 - Send Code
+  onSubmitEmail() {
+    if (this.resetForm.get('email')?.invalid) return;
+    this.message = ''; this.error = '';
+    const email = this.resetForm.get('email')?.value;
 
-    const email = this.resetForm.value.email;
-
-    this.loginService.verifyEmail(email).subscribe({
-      next: (res) => {
-        if (res.exists) {
-          this.message = 'Email verified. Please set your new password.';
-          this.step = 'setPassword';
-
-          this.resetForm.get('password')?.setValidators([
-            Validators.required,
-            Validators.minLength(8),
-            Validators.pattern(/^(?=.*[0-9])(?=.*[!@#$%^&*])/)
-          ]);
-          this.resetForm.get('confirmPassword')?.setValidators([
-            Validators.required
-          ]);
-
-          this.resetForm.get('password')?.updateValueAndValidity();
-          this.resetForm.get('confirmPassword')?.updateValueAndValidity();
-
-        }
-        else {
-          this.message = 'Email not found. Please check and try again.';
-        }
-      },
-      error: () => {
-        this.message = 'Error verifying email. Please try again.';
-      }
-    });
-  }
-
-  onSetNewPassword() {
-    const { password, confirmPassword } = this.resetForm.value;
-    
-    if (this.resetForm.controls['password'].invalid) {
-      this.message = 'Password must be at least 8 characters long and contain at least one number and one special character.';
-      return;
-    }
-    if (password !== confirmPassword) {
-      this.message = 'Password do not match.';
-      return;
-    }
-
-    const email = this.resetForm.value.email;
-    this.loginService.updatePassword(email, password).subscribe({
+    this.loginService.forgotPassword(email).subscribe({
       next: () => {
-        // If backend returns success
-        this.message = 'Password successfully updated!';
-        this.step = 'verify';
-        this.resetForm.reset();
-
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 2000);
+        this.message = 'Reset code sent to your email.';
+        this.step = 2;
       },
-      error: () => {
-        // If backend returns error
-        this.message = 'Error updating password. Please try again.';
+      error: (err) => {
+        this.error = err.error?.error || 'Failed to send reset code.';
       }
     });
   }
-  showPassword: boolean = false;
-  showConfirmPassword: boolean = false;
 
+  // STEP 2 - Verify Code
+
+  // STEP 2 - Resend Code
+onResendCode() {
+  const email = this.resetForm.get('email')?.value;
+  if (!email) {
+    this.error = 'Email is missing. Please go back and enter your email.';
+    return;
+  }
+
+  this.message = ''; this.error = '';
+  this.loginService.forgotPassword(email).subscribe({
+    next: () => {
+      this.message = 'A new reset code has been sent to your email.';
+    },
+    error: (err) => {
+      this.error = err.error?.error || 'Failed to resend code.';
+    }
+  });
+}
+
+  onVerifyCode() {
+    const email = this.resetForm.get('email')?.value;
+    const resetCode = this.resetForm.get('resetCode')?.value;
+
+    this.loginService.verifyResetCode(email, resetCode).subscribe({
+      next: () => {
+        this.message = 'Code verified. Please set your new password.';
+        this.step = 3;
+      },
+      error: (err) => {
+        this.error = err.error?.error || 'Invalid or expired code.';
+      }
+    });
+  }
+
+  // STEP 3 - Reset Password
+  onResetPassword() {
+    const email = this.resetForm.get('email')?.value;
+    const resetCode = this.resetForm.get('resetCode')?.value;
+    const newPassword = this.resetForm.get('newPassword')?.value;
+    const confirmPassword = this.resetForm.get('confirmPassword')?.value;
+
+    if (newPassword !== confirmPassword) {
+      this.error = 'Passwords do not match.';
+      return;
+    }
+
+    this.loginService.resetPassword( email, resetCode, newPassword ).subscribe({
+      next: () => {
+        this.message = 'Password reset successfully.';
+        this.router.navigate(['/authentication/sigin']);
+      },
+      error: (err) => {
+        this.error = err.error?.error || 'Failed to reset password.';
+      }
+    });
+  }
 }
