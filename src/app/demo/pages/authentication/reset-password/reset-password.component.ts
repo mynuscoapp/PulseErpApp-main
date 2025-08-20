@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { NgIf } from '@angular/common';
+import { LoginService } from 'src/app/theme/shared/service/login-service';
 
 @Component({
   selector: 'app-reset-password',
@@ -18,7 +19,7 @@ export default class ResetPasswordComponent {
   message = '';
   error = '';
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router, private loginService: LoginService) {
     this.resetForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       resetCode: ['', Validators.required],
@@ -33,7 +34,7 @@ export default class ResetPasswordComponent {
     this.message = ''; this.error = '';
     const email = this.resetForm.get('email')?.value;
 
-    this.http.post('http://localhost:3000/forgot-password', { email }).subscribe({
+    this.loginService.forgotPassword(email).subscribe({
       next: () => {
         this.message = 'Reset code sent to your email.';
         this.step = 2;
@@ -55,7 +56,7 @@ onResendCode() {
   }
 
   this.message = ''; this.error = '';
-  this.http.post('http://localhost:3000/forgot-password', { email }).subscribe({
+  this.loginService.forgotPassword(email).subscribe({
     next: () => {
       this.message = 'A new reset code has been sent to your email.';
     },
@@ -69,7 +70,7 @@ onResendCode() {
     const email = this.resetForm.get('email')?.value;
     const resetCode = this.resetForm.get('resetCode')?.value;
 
-    this.http.post('http://localhost:3000/verify-reset-code', { email, resetCode }).subscribe({
+    this.loginService.verifyResetCode(email, resetCode).subscribe({
       next: () => {
         this.message = 'Code verified. Please set your new password.';
         this.step = 3;
@@ -92,7 +93,7 @@ onResendCode() {
       return;
     }
 
-    this.http.post('http://localhost:3000/reset-password', { email, resetCode, newPassword }).subscribe({
+    this.loginService.resetPassword( email, resetCode, newPassword ).subscribe({
       next: () => {
         this.message = 'Password reset successfully.';
         this.router.navigate(['/authentication/sigin']);
