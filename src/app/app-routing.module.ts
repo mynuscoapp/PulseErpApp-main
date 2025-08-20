@@ -9,6 +9,7 @@ import { BitrixstockComponent } from './main-comp/bitrixstock/bitrixstock.compon
 import { AuthGuard } from './theme/shared/service/auth.guard';
 import { AuthVerifyCodeComponent } from './demo/pages/authentication/auth-verify-code/auth-verify-code.component';
 import ResetPasswordComponent from './demo/pages/authentication/reset-password/reset-password.component';
+import { AmazonpaymentsuploadComponent } from './main-comp/amazonpaymentsupload/amazonpaymentsupload.component';
 
 
 const routes: Routes = [
@@ -86,7 +87,7 @@ const routes: Routes = [
       },
       {
         path: 'amazonpaymentsupload',
-        component: AmazonpaymentsuploadComponent
+        component: AmazonpaymentsuploadComponent 
       }
     ]
   },

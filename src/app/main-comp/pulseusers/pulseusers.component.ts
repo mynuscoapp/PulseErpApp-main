@@ -1,9 +1,9 @@
 // angular import
 import { DatePipe, CommonModule} from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
-import { error,} from 'console';
+// import { error,} from 'console';
 import { BitrixStockService } from 'src/app/theme/shared/service/bitrix-stock-service';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 
@@ -19,7 +19,7 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
   
 
   
-export class PulseusersComponent {
+export class PulseusersComponent implements OnInit {
   @ViewChild('agGrid') agGrid!: AgGridAngular;
   bitrixstockForm: FormGroup;
   usersData?: any;
@@ -89,7 +89,7 @@ export class PulseusersComponent {
     FirstName: ['', Validators.required],
     LastName: ['', Validators.required],
     Email: ['', [Validators.required, Validators.email]],
-    Mobile: ['', [Validators.required, Validators.pattern(/^[0-9\-\+]{9,15}$/)]],
+    Mobile: ['', [Validators.required, Validators.pattern(/^[0-9\-+]{9,15}$/)]],
     Department: ['', Validators.required],
     Position: ['', Validators.required],
     Date_of_birth: ['', Validators.required],
