@@ -1,6 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, NO_ERRORS_SCHEMA,NgModule} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
 import { aznPayment } from 'src/app/theme/shared/service/azn-payments-service';
 import { AmazonPayments } from 'src/app/demo/models/AmazonPayments';
@@ -15,6 +15,11 @@ import { AgChartsModule } from 'ag-charts-angular';
 //import { labelSpecifier } from 'ag-charts-community/dist/types/src/chart/label';
 import { GridOptions, ChartToolPanelName } from 'ag-grid-enterprise';
 import { DatePipe } from '@angular/common';
+import { event } from 'jquery';
+//import { NgSelectModule } from '@ng-select/ng-select';
+
+declare var $: any;
+
 
 @Component({
   selector: 'app-amazonpayments',
@@ -34,16 +39,23 @@ export class AmazonpaymentsComponent {
 
 
   colDefs: ColDef[] = [
-    { headerName: 'Day Period', field: 'period_day', sortable: true, filter: true, width: 120 },
+    { headerName: 'Period', field: 'period_day',sortable: true, filter: true, width: 120 },
     { headerName: 'Product', field: 'product', sortable: true, filter: true, width: 150 },
-    { headerName: 'Total orders', field: 'total_orders', sortable: true, filter: true, width: 100 },
+    { headerName: 'Total Orders', field: 'total_orders', sortable: true, filter: true, width: 100 },
     { headerName: 'Refund Orders', field: 'refund_orders', sortable: true, filter: true, width: 100 },
-    { headerName: 'Revenue', field: 'revenue_ex_gst', sortable: true, filter: true, width: 150 },
+    { headerName: 'Income', field: 'revenue_ex_gst', sortable: true, filter: true, width: 150 },
     { headerName: 'COGS', field: 'cogs_ex_gst', sortable: true, filter: true, width: 120 },
-    { headerName: 'Commissions', field: 'commissions_ex_gst', sortable: true, filter: true, width: 120 },
-    { headerName: 'Shipping', field: 'shipping_easy_shipex_gst', sortable: true, filter: true, width: 100 },
-    { headerName: 'Marketing', field: 'marketingex_gst', sortable: true, filter: true, width: 150 },
-    { headerName: 'Misc', field: 'misc_ex_gst', sortable: true, filter: true, width: 150 }
+    { headerName: 'Charges', field: 'commissions_ex_gst', sortable: true, filter: true, width: 120 },
+    { headerName: 'Delivery', field: 'shipping_easy_shipex_gst', sortable: true, filter: true, width: 100 },
+    { headerName: 'Ads', field: 'marketingex_gst', sortable: true, filter: true, width: 100 },
+    { headerName: 'Misc', field: 'misc_ex_gst', sortable: true, filter: true, width: 100 },
+    { headerName: 'CM3', field: 'cm3', sortable: true, filter: true, width: 100 },
+    { headerName: 'COGS %', field: 'cogspercent', sortable: true, filter: true, width: 100 },
+    { headerName: 'Charges %', field: 'chargespercent', sortable: true, filter: true, width: 100 },
+    { headerName: 'Delivery %', field: 'deliverypercent', sortable: true, filter: true, width: 100 },
+    { headerName: 'Ads %', field: 'adspercent', sortable: true, filter: true, width: 100 },
+    { headerName: 'Misc %', field: 'miscpercent', sortable: true, filter: true, width: 100 },
+    { headerName: 'CM3 %', field: 'cm3percent', sortable: true, filter: true, width: 100 }
   ];
 
   gridOptions: GridOptions = {
@@ -81,14 +93,23 @@ export class AmazonpaymentsComponent {
   groupby: string;
   filterby: string;
   filtervalue: string;
+  
+
+filterByOptions = ['Category', 'Product','SKU'];
+//filtervalues:  string[] = [];
+filtervalues: { value: string }[] = [];
+
+selectedfilterby: string = '';
+selectedfiltervalue: string = '';
+val: string[] = [];
 
   constructor(private formBuilder: FormBuilder, private datePipe: DatePipe, private aznPayment: aznPayment) {
     this.aznpaymentsform = this.formBuilder.group({
       startdateparam: [''],
       enddateparam: [''],
-      intervals: [''],
-      groupby: [''],
-      filterby: [''],
+      intervals: ['Summary'],
+      groupby: ['None'],
+      filterby: ['None'],
       filtervalue: ['']
     });
   };
@@ -102,9 +123,12 @@ export class AmazonpaymentsComponent {
       alert("Please select the Optimal Date Range");
       return;
     }
-    if(this.intervals === "" || this.groupby === "" || this.filterby === "" || this.filtervalue === "" ){
-      alert("Please selct all the values");
+    if(this.intervals === ""){
+      alert("Please select the Intervals option");
       return;
+    }
+    if (this.filterby !== "None" && (this.filtervalue === "" || this.filtervalue === null || this.filtervalue === undefined)) {
+      this.filtervalue = "";
     }
     console.log("Params = ", params);
     console.log(JSON.stringify(params));
@@ -112,11 +136,16 @@ export class AmazonpaymentsComponent {
 
     this.aznPayment.getPayments(params).subscribe({
       next: data => {
-        console.log("Inside subscribe, data = ", data);
         this.rowData = data as AmazonPayments[];
-        // this.updateChart();
         //console.log(data);
+        console.log("Period raw value = ", this.rowData[0].period_day, "Type = ", typeof this.rowData[0].period_day);
+
+        // this.rowData.forEach(item => {
+        //   item.period_day = this.formatPeriodDay(item.period_day, params.intervals);
+        // });
+        console.log("Rowdata =", this.rowData);
       },
+
 
       error: (err) => {
         console.log("Rowdata =", this.rowData);
@@ -125,10 +154,29 @@ export class AmazonpaymentsComponent {
 
       complete: () => {
         //console.log("Request completed");
-        this.loadCharts();
+        
+
+        this.calculateCM3(this.rowData);
+        //this.loadCharts();
       }
     });
   }
+
+  // formatPeriodDay(period: Date, interval: string): Date {
+  //   const date = new Date(period);
+  //   if (interval === 'Month') {
+  //     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  //    // return monthNames[Number(period) - 1];
+  //   }
+  //    else if (interval === 'Weekly') {
+  //     const day = date.getDay(); // 0 (Sun) to 6 (Sat)
+  //     const diff = date.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
+  //     return new Date(date.setDate(diff));
+  //   } else {
+  //     return period; // Daily or Summary
+  //   }
+  // }
+
 
 
   loadCharts(data?: any) {
@@ -154,14 +202,48 @@ export class AmazonpaymentsComponent {
     //console.log(chartData);
   }
 
+  calculateCM3(data: AmazonPayments[]) {
+    var cogs:any;
+    var shipping:any;
+    var marketing:any;
+    var misc:any;
+    var commissions:any;
+
+    data.forEach(item => {
+
+      cogs= item.cogs_ex_gst ? item.cogs_ex_gst :0;
+      commissions= item.commissions_ex_gst ? item.commissions_ex_gst :0;
+      shipping= item.shipping_easy_shipex_gst? item.shipping_easy_shipex_gst :0;
+      marketing= item.marketingex_gst? item.marketingex_gst :0;
+      misc= item.misc_ex_gst? item.misc_ex_gst :0;
+
+      item['cm3'] = (item.revenue_ex_gst - (cogs + commissions + shipping + marketing + misc)).toFixed(2);
+      
+      item['cogspercent'] = (item.revenue_ex_gst ? ((cogs / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
+      
+      item['chargespercent'] = (item.revenue_ex_gst ? ((commissions / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
+      
+      item['deliverypercent'] = (item.revenue_ex_gst ? ((shipping / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
+      
+      item['adspercent'] = (item.revenue_ex_gst ? ((marketing / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
+      
+      item['miscpercent'] = (item.revenue_ex_gst ? ((misc / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "% ";
+
+      item['cm3percent'] = (item.revenue_ex_gst ? ((item['cm3'] / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
+    });
+
+    console.log("Data with CM3 and percentages: ", data); 
+  }
+
 
   ngOnInit() {
-    this.numericColumns = this.colDefs
-      .map(col => col.field!)
-      .filter(f => ['total_orders', 'refund_orders', 'revenue_ex_gst', 'cogs_ex_gst',
-        'commissions_ex_gst', 'shipping_easy_shipex_gst', 'marketingex_gst', 'misc_ex_gst'].includes(f));
 
+    // setTimeout(() => {
+    //     $('.selectpicker').selectpicker();
+    //     $('.selectpicker').selectpicker('val',  '0');
+    //   }, 0);     
   }
+
 
   onExport(): void {
     if (this.rowData.length > 1) {
@@ -173,89 +255,25 @@ export class AmazonpaymentsComponent {
   }
 
 
-  ascendingchartFromGrid() {
-    if (!this.gridApi) return;
+onFilterByChange(event: any) {
+  this.selectedfilterby = event.target.value;
+  console.log("Selected Filter By: ", this.selectedfilterby); 
 
-    const rowData: any[] = [];
-    this.gridApi.forEachNode((node) => rowData.push(node.data));
+  this.aznPayment.getFilterValues(this.selectedfilterby).subscribe({
+    next: data => {
+      console.log("Inside subscribe, data = ", data);
+      //this.filtervalues = data as string[];
+      //this.filtervalues = data as { value: string }[];
+      this.filtervalues = (data as string[]).map(item => ({ value: item }));
 
-    // ✅ sort ascending by date (assuming your field is "period_day")
-    const sorted = rowData.sort((a, b) => {
-      return new Date(a.period_day).getTime() - new Date(b.period_day).getTime();
-    });
+      //this.val = this.filtervalues;
+      //console.log("Filter values: ", this.filtervalues);
+      // setTimeout(() => {
+      //   $('.selectpicker').selectpicker();
+      //   $('#filtervalue').selectpicker('val',  '0');
+      // }, 0); 
 
-    // build chart data
-    this.chartOptions = {
-      ...this.chartOptions,
-      data: sorted,
-    };
-  }
-
-  getWeekNumber(date: Date): string {
-    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    const dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const weekNum = Math.ceil((((+d - +yearStart) / 86400000) + 1) / 7);
-    return `W${weekNum}-${d.getUTCFullYear()}`;  // Example: W34-2025
-  }
-
-  loadWeeklyChart(data?: any) {
-    const rawData = data || this.rowData;
-
-    // Group by WEEK instead of month
-    const grouped = groupBy(rawData, row => {
-      const dt = new Date(row.period_day);
-      return this.getWeekNumber(dt);
-    });
-
-    const chartData = Object.keys(grouped).map(period_day => {
-      const items = grouped[period_day];
-      return {
-        period_day,
-        total_orders: items.reduce((sum, i) => sum + i.total_orders, 0),
-        refund_orders: items.reduce((sum, i) => sum + i.refund_orders, 0)
-      };
-    });
-
-    this.chartOptions = {
-      ...this.chartOptions,
-      data: chartData
-    };
-  }
-
+    }
+  }); 
 }
-
-
-
-
-
-// updateChart() {
-//   const grouped = groupBy(this.rowData, row =>
-//     this.datePipe.transform(row.period_day, 'MMM-yyyy')
-//   );
-//   //console.log("rowData = " + this.rowData);
-
-//   const chartData = Object.keys(grouped).map(period_day => {
-//     const items = grouped[period_day];
-//     const obj: any = { period_day };
-//     this.selectedColumns.forEach(col => {
-//       obj[col] = items.reduce((sum, i) => sum + (i[col] || 0), 0);
-//       console.log("col " + col);
-//     });
-//     return obj;
-//   });
-
-//   const series = this.selectedColumns.map(col => ({
-//     type: 'bar',
-//     xKey: 'period_day',
-//     yKey: col,
-//     yName: col
-//   }));
-//   console.log("series = " + series);
-
-//   this.chartOptions = {...this.chartOptions,
-//     data: chartData,
-//     legend: { position: 'right' }
-//   };
-// }
+}
