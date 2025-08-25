@@ -56,7 +56,8 @@
                     </div>
                     <div>
                         <ag-grid-angular #agGrid style="width: 100%; height: 500px; " class="ag-theme-alpine"
-                            [columnDefs]="colDefs" [rowData]="rowData" [gridOptions]="gridOptions" />
+                            [columnDefs]="colDefs" [rowData]="rowData" [gridOptions]="gridOptions"  (gridReady)="onGridReady($event)">
+                        </ag-grid-angular>
                     </div>
 
                     <!--<div>

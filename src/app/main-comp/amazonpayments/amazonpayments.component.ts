@@ -13,7 +13,7 @@ import { ColDef, GridApi } from 'ag-grid-enterprise';
 import { AgChartOptions, PixelSize } from 'ag-charts-enterprise';
 import { AgChartsModule } from 'ag-charts-angular';
 //import { labelSpecifier } from 'ag-charts-community/dist/types/src/chart/label';
-import { GridOptions, ChartToolPanelName } from 'ag-grid-enterprise';
+import { GridOptions, ChartToolPanelName, GridReadyEvent } from 'ag-grid-enterprise';
 import { DatePipe } from '@angular/common';
 import { event } from 'jquery';
 //import { NgSelectModule } from '@ng-select/ng-select';
@@ -33,14 +33,18 @@ declare var $: any;
 export class AmazonpaymentsComponent {
   @ViewChild('agGrid') agGrid!: AgGridAngular;
   gridApi!: GridApi;
-  columnApi!: any;
   aznpaymentsform: FormGroup;
   rowData: AmazonPayments[] = [];
 
 
   colDefs: ColDef[] = [
-    { headerName: 'Period', field: 'period_day',sortable: true, filter: true, width: 120 },
+    { headerName: 'Daily Period', field: 'period_day',sortable: true, filter: true, width: 120 },
+    {headerName: 'Monthly Period', field: 'period_month',sortable: true, filter: true, width: 120 },
+    {headerName: 'Weekly Period', field: 'period_week',sortable: true, filter: true, width: 120 },
+    {headerName: 'Summary', field: 'period',sortable: true, filter: true, width: 120 },
     { headerName: 'Product', field: 'product', sortable: true, filter: true, width: 150 },
+    { headerName: 'Category', field: 'category', sortable: true, filter: true, width: 150 },
+    { headerName: 'SKU', field: 'sku', sortable: true, filter: true, width: 120 },
     { headerName: 'Total Orders', field: 'total_orders', sortable: true, filter: true, width: 100 },
     { headerName: 'Refund Orders', field: 'refund_orders', sortable: true, filter: true, width: 100 },
     { headerName: 'Income', field: 'revenue_ex_gst', sortable: true, filter: true, width: 150 },
@@ -127,6 +131,7 @@ val: string[] = [];
       alert("Please select the Intervals option");
       return;
     }
+    
     if (this.filterby !== "None" && (this.filtervalue === "" || this.filtervalue === null || this.filtervalue === undefined)) {
       this.filtervalue = "";
     }
@@ -134,51 +139,107 @@ val: string[] = [];
     console.log(JSON.stringify(params));
     console.log('Calling getPayments()...');
 
-    this.aznPayment.getPayments(params).subscribe({
+    // this.colDefs[0].hide = false; // show 'period_day' column
+    // this.colDefs[1].hide = true; // Hide 'period_month' column  
+    // this.colDefs[2].hide = true; // Hide 'period_week' column
+    // this.colDefs[3].hide = true; // Hide 'period' column  
+
+    if(this.intervals === "Day"){
+      alert("Daily data can take longer time to load, please be patient...");
+      this.aznPayment.getPayments(params).subscribe({
       next: data => {
         this.rowData = data as AmazonPayments[];
         //console.log(data);
-        console.log("Period raw value = ", this.rowData[0].period_day, "Type = ", typeof this.rowData[0].period_day);
-
-        // this.rowData.forEach(item => {
-        //   item.period_day = this.formatPeriodDay(item.period_day, params.intervals);
-        // });
         console.log("Rowdata =", this.rowData);
+        
       },
-
-
       error: (err) => {
         console.log("Rowdata =", this.rowData);
         console.error('API error: ', err);
       },
-
       complete: () => {
-        //console.log("Request completed");
-        
-
+        console.log("Request completed");
         this.calculateCM3(this.rowData);
-        //this.loadCharts();
       }
     });
+    this.agGrid.api.setColumnsVisible(['period_day'], true);
+    this.agGrid.api.setColumnsVisible(['period_month', 'period_week', 'period'], false );    
+    this.gridApi.refreshHeader();
+    
+    }
+    else if(this.intervals === "Month"){
+      
+      this.aznPayment.getPayments(params).subscribe({
+        next: data => {
+          this.rowData = data as AmazonPayments[];
+          //console.log(data);
+          console.log("Rowdata =", this.rowData);
+        },
+        error: (err) => {
+          console.log("Rowdata =", this.rowData);
+          console.error('API error: ', err);
+        },
+        complete: () => {
+          console.log("Request completed");
+          this.calculateCM3(this.rowData);
+        }
+      });
+      this.agGrid.api.setColumnsVisible(['period_month'], true);
+    this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period'], false );    
+    this.gridApi.refreshHeader();
+    }
+    
+    else if(this.intervals === "Weekly"){
+      
+      this.aznPayment.getPayments(params).subscribe({
+        next: data => {
+          this.rowData = data as AmazonPayments[];
+          //console.log(data);
+          console.log("Rowdata =", this.rowData);
+        },
+        error: (err) => {
+          console.log("Rowdata =", this.rowData);
+          console.error('API error: ', err);
+        },
+        complete: () => {
+          console.log("Request completed");
+          this.calculateCM3(this.rowData);
+        }
+      });
+    this.agGrid.api.setColumnsVisible(['period_week'], true);
+    this.agGrid.api.setColumnsVisible(['period_day', 'period_month', 'period'], false );    
+
+    }
+    else{
+      // Summary
+    
+      this.aznPayment.getPayments(params).subscribe({
+        next: data => {
+          this.rowData = data as AmazonPayments[];
+          //console.log(data);
+          console.log("Rowdata =", this.rowData);
+        },
+        error: (err) => {
+          console.log("Rowdata =", this.rowData);
+          console.error('API error: ', err);
+        },
+        complete: () => {
+          console.log("Request completed");
+          this.calculateCM3(this.rowData);
+        }
+      });
+      this.agGrid.api.setColumnsVisible(['period'], true);
+      this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period_month',], false );
+  
+    }
   }
 
-  // formatPeriodDay(period: Date, interval: string): Date {
-  //   const date = new Date(period);
-  //   if (interval === 'Month') {
-  //     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  //    // return monthNames[Number(period) - 1];
-  //   }
-  //    else if (interval === 'Weekly') {
-  //     const day = date.getDay(); // 0 (Sun) to 6 (Sat)
-  //     const diff = date.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
-  //     return new Date(date.setDate(diff));
-  //   } else {
-  //     return period; // Daily or Summary
-  //   }
-  // }
+   onGridReady(params: GridReadyEvent) {
+    this.gridApi = params.api;
+    ;
+   }
 
-
-
+ 
   loadCharts(data?: any) {
     const rawData = data || this.rowData;
 
@@ -238,10 +299,6 @@ val: string[] = [];
 
   ngOnInit() {
 
-    // setTimeout(() => {
-    //     $('.selectpicker').selectpicker();
-    //     $('.selectpicker').selectpicker('val',  '0');
-    //   }, 0);     
   }
 
 
@@ -262,16 +319,7 @@ onFilterByChange(event: any) {
   this.aznPayment.getFilterValues(this.selectedfilterby).subscribe({
     next: data => {
       console.log("Inside subscribe, data = ", data);
-      //this.filtervalues = data as string[];
-      //this.filtervalues = data as { value: string }[];
       this.filtervalues = (data as string[]).map(item => ({ value: item }));
-
-      //this.val = this.filtervalues;
-      //console.log("Filter values: ", this.filtervalues);
-      // setTimeout(() => {
-      //   $('.selectpicker').selectpicker();
-      //   $('#filtervalue').selectpicker('val',  '0');
-      // }, 0); 
 
     }
   }); 
