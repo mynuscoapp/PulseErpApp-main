@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-auth-verify-code',
@@ -23,8 +24,9 @@ export class AuthVerifyCodeComponent {
       email: ['', [Validators.required, Validators.email]],
       code: ['', Validators.required]
     });
+    
   }
-
+  private bitrixverifyresetcode = `${environment.bitrixStockUrl}/verify-reset-code`;
   onSubmit() {
     this.submitted = true;
     this.message = '';
@@ -37,7 +39,7 @@ export class AuthVerifyCodeComponent {
     const { email, code } = this.verifyForm.value;
 
     // ✅ Fix: backend expects resetCode, not code
-    this.http.post('http://localhost:3000/verify-reset-code', { email, resetCode: code }).subscribe({
+    this.http.post(this.bitrixverifyresetcode, { email, resetCode: code }).subscribe({
       next: () => {
         this.message = 'Code verified! Redirecting...';
         setTimeout(() => {

@@ -62,6 +62,7 @@ onResendCode() {
     },
     error: (err) => {
       this.error = err.error?.error || 'Failed to resend code.';
+      console.log(err);
     }
   });
 }
