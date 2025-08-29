@@ -38,3 +38,21 @@
 .form-controls button:hover {
   background-color: #0f70d1;
 }
+
+
+.form-controls label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151; /* dark gray for readability */
+  margin-right: 6px;
+  margin-bottom: 1px;
+  display: inline-block;
+  text-align: center;
+}
+
+.form-controls label::after {
+  content: ":";  /* add colon after label */
+  margin-left: 2px;
+  color: #6b7280; /* lighter gray */
+  text-align: center;
+}
