@@ -65,17 +65,17 @@ export class LoginService {
   //   });
   // }
 
-  forgotPassword(email: string) {
-  return this.http.post(this.bitrixForgotPasswordUrl, { email });
-}
+  forgotPassword(email: string): Observable<{ exists: boolean }> {
+    return this.http.post<{ exists: boolean }>(this.bitrixForgotPasswordUrl, { email });
+  }
 
-verifyResetCode(email: string, resetCode: string) {
-  return this.http.post(this.bitrixVerifyResetCodeUrl, { email, resetCode });
-}
+  verifyResetCode(email: string, resetCode: string): Observable<{ valid: boolean }> {
+    return this.http.post<{ valid: boolean }>(this.bitrixVerifyResetCodeUrl, { email, resetCode });
+  }
 
-resetPassword(email: string, resetCode: string, newPassword: string) {
-  return this.http.post(this.bitrixResetPasswordUrl, { email, resetCode, newPassword });
-}
+  resetPassword(email: string, resetCode: string, newPassword: string): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(this.bitrixResetPasswordUrl, { email, resetCode, newPassword });
+  }
 
 
 }
