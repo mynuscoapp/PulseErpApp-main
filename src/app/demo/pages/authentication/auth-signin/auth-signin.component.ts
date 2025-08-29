@@ -36,10 +36,15 @@ export default class AuthSigninComponent implements OnInit {
     }
     const { email, password } = this.loginForm.value;
     this.loginService.login(email, password).subscribe({
-      next: () => {
+      next: (response) => {
         this.loginService.setLogedIn();
         sessionStorage.setItem('isLogged', 'true');
-        this.router.navigate(['dashboard']);
+        if (response.user?.role) {
+          localStorage.setItem('userRole', response.user.role);
+          localStorage.setItem('userId', response.user.id);
+        }
+
+      this.router.navigate(['dashboard']);
       },
       error: (error) => {
         if (error.status === 401) {
