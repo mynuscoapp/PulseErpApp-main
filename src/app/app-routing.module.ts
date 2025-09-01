@@ -39,55 +39,81 @@ const routes: Routes = [
       },
       {
         path: 'dashboard',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager', 'finance'] },
         loadComponent: () => import('./demo/dashboard/dashboard.component').then((c) => c.DashboardComponent)
       },
       {
         path: 'pulseusers',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         loadComponent: () => import('./main-comp/pulseusers/pulseusers.component').then((c) => c.PulseusersComponent)
       },
       {
         path: 'basic',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         loadChildren: () => import('./demo/ui-elements/ui-basic/ui-basic.module').then((m) => m.UiBasicModule)
       },
       {
         path: 'forms',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         loadChildren: () => import('./demo/pages/form-elements/form-elements.module').then((m) => m.FormElementsModule)
       },
       {
         path: 'tables',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         loadChildren: () => import('./demo/pages/tables/tables.module').then((m) => m.TablesModule)
       },
       {
         path: 'apexchart',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         loadComponent: () => import('./demo/pages/core-chart/apex-chart/apex-chart.component')
       },
       {
         path: 'sample-page',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         loadComponent: () => import('./demo/extra/sample-page/sample-page.component')
       },
       {
         path: 'invoiceDownload',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         component: InvoicedownloadComponent
       },
       {
         path: 'wcOrderDownLoad',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         component: WCOrderDownloadComponent,
       },
       {
         path: 'stockinfo',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         component: BitrixstockComponent,
       },
       {
         path: 'createdeal',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
         loadComponent:() => import('./main-comp/createdeal/createdeal.component').then((c) => c.CreatedealComponent)
       },
       {
         path: 'amazonpayments',
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager', 'finance'] },
         loadComponent: () => import('./main-comp/amazonpayments/amazonpayments.component').then((c) => c.AmazonpaymentsComponent)
       },
       {
         path: 'amazonpaymentsupload',
-        component: AmazonpaymentsuploadComponent 
+        canActivate: [AuthGuard],
+        data: { roles: ['admin', 'manager'] },
+        component: AmazonpaymentsuploadComponent
       }
     ]
   },

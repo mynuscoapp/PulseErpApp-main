@@ -29,9 +29,25 @@ export class NavContentComponent {
   NavCollapsedMob = output();
 
   // constructor
+  // constructor() {
+  //   this.navigations = NavigationItems;
+  // }
+
   constructor() {
-    this.navigations = NavigationItems;
-  }
+  const role = localStorage.getItem('userRole') || 'employee'; // 👈 get role after login
+  this.navigations = this.filterNavigation(NavigationItems, role);
+}
+
+// helper method
+private filterNavigation(items: NavigationItem[], role: string): NavigationItem[] {
+  return items
+    .filter(item => !item.role || item.role.includes(role)) // keep if no roles or user’s role is included
+    .map(item => ({
+      ...item,
+      children: item.children ? this.filterNavigation(item.children, role) : undefined
+    }));
+}
+
 
   fireOutClick() {
     let current_url = this.location.path();
