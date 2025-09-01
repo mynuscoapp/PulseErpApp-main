@@ -1,6 +1,6 @@
 import { Component, ViewChild, NO_ERRORS_SCHEMA,NgModule} from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormBuilder, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
 import { aznPayment } from 'src/app/theme/shared/service/azn-payments-service';
 import { AmazonPayments } from 'src/app/demo/models/AmazonPayments';
@@ -15,7 +15,7 @@ import { AgChartsModule } from 'ag-charts-angular';
 //import { labelSpecifier } from 'ag-charts-community/dist/types/src/chart/label';
 import { GridOptions, ChartToolPanelName, GridReadyEvent } from 'ag-grid-enterprise';
 import { DatePipe } from '@angular/common';
-import { event } from 'jquery';
+import { data, event } from 'jquery';
 //import { NgSelectModule } from '@ng-select/ng-select';
 
 declare var $: any;
@@ -35,6 +35,8 @@ export class AmazonpaymentsComponent {
   gridApi!: GridApi;
   aznpaymentsform: FormGroup;
   rowData: AmazonPayments[] = [];
+   loadingTemplate = '<span class="ag-overlay-loading-center">⏳ Please wait, data is loading...</span>';
+  noRowsTemplate = '<span class="ag-overlay-no-rows-center">No data to display</span>';
 
 
   colDefs: ColDef[] = [
@@ -59,10 +61,13 @@ export class AmazonpaymentsComponent {
     { headerName: 'Delivery %', field: 'deliverypercent', sortable: true, filter: true, width: 100 },
     { headerName: 'Ads %', field: 'adspercent', sortable: true, filter: true, width: 100 },
     { headerName: 'Misc %', field: 'miscpercent', sortable: true, filter: true, width: 100 },
-    { headerName: 'CM3 %', field: 'cm3percent', sortable: true, filter: true, width: 100 }
+    { headerName: 'CM3 %', field: 'cm3percent', sortable: true, filter: true, width: 100 },
+    {headerName: 'Return percentage',field: 'return_percentage', sortable: true, filter: true, width: 120 }
   ];
 
   gridOptions: GridOptions = {
+  overlayLoadingTemplate: "loadingTemplate",
+  overlayNoRowsTemplate: "noRowsTemplate",
   enableCharts: true,
   enableRangeSelection: true,   // REQUIRED for charting
   sideBar: 'columns',           // optional, but nice to have
@@ -122,29 +127,53 @@ val: string[] = [];
     const params = this.aznpaymentsform.value;
     this.startdateparam = this.aznpaymentsform.get("startdateparam").value;
     this.enddateparam = this.aznpaymentsform.get("enddateparam").value;
+    this.intervals = this.aznpaymentsform.get("intervals").value;
+    this.groupby = this.aznpaymentsform.get("groupby").value;
+    this.filterby = this.aznpaymentsform.get("filterby").value;
+    this.filtervalue = this.aznpaymentsform.get("filtervalue").value;
+    console.log("Form Values: ", params);
+   
+    params.startdateparam = this.startdateparam;
+    params.enddateparam = this.enddateparam;
+    params.intervals = this.intervals || 'Summary' ;
+    params.groupby = this.groupby || "None";
+    params.filterby = this.filterby || "";
+    params.filtervalue = this.filtervalue || "";
+    if (this.startdateparam === null || this.startdateparam === undefined)
+    {
+      alert("Please select the Start Date");
+      return;
+    }
+    if (this.enddateparam === null || this.enddateparam === undefined)
+    {
+      alert("Please select the End Date");
+      return;
+    } 
     if ( this.startdateparam > this.enddateparam )
     {
       alert("Please select the Optimal Date Range");
       return;
     }
+    // if(this.groupby === "None" && this.intervals === "Summary"){
+    //   alert("Please select the Group By option");
+    //   return;
+    // }
     if(this.intervals === ""){
       alert("Please select the Intervals option");
       return;
     }
     
     if (this.filterby !== "None" && (this.filtervalue === "" || this.filtervalue === null || this.filtervalue === undefined)) {
-      this.filtervalue = "";
+      params.filterby = "";
+      params.filtervalue = "";
+      
     }
+
     console.log("Params = ", params);
-    console.log(JSON.stringify(params));
     console.log('Calling getPayments()...');
 
-    // this.colDefs[0].hide = false; // show 'period_day' column
-    // this.colDefs[1].hide = true; // Hide 'period_month' column  
-    // this.colDefs[2].hide = true; // Hide 'period_week' column
-    // this.colDefs[3].hide = true; // Hide 'period' column  
-
     if(this.intervals === "Day"){
+      //Daily
       alert("Daily data can take longer time to load, please be patient...");
       this.aznPayment.getPayments(params).subscribe({
       next: data => {
@@ -156,19 +185,21 @@ val: string[] = [];
       error: (err) => {
         console.log("Rowdata =", this.rowData);
         console.error('API error: ', err);
+        alert("Data for these selected parameters is not available, please try different options.");
+        return;
       },
       complete: () => {
         console.log("Request completed");
         this.calculateCM3(this.rowData);
       }
     });
-    this.agGrid.api.setColumnsVisible(['period_day'], true);
-    this.agGrid.api.setColumnsVisible(['period_month', 'period_week', 'period'], false );    
-    this.gridApi.refreshHeader();
-    
+    //this.agGrid.api.setColumnsVisible(['period_day'], true);
+    //this.agGrid.api.setColumnsVisible(['period_month', 'period_week', 'period'], false );    
+    //this.agGrid.api.setColumnsVisible(['category'], false);
+    //this.gridApi.refreshHeader();    
     }
     else if(this.intervals === "Month"){
-      
+      //Monthly
       this.aznPayment.getPayments(params).subscribe({
         next: data => {
           this.rowData = data as AmazonPayments[];
@@ -184,13 +215,14 @@ val: string[] = [];
           this.calculateCM3(this.rowData);
         }
       });
+      this.gridApi.closeToolPanel();
       this.agGrid.api.setColumnsVisible(['period_month'], true);
     this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period'], false );    
     this.gridApi.refreshHeader();
     }
     
     else if(this.intervals === "Weekly"){
-      
+      //Weekly
       this.aznPayment.getPayments(params).subscribe({
         next: data => {
           this.rowData = data as AmazonPayments[];
@@ -212,7 +244,6 @@ val: string[] = [];
     }
     else{
       // Summary
-    
       this.aznPayment.getPayments(params).subscribe({
         next: data => {
           this.rowData = data as AmazonPayments[];
@@ -222,6 +253,8 @@ val: string[] = [];
         error: (err) => {
           console.log("Rowdata =", this.rowData);
           console.error('API error: ', err);
+          alert("Data for these selected parameters is not available, please try different options.");
+          return;
         },
         complete: () => {
           console.log("Request completed");
@@ -230,8 +263,12 @@ val: string[] = [];
       });
       this.agGrid.api.setColumnsVisible(['period'], true);
       this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period_month',], false );
+      
+    this.gridApi.refreshHeader();
   
     }
+    //alert("Loaded Summary data");
+    this.loadCharts(this.rowData);
   }
 
    onGridReady(params: GridReadyEvent) {
@@ -269,6 +306,7 @@ val: string[] = [];
     var marketing:any;
     var misc:any;
     var commissions:any;
+    var returns:any;
 
     data.forEach(item => {
 
@@ -277,6 +315,7 @@ val: string[] = [];
       shipping= item.shipping_easy_shipex_gst? item.shipping_easy_shipex_gst :0;
       marketing= item.marketingex_gst? item.marketingex_gst :0;
       misc= item.misc_ex_gst? item.misc_ex_gst :0;
+      returns = item.refund_orders? item.refund_orders :0;
 
       item['cm3'] = (item.revenue_ex_gst - (cogs + commissions + shipping + marketing + misc)).toFixed(2);
       
@@ -291,8 +330,10 @@ val: string[] = [];
       item['miscpercent'] = (item.revenue_ex_gst ? ((misc / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "% ";
 
       item['cm3percent'] = (item.revenue_ex_gst ? ((item['cm3'] / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
-    });
 
+      item['return_percentage'] = (item.total_orders ? ((returns / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
+    });
+    alert("Data loaded successfully");
     console.log("Data with CM3 and percentages: ", data); 
   }
 
@@ -301,7 +342,6 @@ val: string[] = [];
 
   }
 
-
   onExport(): void {
     if (this.rowData.length > 1) {
       this.agGrid.api.exportDataAsExcel();
@@ -309,6 +349,16 @@ val: string[] = [];
     else {
       alert("No Data to export");
     }
+  }
+
+  onGroupByChange(event:any) {
+    this.groupby = event.target.value;
+    console.log("Selected Group By: ", this.groupby);
+  }
+
+  onIntervalChange(event: any) {
+    this.intervals = event.target.value;
+    console.log("Selected Intervals: ", this.intervals);
   }
 
 
@@ -320,8 +370,27 @@ onFilterByChange(event: any) {
     next: data => {
       console.log("Inside subscribe, data = ", data);
       this.filtervalues = (data as string[]).map(item => ({ value: item }));
-
     }
+    
   }); 
+  console.log(data);
+}
+
+onFilterValueChange(event: any) {
+  this.filtervalue = event.target.value;
+  console.log("Selected Filter Value: ", this.filtervalue);
+}
+
+
+onClearselection(){
+  this.agGrid.api.deselectAll();
+  this.startdateparam = null;
+  this.enddateparam = null; 
+  this.intervals = "Summary";
+  this.groupby = "None";
+  this.filterby = "None";
+  this.filtervalue = "";
+  this.rowData = [];
+  this.aznpaymentsform.reset();
 }
 }
