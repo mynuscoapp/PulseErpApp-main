@@ -243,10 +243,10 @@ declare var $: any;
       this.bitrixCustomers = data;
       this.bitrixstockservice.bitrixCustomers = data;
       //$('.selectpicker').selectpicker();
-      setTimeout(() => {
-        $('.selectpicker').selectpicker();
-        $('.selectpicker').selectpicker('val',  '0');
-      }, 0); 
+      // setTimeout(() => {
+      //   $('.selectpicker').selectpicker();
+      //   $('.selectpicker').selectpicker('val',  '0');
+      // }, 0); 
     });
 
     this.bitrixstockservice.loadBitrixStoress().subscribe((data: any) => {
@@ -478,11 +478,11 @@ declare var $: any;
 
   warehouseSet() {
     if (this.createDealForm.get("pipelineOptions").value == "0") {
-      //this.createDealForm.get("storesOptions").setValue(1);
+      this.createDealForm.get("storesOptions").setValue(1);
       $('#storesOptions').selectpicker('val',1);
     }
     if (this.createDealForm.get("pipelineOptions").value == "12") {
-      //this.createDealForm.get("storesOptions").setValue(8);
+      this.createDealForm.get("storesOptions").setValue(8);
       $('#storesOptions').selectpicker('val',8);
     }
   }

@@ -35,7 +35,7 @@ export class AmazonpaymentsComponent {
   gridApi!: GridApi;
   aznpaymentsform: FormGroup;
   rowData: AmazonPayments[] = [];
-   loadingTemplate = '<span class="ag-overlay-loading-center">⏳ Please wait, data is loading...</span>';
+  loadingTemplate = '<span class="ag-overlay-loading-center">⏳ Please wait, data is loading...</span>';
   noRowsTemplate = '<span class="ag-overlay-no-rows-center">No data to display</span>';
 
 
@@ -66,10 +66,11 @@ export class AmazonpaymentsComponent {
   ];
 
   gridOptions: GridOptions = {
-  overlayLoadingTemplate: "loadingTemplate",
-  overlayNoRowsTemplate: "noRowsTemplate",
+  overlayLoadingTemplate: '<span class="ag-overlay-loading-center" aria-live="polite">⏳ Please wait, data is loading...</span>',
+  overlayNoRowsTemplate: "No data to display",
   enableCharts: true,
   enableRangeSelection: true,   // REQUIRED for charting
+  
   sideBar: 'columns',           // optional, but nice to have
   chartThemes: ['ag-default'],
   chartToolPanelsDef: {
@@ -124,6 +125,11 @@ val: string[] = [];
   };
 
   loadPayments() {
+    this.agGrid.api.closeToolPanel();
+    this.agGrid.loading = true;
+    this.agGrid.api.setGridOption('loading', true);
+    //this.agGrid.api.showLoadingOverlay();
+    this.gridApi.setGridOption('loading', true);
     const params = this.aznpaymentsform.value;
     this.startdateparam = this.aznpaymentsform.get("startdateparam").value;
     this.enddateparam = this.aznpaymentsform.get("enddateparam").value;
@@ -135,10 +141,10 @@ val: string[] = [];
    
     params.startdateparam = this.startdateparam;
     params.enddateparam = this.enddateparam;
-    params.intervals = this.intervals || 'Summary' ;
+    params.intervals = this.intervals;
     params.groupby = this.groupby || "None";
-    params.filterby = this.filterby || "";
-    params.filtervalue = this.filtervalue || "";
+    params.filterby = this.filterby || "None";
+    params.filtervalue = this.filtervalue || "None";
     if (this.startdateparam === null || this.startdateparam === undefined)
     {
       alert("Please select the Start Date");
@@ -164,9 +170,8 @@ val: string[] = [];
     }
     
     if (this.filterby !== "None" && (this.filtervalue === "" || this.filtervalue === null || this.filtervalue === undefined)) {
-      params.filterby = "";
-      params.filtervalue = "";
-      
+      params.filterby = "None";
+      params.filtervalue = "None";
     }
 
     console.log("Params = ", params);
@@ -193,10 +198,9 @@ val: string[] = [];
         this.calculateCM3(this.rowData);
       }
     });
-    //this.agGrid.api.setColumnsVisible(['period_day'], true);
-    //this.agGrid.api.setColumnsVisible(['period_month', 'period_week', 'period'], false );    
-    //this.agGrid.api.setColumnsVisible(['category'], false);
-    //this.gridApi.refreshHeader();    
+    this.agGrid.api.setColumnsVisible(['period_day'], true);
+    this.agGrid.api.setColumnsVisible(['period_month', 'period_week', 'period'], false );  
+    this.gridApi.refreshHeader();    
     }
     else if(this.intervals === "Month"){
       //Monthly
@@ -215,10 +219,11 @@ val: string[] = [];
           this.calculateCM3(this.rowData);
         }
       });
-      this.gridApi.closeToolPanel();
-      this.agGrid.api.setColumnsVisible(['period_month'], true);
+    
+    this.agGrid.api.setColumnsVisible(['period_month'], true);
     this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period'], false );    
-    this.gridApi.refreshHeader();
+    this.agGrid.api.refreshHeader();
+    
     }
     
     else if(this.intervals === "Weekly"){
@@ -240,7 +245,7 @@ val: string[] = [];
       });
     this.agGrid.api.setColumnsVisible(['period_week'], true);
     this.agGrid.api.setColumnsVisible(['period_day', 'period_month', 'period'], false );    
-
+    this.gridApi.refreshHeader();
     }
     else{
       // Summary
@@ -259,21 +264,27 @@ val: string[] = [];
         complete: () => {
           console.log("Request completed");
           this.calculateCM3(this.rowData);
+
         }
       });
       this.agGrid.api.setColumnsVisible(['period'], true);
-      this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period_month',], false );
+      this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period_month','category','product'], false );
       
     this.gridApi.refreshHeader();
   
     }
     //alert("Loaded Summary data");
     this.loadCharts(this.rowData);
+    //alert("Data loaded successfully");
+    this.agGrid.loading = false;
+
+    this.gridApi.setGridOption('loading', false);
+    //this.agGrid.api.setGridOption('loading', false);
+    this.agGrid.api.hideOverlay();
   }
 
    onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
-    ;
    }
 
  
@@ -293,7 +304,7 @@ val: string[] = [];
         refund_orders: items.reduce((sum, i) => sum + i.refund_orders, 0)
       };
     });
-
+    
     this.chartOptions = {
       ...this.chartOptions, data: chartData,
     };
@@ -333,13 +344,13 @@ val: string[] = [];
 
       item['return_percentage'] = (item.total_orders ? ((returns / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
     });
-    alert("Data loaded successfully");
+    
     console.log("Data with CM3 and percentages: ", data); 
   }
 
 
   ngOnInit() {
-
+    this.agGrid.api.closeToolPanel();
   }
 
   onExport(): void {
