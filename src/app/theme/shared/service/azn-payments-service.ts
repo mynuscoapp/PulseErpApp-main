@@ -23,31 +23,46 @@ export class aznPayment{
             headers: headers
         };
         
-        const paramsQuery =
-    `?startdateparam=${params.startdateparam}` +
-    `&enddateparam=${params.enddateparam}` +
-    `&intervals=${params.intervals}` +
-    `&groupby=${params.groupby}` +
-    `&filterby=${params.filterby}` +
-    `&filtervalue=${params.filtervalue}`;
-    console.log("Final Get Url = ", this.amazonPaymentsUrl + paramsQuery);
+    // const paramsQuery =
+    // `?startdateparam=${params.startdateparam}` +
+    // `&enddateparam=${params.enddateparam}` +
+    // `&intervals=${params.intervals}` +
+    // `&groupby=${params.groupby}` +
+    // `&filterby=${params.filterby}` +
+    // `&filtervalue=${params.filtervalue}`;
+    // console.log("Final Get Url = ", this.amazonPaymentsUrl + paramsQuery);
 
         try{
         if(this.amazonPaymentsUrl.length>0)
         {
-            console.log("sql parameters passed",params);
-        return this.http.get<AmazonPayments[]>(this.amazonPaymentsUrl, { headers, params});
+//            console.log("sql parameters passed",params);
+            let paramsQuery = new HttpParams()
+            .set('startdateparam', params.startdateparam)
+            .set('enddateparam', params.enddateparam)   
+            .set('intervals', params.intervals)
+            .set('groupby', params.groupby)
+            .set('filterby', params.filterby)
+            .set('filtervalue', params.filtervalue);
+          return this.http.get<AmazonPayments[]>(this.amazonPaymentsUrl, { headers, params: paramsQuery });
         }
     }
+
     catch(err){
         console.log(err);
     }
+    
     return rowData;
     }
 
 getFilterValues(filterBy: string): Observable<string[]> {
     console.log("Filter By selected: ", filterBy);
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
+    {
+        let  httpOptions = {
+            headers: headers    
+        };
+    }
+    console.log("Final Filter Values Url = ", this.filterValuesUrl + `?filterby=${filterBy}`);
     let params = new HttpParams().set('filterby', filterBy);
     return this.http.get<string[]>(`${environment.bitrixStockUrl}/filter-values`, { headers, params });
 }
