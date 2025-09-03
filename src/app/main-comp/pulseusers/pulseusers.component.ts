@@ -40,6 +40,21 @@ export class PulseusersComponent implements OnInit {
     { headerName: 'Position', field: 'Position', sortable: true, resizable: true, filter: true, width: 200, editable: () => this.isEditMode },
     { headerName: 'DOB', field: 'Date_of_birth', sortable: true, resizable: true, filter: true, width: 150, editable: () => this.isEditMode },
     { headerName: 'Gender', field: 'Gender', sortable: true, resizable: true, filter: true, width: 100, editable: () => this.isEditMode },
+    { 
+  headerName: 'Last Login', 
+  field: 'Last_login', 
+  valueFormatter: (params: any) => {
+    if (!params.value) return 'Never';
+    return new Date(params.value).toLocaleString(); 
+  },
+  sortable: true,
+  resizable: true,
+  filter: true,
+  width: 200
+},
+
+//  { headerName: 'Last Login', field: 'Last_login', sortable: true, resizable: true, filter: true, width: 200 },
+
   ];
   
   ngOnInit(): void {
