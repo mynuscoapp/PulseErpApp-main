@@ -105,7 +105,7 @@ export class AmazonpaymentsComponent {
   filtervalue: string;
   
 
-filterByOptions = ['Category', 'Product','SKU'];
+//filterByOptions = ['Category', 'Product','SKU'];
 //filtervalues:  string[] = [];
 filtervalues: { value: string }[] = [];
 
@@ -128,8 +128,7 @@ val: string[] = [];
     this.agGrid.api.closeToolPanel();
     this.agGrid.loading = true;
     this.agGrid.api.setGridOption('loading', true);
-    //this.agGrid.api.showLoadingOverlay();
-    this.gridApi.setGridOption('loading', true);
+
     const params = this.aznpaymentsform.value;
     this.startdateparam = this.aznpaymentsform.get("startdateparam").value;
     this.enddateparam = this.aznpaymentsform.get("enddateparam").value;
@@ -160,10 +159,6 @@ val: string[] = [];
       alert("Please select the Optimal Date Range");
       return;
     }
-    // if(this.groupby === "None" && this.intervals === "Summary"){
-    //   alert("Please select the Group By option");
-    //   return;
-    // }
     if(this.intervals === ""){
       alert("Please select the Intervals option");
       return;
@@ -179,7 +174,7 @@ val: string[] = [];
 
     if(this.intervals === "Day"){
       //Daily
-      alert("Daily data can take longer time to load, please be patient...");
+      //alert("Daily data can take longer time to load, please be patient...");
       this.aznPayment.getPayments(params).subscribe({
       next: data => {
         this.rowData = data as AmazonPayments[];
@@ -196,6 +191,8 @@ val: string[] = [];
       complete: () => {
         console.log("Request completed");
         this.calculateCM3(this.rowData);
+        this.agGrid.api.setGridOption('loading', false);
+        
       }
     });
     this.agGrid.api.setColumnsVisible(['period_day'], true);
@@ -217,6 +214,8 @@ val: string[] = [];
         complete: () => {
           console.log("Request completed");
           this.calculateCM3(this.rowData);
+          this.agGrid.api.setGridOption('loading', false);
+          
         }
       });
     
@@ -241,6 +240,8 @@ val: string[] = [];
         complete: () => {
           console.log("Request completed");
           this.calculateCM3(this.rowData);
+          this.agGrid.api.setGridOption('loading', false);
+          
         }
       });
     this.agGrid.api.setColumnsVisible(['period_week'], true);
@@ -264,22 +265,17 @@ val: string[] = [];
         complete: () => {
           console.log("Request completed");
           this.calculateCM3(this.rowData);
-
+          this.agGrid.api.setGridOption('loading', false);
+          
         }
       });
       this.agGrid.api.setColumnsVisible(['period'], true);
-      this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period_month','category','product'], false );
+      this.agGrid.api.setColumnsVisible(['period_day', 'period_week', 'period_month'], false );
       
     this.gridApi.refreshHeader();
-  
     }
-    //alert("Loaded Summary data");
+    this.columnaligning();
     this.loadCharts(this.rowData);
-    //alert("Data loaded successfully");
-    this.agGrid.loading = false;
-
-    this.gridApi.setGridOption('loading', false);
-    //this.agGrid.api.setGridOption('loading', false);
     this.agGrid.api.hideOverlay();
   }
 
@@ -343,6 +339,7 @@ val: string[] = [];
       item['cm3percent'] = (item.revenue_ex_gst ? ((item['cm3'] / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
 
       item['return_percentage'] = (item.total_orders ? ((returns / item.revenue_ex_gst) * 100).toFixed(2) : 0) + "%";
+
     });
     
     console.log("Data with CM3 and percentages: ", data); 
@@ -402,6 +399,27 @@ onClearselection(){
   this.filterby = "None";
   this.filtervalue = "";
   this.rowData = [];
+  this.agGrid.api.setGridOption('loading', false);
   this.aznpaymentsform.reset();
+}
+
+columnaligning(){
+if(this.groupby === 'Category'){
+  this.agGrid.api.setColumnsVisible(['category'], true);
+  this.agGrid.api.setColumnsVisible(['product','sku'],false);
+}
+else if(this.groupby === 'Product'){
+  this.agGrid.api.setColumnsVisible(['product'],true);
+  this.agGrid.api.setColumnsVisible(['category','sku'],false);
+}
+else if(this.groupby=== 'SKU')
+{
+  this.agGrid.api.setColumnsVisible(['sku'],true);
+  this.agGrid.api.setColumnsVisible(['category','product'],false);
+}
+else{
+  this.agGrid.api.setColumnsVisible(['sku'],true);
+  this.agGrid.api.setColumnsVisible(['product','category'],false);
+}
 }
 }
