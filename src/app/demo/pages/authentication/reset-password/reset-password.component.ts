@@ -97,7 +97,7 @@ onResendCode() {
     this.loginService.resetPassword( email, resetCode, newPassword ).subscribe({
       next: () => {
         this.message = 'Password reset successfully.';
-        this.router.navigate(['/authentication/sigin']);
+        this.router.navigate(['/']);
       },
       error: (err) => {
         this.error = err.error?.error || 'Failed to reset password.';

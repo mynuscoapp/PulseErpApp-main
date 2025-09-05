@@ -1,31 +1,42 @@
+// src/app/theme/shared/service/auth.guard.ts
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { NavigationService } from './navigation.service';
+import { NavigationItems } from 'src/app/theme/layout/admin/navigation/navigation';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
+  constructor(
+    private router: Router,
+    private navigationService: NavigationService
+  ) {}
 
-  constructor(private router: Router) {}
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
+    const isLogged = localStorage.getItem('isLogged') === 'true';
+    if (!isLogged) return of(this.router.createUrlTree(['/']));
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
-    const isLogged = sessionStorage.getItem('isLogged') === 'true';
-    const userRole = localStorage.getItem('userRole'); // saved during login
+    const role = (localStorage.getItem('userRole') || 'employee').toLowerCase();
+    const url = state.url.split('?')[0];
 
-    if (!isLogged) {
-      this.router.navigate(['/']); // redirect to login page
-      return false;
-    }
+    // figure out which menu this URL corresponds to using NavigationItems
+    const menuTitle = this.navigationService.findTitleByUrl(NavigationItems, url);
 
-    // ✅ Check roles defined on the route
-    const allowedRoles = route.data['roles'] as string[];
-    if (allowedRoles && allowedRoles.length > 0) {
-      if (!userRole || !allowedRoles.includes(userRole)) {
-        this.router.navigate(['/unauthorized']); // redirect if not allowed
-        return false;
-      }
-    }
+    // if the url isn't part of the menu, allow access (not a protected menu route)
+    if (!menuTitle) return of(true);
 
-    return true;
+    return this.navigationService.getRoleMenuMap().pipe(
+      map(roleMap => {
+        const allowedTitles = roleMap[role] || [];
+        if (allowedTitles.includes(menuTitle)) return true;
+        return this.router.createUrlTree(['/unauthorized']);
+      }),
+      catchError(err => {
+        console.error('AuthGuard: failed to fetch role-menu-map', err);
+        // choose fail-closed for safety:
+        return of(this.router.createUrlTree(['/unauthorized']));
+      })
+    );
   }
 }

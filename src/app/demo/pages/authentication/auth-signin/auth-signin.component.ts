@@ -6,9 +6,7 @@ import { LoginService } from 'src/app/theme/shared/service/login-service';
 @Component({
   selector: 'app-auth-signin',
   standalone: true,
-  imports: [RouterModule,
-    FormsModule,
-    ReactiveFormsModule, ],
+  imports: [RouterModule, FormsModule, ReactiveFormsModule],
   templateUrl: './auth-signin.component.html',
   styleUrls: ['./auth-signin.component.scss']
 })
@@ -16,45 +14,56 @@ export default class AuthSigninComponent implements OnInit {
   loginForm: FormGroup;
   logoUrl: string = '';
 
-  constructor(private router: Router,private formBuilder: FormBuilder, private route: ActivatedRoute, 
-    private loginService: LoginService) {
+  constructor(
+    private router: Router,
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private loginService: LoginService
+  ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
-  
+
   ngOnInit(): void {
-    sessionStorage.setItem('isLogged', 'false');
-    
+    // ✅ Set default state
+    localStorage.setItem('isLogged', 'false');
   }
 
-   onSubmit(): void {
+  onSubmit(): void {
     if (this.loginForm.invalid) {
       alert('Please enter a valid email and password.');
       return;
     }
+
     const { email, password } = this.loginForm.value;
+
     this.loginService.login(email, password).subscribe({
       next: (response) => {
         this.loginService.setLogedIn();
-        sessionStorage.setItem('isLogged', 'true');
+
+        // ✅ Store everything in localStorage instead of sessionStorage
+        localStorage.setItem('isLogged', 'true');
+
         if (response.user?.role) {
           localStorage.setItem('userRole', response.user.role);
           localStorage.setItem('userId', response.user.id);
         }
 
-      this.router.navigate(['dashboard']);
+        this.router.navigate(['dashboard']);
       },
       error: (error) => {
         if (error.status === 401) {
           alert('Invalid email or password. Please try again.');
         } else if (error.status === 403) {
-          alert('access denied. Please contact your administrator.');
+          alert('Access denied. Please contact your administrator.');
         } else {
           alert('Server error. Please try again later.');
         }
-        sessionStorage.setItem('isLogged', 'false');
+
+        // ❌ Don't leave old login state in storage
+        localStorage.setItem('isLogged', 'false');
       }
     });
   }

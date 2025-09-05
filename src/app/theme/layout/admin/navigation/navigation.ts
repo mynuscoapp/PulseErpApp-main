@@ -20,7 +20,6 @@ export const NavigationItems: NavigationItem[] = [
     title: 'insights',
     type: 'group',
     icon: 'icon-navigation',
-    role: ['admin', 'manager','finance'], 
     children: [
       {
         id: 'dashboard',
@@ -29,7 +28,7 @@ export const NavigationItems: NavigationItem[] = [
         url: '/dashboard',
         icon: 'feather icon-home',
         classes: 'nav-item',
-        role: ['admin', 'manager','finance'],
+       
       }
      
     ]
@@ -39,28 +38,28 @@ export const NavigationItems: NavigationItem[] = [
     title: 'Reports',
     type: 'group',
     icon: 'icon-ui',
-    role: ['admin', 'manager','finance'],
+  
     children: [
       {
         id: 'basic',
         title: 'Orders',
         type: 'collapse',
         icon: 'feather icon-box',
-        role: ['admin', 'manager','finance'],
+       
         children: [
           {
             id: 'button',
             title: 'Invoices from Bitrix24',
             type: 'item',
             url: '/invoiceDownload',
-            role: ['admin','finance'],
+           
           },
           {
             id: 'badges',
             title: 'Orders from WooCommerce',
             type: 'item',
             url: '/wcOrderDownLoad',
-            role: ['manager','finance'],
+            
           }
         ]
       },
@@ -69,14 +68,14 @@ export const NavigationItems: NavigationItem[] = [
         title: 'Inventory',
         type: 'collapse',
         icon: 'feather icon-box',
-        role: ['admin', 'manager'],
+       
         children: [
           {
             id: 'button',
             title: 'Stock Availability',
             type: 'item',
             url: '/stockinfo',
-            role: ['admin', 'manager'],
+            
           }
         ]
       },
@@ -87,7 +86,7 @@ export const NavigationItems: NavigationItem[] = [
         url: '/amazonpayments',
         icon: 'feather icon-credit-card',
         classes: 'nav-item',
-        role: ['admin', 'manager','finance'],
+        
       }
   
     ]
@@ -98,7 +97,7 @@ export const NavigationItems: NavigationItem[] = [
     title: 'Operations',
     type: 'group',
     icon: 'icon-ui',
-    role: ['admin', 'manager'],
+    
     children: [
       {
         id: 'createdeal',
@@ -107,7 +106,7 @@ export const NavigationItems: NavigationItem[] = [
         url: '/createdeal',
         icon: 'feather icon-home',
         classes: 'nav-item',
-        role: ['admin', 'manager'],
+        
       },
       {
         id: 'pulseusers',
@@ -116,7 +115,7 @@ export const NavigationItems: NavigationItem[] = [
         url: '/pulseusers',
         icon: 'feather icon-user',
         classes: 'nav-item', // Added attributes for additional context
-        role: ['admin', 'manager'],
+        
       }
     ]
   },
@@ -126,7 +125,7 @@ export const NavigationItems: NavigationItem[] = [
     title: 'Uploads',
     type: 'group',
     icon: 'icon-ui',
-    role: ['admin', 'manager'],
+   
     children: [
       {
         id: 'amazonpaymentsupload',
@@ -135,7 +134,7 @@ export const NavigationItems: NavigationItem[] = [
         url: '/amazonpaymentsupload',
         icon: 'feather icon-home',
         classes: 'nav-item',
-        role: ['admin', 'manager'],
+       
       }
     ]
   },
