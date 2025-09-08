@@ -15,7 +15,14 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
     const isLogged = localStorage.getItem('isLogged') === 'true';
-    if (!isLogged) return of(this.router.createUrlTree(['/']));
+    const expiry = localStorage.getItem('expiry');
+
+    // ❌ If not logged or expired, redirect to login
+    if (!isLogged || !expiry || Date.now() >= +expiry) {
+      localStorage.setItem('isLogged', 'false');
+      localStorage.removeItem('expiry');
+      return of(this.router.createUrlTree(['/']));
+    }
 
     const role = (localStorage.getItem('userRole') || 'employee').toLowerCase();
     const url = state.url.split('?')[0];
@@ -29,12 +36,14 @@ export class AuthGuard implements CanActivate {
     return this.navigationService.getRoleMenuMap().pipe(
       map(roleMap => {
         const allowedTitles = roleMap[role] || [];
-        if (allowedTitles.includes(menuTitle)) return true;
+        if (allowedTitles.includes(menuTitle)) {
+          return true;
+        }
         return this.router.createUrlTree(['/unauthorized']);
       }),
       catchError(err => {
         console.error('AuthGuard: failed to fetch role-menu-map', err);
-        // choose fail-closed for safety:
+        // choose fail-closed for safety
         return of(this.router.createUrlTree(['/unauthorized']));
       })
     );
