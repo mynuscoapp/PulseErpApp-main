@@ -46,6 +46,9 @@ export default class AuthSigninComponent implements OnInit {
         // ✅ Store everything in localStorage instead of sessionStorage
         localStorage.setItem('isLogged', 'true');
 
+        const expiryTime = Date.now() + 24 * 60 * 60 * 1000; // 1 hour
+        localStorage.setItem('expiry', expiryTime.toString());
+
         if (response.user?.role) {
           localStorage.setItem('userRole', response.user.role);
           localStorage.setItem('userId', response.user.id);
