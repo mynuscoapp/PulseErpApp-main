@@ -22,7 +22,8 @@ export class BitrixstockComponent {
 
     colDefs: any = [
         { headerName: 'Store', field: 'storeId', sortable: true, resizable: true, filter: true },
-        {headerName:'SKU', field:'SKU', sortable: true, resizable: true, filter: true,width:200},
+        { headerName:'SKU', field:'SKU', sortable: true, resizable: true, filter: true,width:200},
+        { headerName: 'Category', field:'Category', sortable: true, resizable: true, filter: true,width:200 },
         { headerName: 'Image',field: 'preview_picture', sortable: true, resizable: true, filter: true, checkboxSelection: false, width: 100, cellRenderer: (params) => `<img style="height: 30px; width: 30px" src=${params.data.preview_picture} />` },
         { headerName: 'Product', field: 'productName', sortable: true, resizable: true, filter: true,width:300 },
         { headerName: 'Available', field: 'quantity', sortable: true, resizable: true, filter: true, width:150},

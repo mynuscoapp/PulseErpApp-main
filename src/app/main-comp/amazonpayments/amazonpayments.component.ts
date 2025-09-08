@@ -264,8 +264,13 @@ val: string[] = [];
         },
         complete: () => {
           console.log("Request completed");
+          console.log("Rowdata length=", this.rowData.length);
           this.calculateCM3(this.rowData);
           this.agGrid.api.setGridOption('loading', false);
+          if(this.rowData.length < 1){
+            alert("No data available for these selected parameters, please try different options.");
+            return;
+          }
           
         }
       });
