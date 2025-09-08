@@ -35,7 +35,7 @@
     "ag-grid-angular": "^32.2.1",
     "ag-grid-enterprise": "^32.3.9",
     "apexcharts": "3.49.2",
-    "bootstrap": "^4.1.0",
+    "bootstrap": "^5.3.8",
     "bootstrap-daterangepicker": "^3.1.0",
     "bootstrap-select": "^1.13.18",
     "dayjs": "^1.11.13",
