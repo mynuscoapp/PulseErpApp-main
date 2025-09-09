@@ -22,7 +22,7 @@ export class DealProductList{
     SORT: number = 0;
     XML_ID: string;
     TYPE: number = 1;
-    STORE_ID: string;
+    UF_CRM_STORE_ID: string;
     RESERVE_ID: string;
     DATE_RESERVE_END: Date;
     RESERVE_QUANTITY: string;

@@ -200,7 +200,7 @@ declare var $: any;
           productRow.TAX_INCLUDED = this.rowData[i].VAT_INCLUDED;
           productRow.TAX_RATE = this.rowData[i].tax_rate;
           productRow.OWNER_TYPE = 'D';
-          productRow.STORE_ID = this.storeSelected;
+          productRow.UF_CRM_STORE_ID = this.storeSelected;
           //productRow.WAREHOUSE_ID = this.warehouseSelection();
           //alert(this.createDealForm.get("storesOptions").value);
           //alert(productRow.WAREHOUSE_ID.toString());
